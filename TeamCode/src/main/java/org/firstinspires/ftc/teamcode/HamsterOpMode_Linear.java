@@ -15,6 +15,7 @@ public class HamsterOpMode_Linear extends LinearOpMode {
     private DcMotor leftFoot = null;
     private DcMotor rightFoot = null;
     private Servo tail = null;
+    private Servo linear = null;
 
     @Override
     public void runOpMode() {
@@ -26,6 +27,7 @@ public class HamsterOpMode_Linear extends LinearOpMode {
         leftFoot = hardwareMap.get(DcMotor.class, "leftFoot");
         rightFoot = hardwareMap.get(DcMotor.class, "rightFoot");
         tail = hardwareMap.get(Servo.class, "tail");
+        linear = hardwareMap.get(Servo.class, "linear");
 
 
         // To drive forward sometimes the motors are flipped but pushing the left stick forward
@@ -33,8 +35,9 @@ public class HamsterOpMode_Linear extends LinearOpMode {
         leftFoot.setDirection(DcMotor.Direction.FORWARD);
         rightFoot.setDirection(DcMotor.Direction.FORWARD);
         tail.setDirection(Servo.Direction.FORWARD);
+        linear.setDirection(Servo.Direction.FORWARD);
 
-        HamsterMotion hamsterMotion = new HamsterMotion(leftFoot, rightFoot, tail, gamepad1);
+        HamsterMotion hamsterMotion = new HamsterMotion(leftFoot, rightFoot, tail, gamepad1, linear);
 
         // Wait for driver to press play
         waitForStart();
@@ -48,6 +51,7 @@ public class HamsterOpMode_Linear extends LinearOpMode {
 
             // Show the wheel power and servo angel
             telemetry.addData("Servo Angle", "(%.2f)", tail.getPosition());
+            telemetry.addData("Servo Angle", "(%.2f)", linear.getPosition());
             telemetry.addData("Left Stick", "x (%.2f), y (%.2f)", gamepad1.left_stick_x, gamepad1.left_stick_y);
             telemetry.addData("Right Stick","x (%.2f), y (%.2f)", gamepad1.right_stick_x, gamepad1.left_stick_y);
             telemetry.update();

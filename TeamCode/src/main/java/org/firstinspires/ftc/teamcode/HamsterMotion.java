@@ -18,6 +18,7 @@ public class HamsterMotion extends Thread {
     private final DcMotor frontRightDrive;
     private final Gamepad gamepad;
     private final Servo tail;
+    private final Servo linear2;
 
     public enum Direction {
         FORWARD,
@@ -26,11 +27,12 @@ public class HamsterMotion extends Thread {
         LEFT
     }
 
-    public HamsterMotion(DcMotor leftFoot, DcMotor rightFoot, Servo tail, Gamepad gamepad) {
+    public HamsterMotion(DcMotor leftFoot, DcMotor rightFoot, Servo tail, Gamepad gamepad, Servo linear) {
         this.frontLeftDrive = leftFoot;
         this.frontRightDrive = rightFoot;
         this.gamepad = gamepad;
         this.tail = tail;
+        this.linear2 = linear;
     }
 
     double left = 0.58;
@@ -51,6 +53,7 @@ public class HamsterMotion extends Thread {
             double drive = gamepad.left_stick_y;
             double turn = -gamepad.left_stick_x;
             boolean wiggle = gamepad.a;
+            boolean pull = gamepad.b;
 
             leftFootPower = Range.clip(drive - turn, -1.0, 1.0) * PF;
             rightFootPower = Range.clip(drive + turn, -1.0, 1.0) * PF;
@@ -65,6 +68,14 @@ public class HamsterMotion extends Thread {
                         tail.setPosition(left);
                     }
                 }
+            }
+
+            if(gamepad.y) {
+                // move to 0 degrees
+                linear2.setPosition(0);
+            } else if (gamepad.x) {
+                // move to 180 degrees
+                linear2.setPosition(1);
             }
 
             // Send calculated power to wheels
