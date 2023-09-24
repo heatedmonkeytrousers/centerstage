@@ -41,6 +41,7 @@ public class HamsterMotion extends Thread {
     @Override
     public void run() {
         tail.setPosition(left);
+
         long startTime = System.currentTimeMillis();
 
         while (!isInterrupted()) {
@@ -72,10 +73,11 @@ public class HamsterMotion extends Thread {
 
             if(gamepad.y) {
                 // move to 0 degrees
-                linear2.setPosition(0);
-            } else if (gamepad.x) {
+                linear2.setPosition(0.2);
+            }
+            if (gamepad.x) {
                 // move to 180 degrees
-                linear2.setPosition(1);
+                linear2.setPosition(0.7);
             }
 
             // Send calculated power to wheels

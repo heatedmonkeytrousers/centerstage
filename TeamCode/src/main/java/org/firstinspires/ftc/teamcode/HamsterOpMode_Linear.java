@@ -54,6 +54,8 @@ public class HamsterOpMode_Linear extends LinearOpMode {
             telemetry.addData("Servo Angle", "(%.2f)", linear.getPosition());
             telemetry.addData("Left Stick", "x (%.2f), y (%.2f)", gamepad1.left_stick_x, gamepad1.left_stick_y);
             telemetry.addData("Right Stick","x (%.2f), y (%.2f)", gamepad1.right_stick_x, gamepad1.left_stick_y);
+            telemetry.addData("X Pressed", gamepad1.x);
+            telemetry.addData("Y Pressed", gamepad1.y);
             telemetry.update();
         }
     }
