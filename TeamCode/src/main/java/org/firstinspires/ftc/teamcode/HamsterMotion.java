@@ -76,8 +76,8 @@ public class HamsterMotion extends Thread {
                 linear2.setPosition(0.2);
             }
             if (gamepad.x) {
-                // move to 180 degrees
-                linear2.setPosition(0.7);
+                // extends to move claw
+                linear2.setPosition(0.275);
             }
 
             // Send calculated power to wheels
