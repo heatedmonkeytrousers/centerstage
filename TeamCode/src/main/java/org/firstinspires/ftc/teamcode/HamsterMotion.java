@@ -12,13 +12,12 @@ public class HamsterMotion extends Thread {
 
     public static int ROTATE_360 = 3800;
 
-    private static double PF = 1.0;
+    private static double PF = -1.0;
 
     private final DcMotor frontLeftDrive;
     private final DcMotor frontRightDrive;
     private final Gamepad gamepad;
     private final Servo tail;
-    private final Servo linear2;
 
     public enum Direction {
         FORWARD,
@@ -27,12 +26,11 @@ public class HamsterMotion extends Thread {
         LEFT
     }
 
-    public HamsterMotion(DcMotor leftFoot, DcMotor rightFoot, Servo tail, Gamepad gamepad, Servo linear) {
+    public HamsterMotion(DcMotor leftFoot, DcMotor rightFoot, Servo tail, Gamepad gamepad) {
         this.frontLeftDrive = leftFoot;
         this.frontRightDrive = rightFoot;
         this.gamepad = gamepad;
         this.tail = tail;
-        this.linear2 = linear;
     }
 
     double left = 0.58;
@@ -52,12 +50,11 @@ public class HamsterMotion extends Thread {
             // POV Mode uses left stick to go forward and strafe, and right stick to turn.
             // - This uses basic math to combine motions and is easier to drive straight.
             double drive = gamepad.left_stick_y;
-            double turn = -gamepad.left_stick_x;
+            double turn = -gamepad.right_stick_x;
             boolean wiggle = gamepad.a;
-            boolean pull = gamepad.b;
 
-            leftFootPower = Range.clip(drive - turn, -1.0, 1.0) * PF;
-            rightFootPower = Range.clip(drive + turn, -1.0, 1.0) * PF;
+            leftFootPower = Range.clip(drive + turn, -1.0, 2.0) * PF;
+            rightFootPower = Range.clip(drive - turn, -1.0, 1.0) * PF;
 
             if (wiggle) {
                 if(System.currentTimeMillis()-startTime > 200) {
@@ -69,15 +66,6 @@ public class HamsterMotion extends Thread {
                         tail.setPosition(left);
                     }
                 }
-            }
-
-            if(gamepad.y) {
-                // move to 0 degrees
-                linear2.setPosition(0.2);
-            }
-            if (gamepad.x) {
-                // extends to move claw
-                linear2.setPosition(0.275);
             }
 
             // Send calculated power to wheels

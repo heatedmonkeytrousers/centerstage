@@ -37,7 +37,7 @@ public class HamsterOpMode_Linear extends LinearOpMode {
         tail.setDirection(Servo.Direction.FORWARD);
         linear.setDirection(Servo.Direction.FORWARD);
 
-        HamsterMotion hamsterMotion = new HamsterMotion(leftFoot, rightFoot, tail, gamepad1, linear);
+        HamsterMotion hamsterMotion = new HamsterMotion(leftFoot, rightFoot, tail, gamepad1);
 
         // Wait for driver to press play
         waitForStart();
