@@ -21,6 +21,8 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
+
 import org.opencv.calib3d.Calib3d;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
@@ -29,6 +31,7 @@ import org.opencv.core.MatOfPoint2f;
 import org.opencv.core.MatOfPoint3f;
 import org.opencv.core.Point;
 import org.opencv.core.Point3;
+import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 import org.openftc.apriltag.AprilTagDetection;
@@ -58,6 +61,8 @@ class AprilTagDetectionPipeline extends OpenCvPipeline
     double fy;
     double cx;
     double cy;
+
+    protected Mat region1_Cb, region2_Cb, region3_Cb;
 
     // UNITS ARE METERS
     double tagsize;
@@ -131,6 +136,67 @@ class AprilTagDetectionPipeline extends OpenCvPipeline
             drawAxisMarker(input, tagsizeY/2.0, 6, pose.rvec, pose.tvec, cameraMatrix);
             draw3dCubeMarker(input, tagsizeX, tagsizeX, tagsizeY, 5, pose.rvec, pose.tvec, cameraMatrix);
         }
+
+        final Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(0,0);
+        final Point REGION2_TOPLEFT_ANCHOR_POINT = new Point(265,0);
+        final Point REGION3_TOPLEFT_ANCHOR_POINT = new Point(265*2,0);
+        final int REGION_WIDTH = 265;
+        final int REGION_HEIGHT = 430;
+        Mat Cb = new Mat();
+
+        final Scalar BLUE = new Scalar(0, 0, 255);
+
+        Point region1_pointA = new Point(
+                REGION1_TOPLEFT_ANCHOR_POINT.x,
+                REGION1_TOPLEFT_ANCHOR_POINT.y);
+        Point region1_pointB = new Point(
+                REGION1_TOPLEFT_ANCHOR_POINT.x + REGION_WIDTH,
+                REGION1_TOPLEFT_ANCHOR_POINT.y + REGION_HEIGHT);
+        Point region2_pointA = new Point(
+                REGION2_TOPLEFT_ANCHOR_POINT.x,
+                REGION2_TOPLEFT_ANCHOR_POINT.y);
+        Point region2_pointB = new Point(
+                REGION2_TOPLEFT_ANCHOR_POINT.x + REGION_WIDTH,
+                REGION2_TOPLEFT_ANCHOR_POINT.y + REGION_HEIGHT);
+        Point region3_pointA = new Point(
+                REGION3_TOPLEFT_ANCHOR_POINT.x,
+                REGION3_TOPLEFT_ANCHOR_POINT.y);
+        Point region3_pointB = new Point(
+                REGION3_TOPLEFT_ANCHOR_POINT.x + REGION_WIDTH,
+                REGION3_TOPLEFT_ANCHOR_POINT.y + REGION_HEIGHT);
+
+        /*
+         * Draw a rectangle showing sample region 1 on the screen.
+         * Simply a visual aid. Serves no functional purpose.
+         */
+        Imgproc.rectangle(
+                input, // Buffer to draw on
+                region1_pointA, // First point which defines the rectangle
+                region1_pointB, // Second point which defines the rectangle
+                BLUE, // The color the rectangle is drawn in
+                2); // Thickness of the rectangle lines
+
+        /*
+         * Draw a rectangle showing sample region 2 on the screen.
+         * Simply a visual aid. Serves no functional purpose.
+         */
+        Imgproc.rectangle(
+                input, // Buffer to draw on
+                region2_pointA, // First point which defines the rectangle
+                region2_pointB, // Second point which defines the rectangle
+                BLUE, // The color the rectangle is drawn in
+                2); // Thickness of the rectangle lines
+
+        /*
+         * Draw a rectangle showing sample region 3 on the screen.
+         * Simply a visual aid. Serves no functional purpose.
+         */
+        Imgproc.rectangle(
+                input, // Buffer to draw on
+                region3_pointA, // First point which defines the rectangle
+                region3_pointB, // Second point which defines the rectangle
+                BLUE, // The color the rectangle is drawn in
+                2); // Thickness of the rectangle lines
 
         return input;
     }
