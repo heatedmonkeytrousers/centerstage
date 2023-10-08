@@ -205,15 +205,16 @@ public class CustomObjectDetection extends LinearOpMode
     void tagToTelemetry(AprilTagDetection detection)
     {
         Orientation rot = Orientation.getOrientation(detection.pose.R, AxesReference.INTRINSIC, AxesOrder.YXZ, AngleUnit.DEGREES);
+        double positionX = detection.pose.x * FEET_PER_METER;
 
         telemetry.addLine(String.format("\nDetected tag ID=%d", detection.id));
         telemetry.addLine(String.format("Translation X: %.2f feet", detection.pose.x * FEET_PER_METER));
         telemetry.addLine(String.format("Translation Y: %.2f feet", detection.pose.y * FEET_PER_METER));
         telemetry.addLine(String.format("Translation Z: %.2f feet", detection.pose.z * FEET_PER_METER));
 
-        if(detection.pose.x * FEET_PER_METER < 0.5) {
+        if(positionX < -0.4) {
             telemetry.addLine("Left");
-        } else if (detection.pose.x * FEET_PER_METER > -0.5 && detection.pose.x * FEET_PER_METER < 0.5) {
+        } else if (positionX > -0.4 && positionX < 0.2) {
             telemetry.addLine("Middle");
         } else {
             telemetry.addLine("Right");
