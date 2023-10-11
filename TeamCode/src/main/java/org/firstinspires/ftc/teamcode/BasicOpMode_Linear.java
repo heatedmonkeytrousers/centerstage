@@ -37,6 +37,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
+import org.checkerframework.checker.units.qual.A;
 import org.checkerframework.checker.units.qual.C;
 
 
@@ -63,8 +64,8 @@ public class BasicOpMode_Linear extends LinearOpMode {
     private DcMotor frontRightDrive = null;
     private DcMotor rearLeftDrive = null;
     private DcMotor rearRightDrive = null;
-    private DcMotor elevatorDrive = null;
-    private Servo clawServo = null;
+    private DcMotor armDrive = null;
+    private DcMotor shoulderDrive = null;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -78,8 +79,8 @@ public class BasicOpMode_Linear extends LinearOpMode {
         frontRightDrive = hardwareMap.get(DcMotor.class, "frontRightDrive"); //ch2
         rearLeftDrive = hardwareMap.get(DcMotor.class, "rearLeftDrive"); //ch1
         rearRightDrive = hardwareMap.get(DcMotor.class, "rearRightDrive"); //ch0
-        elevatorDrive = hardwareMap.get(DcMotor.class, "elevatorDrive"); //ch3
-        clawServo = hardwareMap.get(Servo.class, "claw"); //eh0
+        armDrive = hardwareMap.get(DcMotor.class, "armDrive"); //ch3
+        shoulderDrive = hardwareMap.get(DcMotor.class, "shoulderDrive"); //
 
 
         // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
@@ -89,42 +90,56 @@ public class BasicOpMode_Linear extends LinearOpMode {
         frontRightDrive.setDirection(DcMotor.Direction.REVERSE);
         rearLeftDrive.setDirection(DcMotor.Direction.FORWARD);
         rearRightDrive.setDirection(DcMotor.Direction.REVERSE);
-        elevatorDrive.setDirection(DcMotorSimple.Direction.REVERSE);
-        clawServo.setDirection(Servo.Direction.FORWARD);
+        armDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+        shoulderDrive.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        elevatorDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        elevatorDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        armDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        armDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        shoulderDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        shoulderDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         // Wait for the game to start (driver presses PLAY)
-        elevatorDrive.setTargetPosition(0);
+        armDrive.setTargetPosition(0);
+        shoulderDrive.setTargetPosition(0);
 
         waitForStart();
         runtime.reset();
 
         //Launch Threads
         Motion motion = new Motion(frontLeftDrive, frontRightDrive, rearLeftDrive, rearRightDrive, gamepad1);
+        Arm arm = new Arm(armDrive, gamepad1);
+        Shoulder shoulder = new Shoulder(shoulderDrive, gamepad1);
+
         motion.start();
+        arm.start();
+        shoulder.start();
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
 
             // Show the elapsed game time and wheel power.
-            telemetry.addData("Servo Angle", "(%.2f)", clawServo.getPosition());
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("Left Stick", "x (%.2f), y (%.2f)", gamepad1.left_stick_x, gamepad1.left_stick_y);
             telemetry.addData("Right Stick", "x (%.2f), y (%.2f)", gamepad1.right_stick_x, gamepad1.right_stick_y);
-            telemetry.addData("Elevator Mode", elevatorDrive.getMode());
+            telemetry.addData("Arm Mode", armDrive.getMode());
+            telemetry.addData("Arm Count", "(%7d)", arm.getArmCounts());
+            telemetry.addData("Shoulder Count", "(%7d)", shoulder.getShoulderCounts());
             telemetry.addData("Front Left Motor", "(%7d)", frontLeftDrive.getCurrentPosition());
             telemetry.addData("Front Right Motor", "(%7d)", frontRightDrive.getCurrentPosition());
             telemetry.addData("Rear Left Motor", "(%7d)", rearLeftDrive.getCurrentPosition());
             telemetry.addData("Rear Right Motor", "(%7d)", rearRightDrive.getCurrentPosition());
-            telemetry.addData("Back Clicked", gamepad1.back);
             telemetry.update();
         }
 
         motion.interrupt();
+        arm.interrupt();
+        shoulder.interrupt();
         try {
             motion.join();
+            arm.join();
+            shoulder.join();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
