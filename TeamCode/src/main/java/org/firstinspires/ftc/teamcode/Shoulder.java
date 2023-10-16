@@ -31,12 +31,24 @@ public class Shoulder extends Thread {
     public void run() {
         while (!isInterrupted()) {
             totalCounts = shoulderDrive.getCurrentPosition();
-
-            if (gamepad.y) {
-                setPosition(SHOULDER_SPEED, 100);
-
-            } else if (gamepad.x) {
-                setPosition(SHOULDER_SPEED, 0);
+                if (gamepad.left_bumper) {
+                    setPosition(SHOULDER_SPEED, shoulderDrive.getCurrentPosition() + 100);
+                    //Lower manually
+                } else if (gamepad.right_bumper) {
+                    setPosition(SHOULDER_SPEED, shoulderDrive.getCurrentPosition() - 100);
+                    //Raise manually
+                } else if (gamepad.y) {
+                    setPosition(SHOULDER_SPEED, -4680);
+                    //Close against the board
+                } else if (gamepad.x) {
+                    setPosition(SHOULDER_SPEED, -5630);
+                    //far against the board
+                } else if (gamepad.b) {
+                    setPosition(SHOULDER_SPEED, -3388);
+                    //90 degree angle
+                } else if (gamepad.a) {
+                    setPosition(SHOULDER_SPEED, 0);
+                    //Reset position
             }
         }
     }

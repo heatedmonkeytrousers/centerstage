@@ -79,8 +79,8 @@ public class BasicOpMode_Linear extends LinearOpMode {
         frontRightDrive = hardwareMap.get(DcMotor.class, "frontRightDrive"); //ch2
         rearLeftDrive = hardwareMap.get(DcMotor.class, "rearLeftDrive"); //ch1
         rearRightDrive = hardwareMap.get(DcMotor.class, "rearRightDrive"); //ch0
-        armDrive = hardwareMap.get(DcMotor.class, "armDrive"); //ch3
-        shoulderDrive = hardwareMap.get(DcMotor.class, "shoulderDrive"); //
+        armDrive = hardwareMap.get(DcMotor.class, "armDrive"); //ch1
+        shoulderDrive = hardwareMap.get(DcMotor.class, "shoulderDrive"); //ch0
 
 
         // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
