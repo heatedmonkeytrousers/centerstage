@@ -146,9 +146,4 @@ public class BasicOpMode_Linear extends LinearOpMode {
     }
 }
 
-//Start
-//B button: -3941
-//X button: -6647
-//Y button: -9600
-
 

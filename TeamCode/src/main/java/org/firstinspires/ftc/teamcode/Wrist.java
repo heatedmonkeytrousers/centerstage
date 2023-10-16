@@ -8,10 +8,7 @@ public class Wrist {
     //servoAngle when facing up = 180-theta
     //servoAngle when facing board = 300-theta
 
-    public static double WRIST_SPEED = 1;
-    public static double MIN_WRIST_SPEED = -1;
-    public static double MAX_WRIST_SPEED = 1;
-
+    /*
     private Servo wrist;
 
     public Wrist(Servo wrist) {
@@ -20,5 +17,9 @@ public class Wrist {
 
     private void levelWrist(double theta) {
         double servoAngle = 180 - theta;
+        wrist.setPosition(servoAngle);
     }
+     */
+
+
 }

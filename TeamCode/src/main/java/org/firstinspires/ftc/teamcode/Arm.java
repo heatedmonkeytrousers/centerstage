@@ -34,9 +34,14 @@ public class Arm extends Thread{
         while (!isInterrupted()) {
             totalCounts = armDrive.getCurrentPosition();
 
-            if (gamepad.a) {
-                setPosition(ARM_SPEED, 100);
-            } else if (gamepad.b) {
+            if (gamepad.dpad_left) {
+                setPosition(ARM_SPEED, armDrive.getCurrentPosition()-100);
+            } else if (gamepad.dpad_right) {
+                setPosition(ARM_SPEED, armDrive.getCurrentPosition() +100);
+            } else if (gamepad.dpad_up) {
+                //Fully out
+                setPosition(ARM_SPEED, 5645);
+            } else if (gamepad.dpad_down) {
                 setPosition(ARM_SPEED, 0);
             }
         }
