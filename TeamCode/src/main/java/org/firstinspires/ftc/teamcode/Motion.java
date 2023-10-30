@@ -119,7 +119,7 @@ public class Motion extends Thread {
         power = Range.clip(Math.abs(power), 0, 1.0);
 
         // Get the currentModes
-        DcMotor.RunMode frontLeftMode = frontLeftDrive.getMode();
+        DcMotor.RunMode frontLieftMode = frontLeftDrive.getMode();
         DcMotor.RunMode frontRightMode = frontRightDrive.getMode();
         DcMotor.RunMode rearRightMode = rearRightDrive.getMode();
         DcMotor.RunMode rearLeftMode = rearLeftDrive.getMode();

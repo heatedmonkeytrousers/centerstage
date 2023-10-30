@@ -79,7 +79,7 @@ public class BasicOpMode_Linear extends LinearOpMode {
         frontRightDrive = hardwareMap.get(DcMotor.class, "frontRightDrive"); //ch2
         rearLeftDrive = hardwareMap.get(DcMotor.class, "rearLeftDrive"); //ch1
         rearRightDrive = hardwareMap.get(DcMotor.class, "rearRightDrive"); //ch0
-        armDrive = hardwareMap.get(DcMotor.class, "armDrive"); //ch1
+        armDrive = hardwareMap.get(DcMotor.class, "armDrive"); //ch1 expansion hub
         shoulderDrive = hardwareMap.get(DcMotor.class, "shoulderDrive"); //ch0
 
 
@@ -109,8 +109,9 @@ public class BasicOpMode_Linear extends LinearOpMode {
 
         //Launch Threads
         Motion motion = new Motion(frontLeftDrive, frontRightDrive, rearLeftDrive, rearRightDrive, gamepad1);
-        Arm arm = new Arm(armDrive, gamepad1);
-        Shoulder shoulder = new Shoulder(shoulderDrive, gamepad1);
+        Arm arm = new Arm(armDrive, gamepad2);
+        Shoulder shoulder = new Shoulder(shoulderDrive, arm, gamepad2);
+        arm.setShoulder(shoulder);
 
         motion.start();
         arm.start();
@@ -124,6 +125,7 @@ public class BasicOpMode_Linear extends LinearOpMode {
             telemetry.addData("Left Stick", "x (%.2f), y (%.2f)", gamepad1.left_stick_x, gamepad1.left_stick_y);
             telemetry.addData("Right Stick", "x (%.2f), y (%.2f)", gamepad1.right_stick_x, gamepad1.right_stick_y);
             telemetry.addData("Arm Mode", armDrive.getMode());
+            telemetry.addData("Shoulder Ratio", shoulder.getShoulderRatio());
             telemetry.addData("Arm Count", "(%7d)", arm.getArmCounts());
             telemetry.addData("Shoulder Count", "(%7d)", shoulder.getShoulderCounts());
             telemetry.addData("Front Left Motor", "(%7d)", frontLeftDrive.getCurrentPosition());
