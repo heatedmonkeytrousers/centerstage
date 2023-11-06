@@ -65,6 +65,7 @@ public class BasicOpMode_Linear extends LinearOpMode {
     private DcMotor rearRightDrive = null;
     private DcMotor armDrive = null;
     private DcMotor shoulderDrive = null;
+    private Servo wristServo = null;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -80,7 +81,7 @@ public class BasicOpMode_Linear extends LinearOpMode {
         rearRightDrive = hardwareMap.get(DcMotor.class, "rearRightDrive"); //ch0
         armDrive = hardwareMap.get(DcMotor.class, "armDrive"); //ch1 expansion hub
         shoulderDrive = hardwareMap.get(DcMotor.class, "shoulderDrive"); //ch0
-
+        wristServo = hardwareMap.get(Servo.class, "wrist"); //ch0 expansion hub
 
         // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
         // Pushing the left stick forward MUST make robot go forward. So adjust these two lines based on your first test drive.
@@ -91,6 +92,7 @@ public class BasicOpMode_Linear extends LinearOpMode {
         rearRightDrive.setDirection(DcMotor.Direction.REVERSE);
         armDrive.setDirection(DcMotorSimple.Direction.REVERSE);
         shoulderDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+        wristServo.setDirection(Servo.Direction.FORWARD);
 
 
         armDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -110,11 +112,14 @@ public class BasicOpMode_Linear extends LinearOpMode {
         Motion motion = new Motion(frontLeftDrive, frontRightDrive, rearLeftDrive, rearRightDrive, gamepad1);
         Arm arm = new Arm(armDrive, gamepad2);
         Shoulder shoulder = new Shoulder(shoulderDrive, arm, gamepad2);
+        Wrist wrist = new Wrist(wristServo, gamepad2);
+
         arm.setShoulder(shoulder);
 
         motion.start();
         arm.start();
         shoulder.start();
+        wrist.start();
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
@@ -126,6 +131,7 @@ public class BasicOpMode_Linear extends LinearOpMode {
             telemetry.addData("Arm Mode", armDrive.getMode());
             telemetry.addData("Shoulder Ratio", shoulder.getShoulderRatio());
             telemetry.addData("Arm Count", "(%7d)", arm.getArmCounts());
+            telemetry.addData("Wrist Count", "(%7f)", wrist.getWristCounts());
             telemetry.addData("Shoulder Count", "(%7d)", shoulder.getShoulderCounts());
             telemetry.addData("Front Left Motor", "(%7d)", frontLeftDrive.getCurrentPosition());
             telemetry.addData("Front Right Motor", "(%7d)", frontRightDrive.getCurrentPosition());
@@ -137,10 +143,12 @@ public class BasicOpMode_Linear extends LinearOpMode {
         motion.interrupt();
         arm.interrupt();
         shoulder.interrupt();
+        wrist.interrupt();
         try {
             motion.join();
             arm.join();
             shoulder.join();
+            wrist.join();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
