@@ -13,6 +13,8 @@ public class Arm extends Thread{
     private static int MIN_POS = 0;
     private static int MAX_POS = 1550;
 
+    private static int SHOULDER_MAX;
+
     private DcMotor armDrive;
     private Shoulder shoulder;
     private int totalCounts;
@@ -51,12 +53,12 @@ public class Arm extends Thread{
         while (!isInterrupted()) {
 
             if (shoulder != null) {
-                MAX_POS = (int) Math.round(shoulder.getShoulderRatio());
+                SHOULDER_MAX = (int) Math.round(shoulder.getShoulderRatio());
             } else {
-                MAX_POS = 0;
+                SHOULDER_MAX = 0;
             }
             totalCounts = armDrive.getCurrentPosition();
-
+            /*
             if (gamepad.dpad_left) {
                 //Manual down
                 int pos = armDrive.getCurrentPosition() - ARM_MANUAL;
@@ -68,9 +70,11 @@ public class Arm extends Thread{
 
                 setPosition(ARM_SPEED, Range.clip(pos, MIN_POS, MAX_POS));
 
-            } else if (gamepad.dpad_up) {
+} else
+             */
+            if (gamepad.dpad_up) {
                 //Fully out
-                setPosition(ARM_SPEED, MAX_POS);
+                setPosition(ARM_SPEED, MAX_POS * SHOULDER_MAX);
 
             } else if (gamepad.dpad_down) {
                 //Fully in

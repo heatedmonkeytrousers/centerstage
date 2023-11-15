@@ -41,18 +41,26 @@ public class Wrist extends Thread{
             totalCounts = wristServo.getPosition();
 
             //Fine tuning for testing
-            if (gamepad.left_trigger > 0) {
+
+            if (gamepad.back) {
                 wristServo.setPosition(wristServo.getPosition() - 0.001);
-            } else if (gamepad.right_trigger > 0) {
+            } else if (gamepad.start) {
                 wristServo.setPosition(wristServo.getPosition() + 0.001);
 
-            } else if (gamepad.start) {
+        }
+            /*
+            else if (gamepad.start) {
                 groundWrist();
             } else if (gamepad.back) {
                 safeWrist();
             } else if (gamepad.left_stick_button) {
                 scoringWrist();
             }
+
+             */
+
+
+
         }
     }
 

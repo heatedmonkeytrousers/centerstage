@@ -66,6 +66,8 @@ public class BasicOpMode_Linear extends LinearOpMode {
     private DcMotor armDrive = null;
     private DcMotor shoulderDrive = null;
     private Servo wristServo = null;
+    private Servo clawServo1 = null;
+    private Servo clawServo2 = null;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -82,6 +84,8 @@ public class BasicOpMode_Linear extends LinearOpMode {
         armDrive = hardwareMap.get(DcMotor.class, "armDrive"); //ch1 expansion hub
         shoulderDrive = hardwareMap.get(DcMotor.class, "shoulderDrive"); //ch0
         wristServo = hardwareMap.get(Servo.class, "wrist"); //ch0 expansion hub
+        clawServo1 = hardwareMap.get(Servo.class, "clawServo1"); //ch1 expansion hub
+        clawServo2 = hardwareMap.get(Servo.class, "clawServo2"); //ch2 expansion hub
 
         // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
         // Pushing the left stick forward MUST make robot go forward. So adjust these two lines based on your first test drive.
@@ -93,7 +97,8 @@ public class BasicOpMode_Linear extends LinearOpMode {
         armDrive.setDirection(DcMotorSimple.Direction.REVERSE);
         shoulderDrive.setDirection(DcMotorSimple.Direction.REVERSE);
         wristServo.setDirection(Servo.Direction.FORWARD);
-
+        clawServo1.setDirection(Servo.Direction.FORWARD);
+        clawServo2.setDirection(Servo.Direction.FORWARD);
 
         armDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         armDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -113,6 +118,7 @@ public class BasicOpMode_Linear extends LinearOpMode {
         Arm arm = new Arm(armDrive, gamepad2);
         Shoulder shoulder = new Shoulder(shoulderDrive, arm, gamepad2);
         Wrist wrist = new Wrist(wristServo, gamepad2);
+        Claw claw = new Claw(gamepad2, clawServo1, clawServo2, shoulder);
 
         arm.setShoulder(shoulder);
 
@@ -120,6 +126,7 @@ public class BasicOpMode_Linear extends LinearOpMode {
         arm.start();
         shoulder.start();
         wrist.start();
+        claw.start();
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
@@ -133,6 +140,8 @@ public class BasicOpMode_Linear extends LinearOpMode {
             telemetry.addData("Arm Count", "(%7d)", arm.getArmCounts());
             telemetry.addData("Wrist Count", "(%7f)", wrist.getWristCounts());
             telemetry.addData("Shoulder Count", "(%7d)", shoulder.getShoulderCounts());
+            telemetry.addData("Claw 1 Count", "(%.2f)", claw.getClaw1Counts());
+            telemetry.addData("Claw 2 Count", "(%.2f)", claw.getClaw2Counts());
             telemetry.addData("Front Left Motor", "(%7d)", frontLeftDrive.getCurrentPosition());
             telemetry.addData("Front Right Motor", "(%7d)", frontRightDrive.getCurrentPosition());
             telemetry.addData("Rear Left Motor", "(%7d)", rearLeftDrive.getCurrentPosition());
@@ -144,11 +153,13 @@ public class BasicOpMode_Linear extends LinearOpMode {
         arm.interrupt();
         shoulder.interrupt();
         wrist.interrupt();
+        claw.interrupt();
         try {
             motion.join();
             arm.join();
             shoulder.join();
             wrist.join();
+            claw.join();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

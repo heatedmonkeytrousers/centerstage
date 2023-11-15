@@ -7,35 +7,54 @@ import com.qualcomm.robotcore.util.Range;
 
 public class Claw extends Thread {
 
-    private final Servo linear2;
+    private final Servo clawServo1;
+    private final Servo clawServo2;
     private final Gamepad gamepad;
+    private final Shoulder shoulder;
+    private double totalCountsOne;
+    private double totalCountsTwo;
 
-    public enum Direction {
-        FORWARD,
-        RIGHT,
-        BACKWARD,
-        LEFT
-    }
+    private static double OPEN = 0.57;
+    private static double CLOSE = 0.2;
 
-    public Claw(Gamepad gamepad, Servo linear) {
+    public static int STRAIGHT_UP = -1370;
+
+    public Claw(Gamepad gamepad, Servo clawServo1, Servo clawServo2, Shoulder shoulder) {
         this.gamepad = gamepad;
-        this.linear2 = linear;
+        this.clawServo1 = clawServo1;
+        this.clawServo2 = clawServo2;
+        this.shoulder = shoulder;
     }
 
-    double left = 0.58;
-    double right = 0.3;
+    protected double getClaw1Counts() {
+        return totalCountsOne;
+    }
+    protected double getClaw2Counts() {
+        return totalCountsTwo;
+    }
 
     @Override
     public void run() {
+        while (!isInterrupted()) {
+            totalCountsOne = clawServo1.getPosition();
+            totalCountsTwo = clawServo2.getPosition();
 
-            if(gamepad.y) {
-                // move to 0 degrees
-                linear2.setPosition(0.2);
-            }
-            if (gamepad.x) {
-                // extends to move claw
-                linear2.setPosition(0.275);
-            }
+                if (gamepad.left_bumper) {
+                    //clawServo1.setPosition(clawServo1.getPosition() + 0.001);
+                    clawServo1.setPosition(OPEN);
+                } else if (gamepad.left_trigger > 0) {
+                    clawServo1.setPosition(CLOSE);
+                    //clawServo1.setPosition(clawServo1.getPosition() - 0.001);
+                }
+
+                if (gamepad.right_bumper) {
+                    clawServo2.setPosition(OPEN);
+                    //clawServo2.setPosition(clawServo2.getPosition() + 0.001);
+                } else if (gamepad.right_trigger > 0) {
+                    clawServo2.setPosition(CLOSE);
+                    //clawServo2.setPosition(clawServo2.getPosition() - 0.001);
+                }
 
         }
+    }
     }
