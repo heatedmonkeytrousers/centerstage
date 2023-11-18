@@ -6,8 +6,8 @@ import com.qualcomm.robotcore.util.Range;
 
 public class Shoulder extends Thread {
     //Variables for shoulder speed
-    public static double SHOULDER_SPEED = 1;
-    public static double MIN_SHOULDER_SPEED = -1;
+    public static double SHOULDER_SPEED = 0.5;
+    public static double MIN_SHOULDER_SPEED = -0.5;
     public static double MAX_SHOULDER_SPEED = 1;
 
     //Variables for pre-set positions
@@ -67,6 +67,10 @@ public class Shoulder extends Thread {
             //Returns 1.0 if the arm is outside the prior two ranges
             return 1.0;
         }
+    }
+
+    public double shoulderAngle() {
+        return (double) shoulderDrive.getCurrentPosition() / MAX_POS_ARM_IN;
     }
 
     /**

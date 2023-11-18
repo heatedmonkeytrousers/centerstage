@@ -117,7 +117,7 @@ public class BasicOpMode_Linear extends LinearOpMode {
         Motion motion = new Motion(frontLeftDrive, frontRightDrive, rearLeftDrive, rearRightDrive, gamepad1);
         Arm arm = new Arm(armDrive, gamepad2);
         Shoulder shoulder = new Shoulder(shoulderDrive, arm, gamepad2);
-        Wrist wrist = new Wrist(wristServo, gamepad2);
+        Wrist wrist = new Wrist(wristServo, shoulder, gamepad2);
         Claw claw = new Claw(gamepad2, clawServo1, clawServo2, shoulder);
 
         arm.setShoulder(shoulder);

@@ -58,21 +58,19 @@ public class Arm extends Thread{
                 SHOULDER_MAX = 0;
             }
             totalCounts = armDrive.getCurrentPosition();
-            /*
+
             if (gamepad.dpad_left) {
                 //Manual down
                 int pos = armDrive.getCurrentPosition() - ARM_MANUAL;
-                setPosition(ARM_SPEED, Range.clip(pos, MIN_POS, MAX_POS));
+                setPosition(ARM_SPEED, Range.clip(pos, MIN_POS, MAX_POS * SHOULDER_MAX));
 
             } else if (gamepad.dpad_right) {
                 //Manual up
                 int pos = armDrive.getCurrentPosition() + ARM_MANUAL;
 
-                setPosition(ARM_SPEED, Range.clip(pos, MIN_POS, MAX_POS));
+                setPosition(ARM_SPEED, Range.clip(pos, MIN_POS, MAX_POS * SHOULDER_MAX));
 
-} else
-             */
-            if (gamepad.dpad_up) {
+            } else if (gamepad.dpad_up) {
                 //Fully out
                 setPosition(ARM_SPEED, MAX_POS * SHOULDER_MAX);
 
