@@ -23,6 +23,8 @@ public class Wrist extends Thread{
     private static double MAX_ARM_IN = 0.8;
     private static double MIN_ARM_IN = 0.35;
 
+    private double delta = 0;
+
     public Wrist(Servo wristServo, Shoulder shoulder, Gamepad gamepad) {
         this.wristServo = wristServo;
         this.shoulder = shoulder;
@@ -39,13 +41,14 @@ public class Wrist extends Thread{
             totalCounts = wristServo.getPosition();
 
             //Multiplies the shoulder's ratio and the range of wrist angles and sets the wrist's position to it
-            wristServo.setPosition(shoulder.shoulderAngle() * (MAX_ARM_IN - MIN_ARM_IN) + MIN_ARM_IN);
+            double pos = (shoulder.shoulderAngle() * (MAX_ARM_IN - MIN_ARM_IN) + MIN_ARM_IN) + delta;
+            wristServo.setPosition(pos);
 
             //Fine tuning for testing
             if (gamepad.back) {
-                wristServo.setPosition(Range.clip(wristServo.getPosition() - 0.001, MIN_ARM_IN, MAX_ARM_IN));
+                delta -= 0.01;
             } else if (gamepad.start) {
-                wristServo.setPosition(Range.clip(wristServo.getPosition() + 0.001, MIN_ARM_IN, MAX_ARM_IN));
+                delta += 0.01;
 
         }
 

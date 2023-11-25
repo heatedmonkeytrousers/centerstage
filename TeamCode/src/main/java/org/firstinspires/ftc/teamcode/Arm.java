@@ -11,41 +11,51 @@ public class Arm extends Thread{
     private static int ARM_MANUAL = 100;
 
     private static int MIN_POS = 0;
-    private static int MAX_POS = 1550;
+    private static int MAX_POS = 2180;   //Originally 1550
 
     private static int SHOULDER_MAX;
 
-    private DcMotor armDrive;
+    private DcMotor armDrive1;
+    private DcMotor armDrive2;
     private Shoulder shoulder;
-    private int totalCounts;
+    private int totalCounts1;
+    private int totalCounts2;
     private Gamepad gamepad;
 
 
 
-    public Arm(DcMotor armDrive, Gamepad gamepad) {
-        this.armDrive = armDrive;
+    public Arm(DcMotor armDrive1, DcMotor armDrive2, Gamepad gamepad) {
+        this.armDrive1 = armDrive1;
+        this.armDrive2 = armDrive2;
         this.gamepad = gamepad;
+        this.armDrive1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        this.armDrive2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
     public void setShoulder(Shoulder shoulder) {
         this.shoulder = shoulder;
     }
 
-    protected int getArmCounts() {
-        return totalCounts;
+    protected int getArmCounts1() {
+        return totalCounts1;
+    }
+
+    protected int getArmCounts2() {
+        return totalCounts2;
     }
 
     /**
      * Gets the ratio from 0 to 1 inclusive of how far the arm is extended
      * @return [0, 1]
      */
-    public double getArmRatio() {return Range.clip((double) totalCounts / (double) MAX_POS, 0.0, 1.0);}
+    public double getArmRatio() {return Range.clip((double) totalCounts1 / (double) MAX_POS, 0.0, 1.0);}
 
     private void setPosition(double power, int position) {
         power = Range.clip(power, MIN_ARM_SPEED, MAX_ARM_SPEED);
-        armDrive.setTargetPosition(position);
-        armDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        armDrive.setPower(power);
+        armDrive1.setPower(power);
+        armDrive2.setPower(power);
+        armDrive2.setTargetPosition(position);
+        armDrive1.setTargetPosition(position);
     }
 
     @Override
@@ -57,18 +67,21 @@ public class Arm extends Thread{
             } else {
                 SHOULDER_MAX = 0;
             }
-            totalCounts = armDrive.getCurrentPosition();
+            totalCounts1 = armDrive1.getCurrentPosition();
+            totalCounts2 = armDrive1.getCurrentPosition();
 
-            if (gamepad.dpad_left) {
+           if (gamepad.dpad_left) {
                 //Manual down
-                int pos = armDrive.getCurrentPosition() - ARM_MANUAL;
-                setPosition(ARM_SPEED, Range.clip(pos, MIN_POS, MAX_POS * SHOULDER_MAX));
+                int pos = armDrive1.getCurrentPosition() - ARM_MANUAL;
+               setPosition(ARM_SPEED, pos);
+                //setPosition(ARM_SPEED, Range.clip(pos, MIN_POS, MAX_POS * SHOULDER_MAX));
 
-            } else if (gamepad.dpad_right) {
+            }
+            else if (gamepad.dpad_right) {
                 //Manual up
-                int pos = armDrive.getCurrentPosition() + ARM_MANUAL;
-
-                setPosition(ARM_SPEED, Range.clip(pos, MIN_POS, MAX_POS * SHOULDER_MAX));
+                int pos = armDrive1.getCurrentPosition() + ARM_MANUAL;
+               setPosition(ARM_SPEED, pos);
+                //setPosition(ARM_SPEED, Range.clip(pos, MIN_POS, MAX_POS * SHOULDER_MAX));
 
             } else if (gamepad.dpad_up) {
                 //Fully out

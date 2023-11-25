@@ -98,17 +98,19 @@ public class Shoulder extends Thread {
             //Sets the max pos to an int value based on how far the arm is out
             MAX_POS = (int) Math.round(arm.getArmRatio() * (MAX_POS_ARM_OUT-MAX_POS_ARM_IN) + MAX_POS_ARM_IN);
                 /*
-                if (gamepad.back) {
+                if (gamepad.dpad_left) {
                     int pos = shoulderDrive.getCurrentPosition() + SHOULDER_MANUAL;
                     setPosition(SHOULDER_SPEED, Range.clip(pos, MAX_POS, MIN_POS));
                     //Lower manually
-                } else if (gamepad.start) {
+                } else if (gamepad.dpad_right) {
                     int pos = shoulderDrive.getCurrentPosition() -SHOULDER_MANUAL;
                     setPosition(SHOULDER_SPEED, Range.clip(pos, MAX_POS, MIN_POS));
                     //Raise manually
                     }
 
                  */
+
+
                 if (gamepad.y) {
                     setPosition(SHOULDER_SPEED, STRAIGHT_UP);
                     //180 degree angle

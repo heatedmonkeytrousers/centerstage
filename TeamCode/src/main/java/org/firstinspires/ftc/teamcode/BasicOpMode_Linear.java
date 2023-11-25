@@ -63,7 +63,8 @@ public class BasicOpMode_Linear extends LinearOpMode {
     private DcMotor frontRightDrive = null;
     private DcMotor rearLeftDrive = null;
     private DcMotor rearRightDrive = null;
-    private DcMotor armDrive = null;
+    private DcMotor armDrive1 = null;
+    private DcMotor armDrive2 = null;
     private DcMotor shoulderDrive = null;
     private Servo wristServo = null;
     private Servo clawServo1 = null;
@@ -81,7 +82,8 @@ public class BasicOpMode_Linear extends LinearOpMode {
         frontRightDrive = hardwareMap.get(DcMotor.class, "frontRightDrive"); //ch2
         rearLeftDrive = hardwareMap.get(DcMotor.class, "rearLeftDrive"); //ch1
         rearRightDrive = hardwareMap.get(DcMotor.class, "rearRightDrive"); //ch0
-        armDrive = hardwareMap.get(DcMotor.class, "armDrive"); //ch1 expansion hub
+        armDrive1 = hardwareMap.get(DcMotor.class, "armDrive1"); //ch1 expansion hub
+        armDrive2 = hardwareMap.get(DcMotor.class, "armDrive2"); //ch1 expansion hub
         shoulderDrive = hardwareMap.get(DcMotor.class, "shoulderDrive"); //ch0
         wristServo = hardwareMap.get(Servo.class, "wrist"); //ch0 expansion hub
         clawServo1 = hardwareMap.get(Servo.class, "clawServo1"); //ch1 expansion hub
@@ -94,20 +96,24 @@ public class BasicOpMode_Linear extends LinearOpMode {
         frontRightDrive.setDirection(DcMotor.Direction.REVERSE);
         rearLeftDrive.setDirection(DcMotor.Direction.FORWARD);
         rearRightDrive.setDirection(DcMotor.Direction.REVERSE);
-        armDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+        armDrive1.setDirection(DcMotorSimple.Direction.FORWARD);
+        armDrive2.setDirection(DcMotorSimple.Direction.REVERSE);
         shoulderDrive.setDirection(DcMotorSimple.Direction.REVERSE);
         wristServo.setDirection(Servo.Direction.FORWARD);
         clawServo1.setDirection(Servo.Direction.FORWARD);
         clawServo2.setDirection(Servo.Direction.FORWARD);
 
-        armDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        armDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        armDrive1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        armDrive1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        armDrive2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        armDrive2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         shoulderDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         shoulderDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         // Wait for the game to start (driver presses PLAY)
-        armDrive.setTargetPosition(0);
+        armDrive1.setTargetPosition(0);
+        armDrive2.setTargetPosition(0);
         shoulderDrive.setTargetPosition(0);
 
         waitForStart();
@@ -115,7 +121,7 @@ public class BasicOpMode_Linear extends LinearOpMode {
 
         //Launch Threads
         Motion motion = new Motion(frontLeftDrive, frontRightDrive, rearLeftDrive, rearRightDrive, gamepad1);
-        Arm arm = new Arm(armDrive, gamepad2);
+        Arm arm = new Arm(armDrive1, armDrive2, gamepad2);
         Shoulder shoulder = new Shoulder(shoulderDrive, arm, gamepad2);
         Wrist wrist = new Wrist(wristServo, shoulder, gamepad2);
         Claw claw = new Claw(gamepad2, clawServo1, clawServo2, shoulder);
@@ -135,9 +141,10 @@ public class BasicOpMode_Linear extends LinearOpMode {
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("Left Stick", "x (%.2f), y (%.2f)", gamepad1.left_stick_x, gamepad1.left_stick_y);
             telemetry.addData("Right Stick", "x (%.2f), y (%.2f)", gamepad1.right_stick_x, gamepad1.right_stick_y);
-            telemetry.addData("Arm Mode", armDrive.getMode());
+            telemetry.addData("Arm Mode", armDrive1.getMode());
             telemetry.addData("Shoulder Ratio", shoulder.getShoulderRatio());
-            telemetry.addData("Arm Count", "(%7d)", arm.getArmCounts());
+            telemetry.addData("Arm Count1", "(%7d)", arm.getArmCounts1());
+            telemetry.addData("Arm Count2", "(%7d)", arm.getArmCounts2());
             telemetry.addData("Wrist Count", "(%7f)", wrist.getWristCounts());
             telemetry.addData("Shoulder Count", "(%7d)", shoulder.getShoulderCounts());
             telemetry.addData("Claw 1 Count", "(%.2f)", claw.getClaw1Counts());
