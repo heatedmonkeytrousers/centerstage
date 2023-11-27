@@ -20,10 +20,17 @@ public class Wrist extends Thread{
     private Shoulder shoulder;
     private Gamepad gamepad;
 
-    private static double MAX_ARM_IN = 0.8;
-    private static double MIN_ARM_IN = 0.35;
+    private static double MAX_WRIST = 0.8;
+    private static double MIN_WRIST = 0.35;
+    private static double BOARD_ANGLE = 0.222; //60 degrees
+
+    private static double FLOOR_FRONT = 0.166; //44.7 degrees
+    private static double BOARD_FRONT = FLOOR_FRONT + BOARD_ANGLE;
+    private static double BOARD_BACK = 1- FLOOR_FRONT-BOARD_ANGLE;
+    private static double FLOOR_BACK = 1-FLOOR_FRONT;
 
     private double delta = 0;
+    private double pos;
 
     public Wrist(Servo wristServo, Shoulder shoulder, Gamepad gamepad) {
         this.wristServo = wristServo;
@@ -41,7 +48,21 @@ public class Wrist extends Thread{
             totalCounts = wristServo.getPosition();
 
             //Multiplies the shoulder's ratio and the range of wrist angles and sets the wrist's position to it
-            double pos = (shoulder.shoulderAngle() * (MAX_ARM_IN - MIN_ARM_IN) + MIN_ARM_IN) + delta;
+            double shoulderAngle = shoulder.shoulderAngle();
+            double wristAngle = (MAX_WRIST - MIN_WRIST) * shoulderAngle;
+
+            if (shoulderAngle <= FLOOR_FRONT) {
+                pos = MIN_WRIST - wristAngle;
+            } else if (shoulderAngle <= BOARD_FRONT){
+                pos = MIN_WRIST - wristAngle + BOARD_ANGLE;
+            } else if (shoulderAngle <= BOARD_BACK){
+
+            } else if (shoulderAngle <= FLOOR_BACK){
+
+            }else {
+                    pos = wristAngle + MIN_WRIST;
+
+            }
             wristServo.setPosition(pos);
 
             //Fine tuning for testing
@@ -50,7 +71,7 @@ public class Wrist extends Thread{
             } else if (gamepad.start) {
                 delta += 0.01;
 
-        }
+             }
 
         }
     }

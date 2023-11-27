@@ -5,7 +5,6 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.util.Range;
 
 public class Arm extends Thread{
-    private static double ARM_SPEED = 1;
     private static double MIN_ARM_SPEED = -1;
     private static double MAX_ARM_SPEED = 1;
     private static int ARM_MANUAL = 100;
@@ -21,8 +20,6 @@ public class Arm extends Thread{
     private int totalCounts1;
     private int totalCounts2;
     private Gamepad gamepad;
-
-
 
     public Arm(DcMotor armDrive1, DcMotor armDrive2, Gamepad gamepad) {
         this.armDrive1 = armDrive1;
@@ -70,30 +67,9 @@ public class Arm extends Thread{
             totalCounts1 = armDrive1.getCurrentPosition();
             totalCounts2 = armDrive1.getCurrentPosition();
 
-           if (gamepad.dpad_left) {
-                //Manual down
-                int pos = armDrive1.getCurrentPosition() - ARM_MANUAL;
-               setPosition(ARM_SPEED, pos);
-                //setPosition(ARM_SPEED, Range.clip(pos, MIN_POS, MAX_POS * SHOULDER_MAX));
-
-            }
-            else if (gamepad.dpad_right) {
-                //Manual up
-                int pos = armDrive1.getCurrentPosition() + ARM_MANUAL;
-               setPosition(ARM_SPEED, pos);
-                //setPosition(ARM_SPEED, Range.clip(pos, MIN_POS, MAX_POS * SHOULDER_MAX));
-
-            } else if (gamepad.dpad_up) {
-                //Fully out
-                setPosition(ARM_SPEED, MAX_POS * SHOULDER_MAX);
-
-            } else if (gamepad.dpad_down) {
-                //Fully in
-                setPosition(ARM_SPEED, MIN_POS);
-
-            }
-
-
+            double ARM_SPEED = gamepad.left_stick_y;
+            int pos = (ARM_SPEED >= 0) ? MIN_POS:MAX_POS;
+            setPosition(ARM_SPEED, pos);
 
         }
     }
