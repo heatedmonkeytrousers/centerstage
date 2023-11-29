@@ -7,7 +7,6 @@ import com.qualcomm.robotcore.util.Range;
 public class Arm extends Thread{
     private static double MIN_ARM_SPEED = -1;
     private static double MAX_ARM_SPEED = 1;
-    private static int ARM_MANUAL = 100;
 
     private static int MIN_POS = 0;
     private static int MAX_POS = 2180;   //Originally 1550
@@ -64,6 +63,7 @@ public class Arm extends Thread{
             } else {
                 SHOULDER_MAX = 0;
             }
+
             totalCounts1 = armDrive1.getCurrentPosition();
             totalCounts2 = armDrive1.getCurrentPosition();
 

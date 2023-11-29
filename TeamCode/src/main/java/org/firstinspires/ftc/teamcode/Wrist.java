@@ -22,10 +22,10 @@ public class Wrist extends Thread{
 
     private static double MAX_WRIST = 0.8;
     private static double MIN_WRIST = 0.35;
-    private static double BOARD_ANGLE = 0.222; //60 degrees
+    private static double BOARD_ANGLE = 0.22; //60 degrees   originally 0.222
 
-    private static double FLOOR_FRONT = 0.166; //44.7 degrees
-    private static double BOARD_FRONT = FLOOR_FRONT + BOARD_ANGLE;
+    private static double FLOOR_FRONT = 0.166; //44.7 degrees   originally 0.166
+    private static double BOARD_FRONT = 0.32;
     private static double BOARD_BACK = 1- FLOOR_FRONT-BOARD_ANGLE;
     private static double FLOOR_BACK = 1-FLOOR_FRONT;
 
@@ -47,14 +47,16 @@ public class Wrist extends Thread{
         while (!isInterrupted()) {
             totalCounts = wristServo.getPosition();
 
-            //Multiplies the shoulder's ratio and the range of wrist angles and sets the wrist's position to it
+            //Multiplies the shoulder's ratio and the range of wrist angles
             double shoulderAngle = shoulder.shoulderAngle();
             double wristAngle = (MAX_WRIST - MIN_WRIST) * shoulderAngle;
+            double frontRatio = shoulderAngle/BOARD_FRONT;
+            double frontBoardRatio = (shoulderAngle-FLOOR_FRONT)/BOARD_FRONT;
 
             if (shoulderAngle <= FLOOR_FRONT) {
-                pos = MIN_WRIST - wristAngle;
+                pos = MIN_WRIST * (1-frontRatio);
             } else if (shoulderAngle <= BOARD_FRONT){
-                pos = MIN_WRIST - wristAngle + BOARD_ANGLE;
+                pos = 0.208 + BOARD_ANGLE * (1-frontBoardRatio);
             } else if (shoulderAngle <= BOARD_BACK){
 
             } else if (shoulderAngle <= FLOOR_BACK){
@@ -63,16 +65,16 @@ public class Wrist extends Thread{
                     pos = wristAngle + MIN_WRIST;
 
             }
-            wristServo.setPosition(pos);
-
-            //Fine tuning for testing
+            /*
             if (gamepad.back) {
                 delta -= 0.01;
             } else if (gamepad.start) {
                 delta += 0.01;
 
-             }
+            }
 
+             */
+            wristServo.setPosition(pos);
         }
     }
 

@@ -114,6 +114,8 @@ public class BasicOpMode_Linear extends LinearOpMode {
         shoulderDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         shoulderDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
+        tailDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        tailDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         // Wait for the game to start (driver presses PLAY)
         armDrive1.setTargetPosition(0);
@@ -149,7 +151,7 @@ public class BasicOpMode_Linear extends LinearOpMode {
             telemetry.addData("Left Stick", "x (%.2f), y (%.2f)", gamepad1.left_stick_x, gamepad1.left_stick_y);
             telemetry.addData("Right Stick", "x (%.2f), y (%.2f)", gamepad1.right_stick_x, gamepad1.right_stick_y);
             telemetry.addData("Arm Mode", armDrive1.getMode());
-            telemetry.addData("Shoulder Ratio", shoulder.getShoulderRatio());
+            telemetry.addData("Shoulder Ratio", "(%.2f)", shoulder.shoulderAngle());
             telemetry.addData("Arm Count1", "(%7d)", arm.getArmCounts1());
             telemetry.addData("Arm Count2", "(%7d)", arm.getArmCounts2());
             telemetry.addData("Wrist Count", "(%7f)", wrist.getWristCounts());

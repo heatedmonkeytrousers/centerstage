@@ -9,6 +9,7 @@ public class Tail extends Thread{
     private static double MIN_TAIL_SPEED = -1;
     private static double MAX_TAIL_SPEED = 1;
     private int tailCounts;
+    private boolean inAir = false;
 
     private DcMotor tail;
     private Gamepad gamepad;
@@ -16,6 +17,7 @@ public class Tail extends Thread{
     public Tail(DcMotor tail, Gamepad gamepad) {
         this.tail = tail;
         this.gamepad = gamepad;
+        this.tail.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
     protected int getTailCounts() {
@@ -34,6 +36,17 @@ public class Tail extends Thread{
 
             tailCounts = tail.getCurrentPosition();
 
+            if (gamepad.start) {
+                if (inAir) {
+                    setPosition(TAIL_SPEED, 0);
+                    inAir = false;
+                } else {
+                    setPosition(TAIL_SPEED, 500);
+                    inAir = true;
+                }
+
+            }
+            /*
             if (gamepad.dpad_up) {
                 int pos = tail.getCurrentPosition() + 100;
                 setPosition(TAIL_SPEED, pos);
@@ -41,6 +54,8 @@ public class Tail extends Thread{
                 int pos = tail.getCurrentPosition() - 100;
                 setPosition(TAIL_SPEED, pos);
             }
+
+             */
         }
     }
 }
