@@ -40,6 +40,7 @@ public class Shoulder extends Thread {
         this.shoulderDrive = shoulderDrive;
         this.arm = arm;
         this.gamepad = gamepad;
+        this.shoulderDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
     /**
@@ -98,7 +99,7 @@ public class Shoulder extends Thread {
             //Sets the max pos to an int value based on how far the arm is out
             MAX_POS = (int) Math.round(arm.getArmRatio() * (MAX_POS_ARM_OUT-MAX_POS_ARM_IN) + MAX_POS_ARM_IN);
 
-
+            /*
                 if (gamepad.dpad_left) {
                     int pos = shoulderDrive.getCurrentPosition() + SHOULDER_MANUAL;
                     setPosition(SHOULDER_SPEED, Range.clip(pos, MAX_POS, MIN_POS));
@@ -110,28 +111,33 @@ public class Shoulder extends Thread {
                     }
 
 
-/*
+             */
+
+
             double SHOULDER_SPEED = gamepad.right_stick_y;
             int pos = (SHOULDER_SPEED >= 0) ? MIN_POS:MAX_POS;
             setPosition(SHOULDER_SPEED, pos);
 
- */
 
-                if (gamepad.y) {
-                    setPosition(SHOULDER_SPEED, STRAIGHT_UP);
-                    //180 degree angle
-                } else if (gamepad.x) {
-                    setPosition(SHOULDER_SPEED, AGAINST_WALL);
-                    //Close against the board
-                } else if (gamepad.b) {
-                    setPosition(SHOULDER_SPEED, STRAIGHT_OUT);
-                    //90 degree angle
-                } else if (gamepad.a) {
+
+                if (gamepad.a) {
                     setPosition(SHOULDER_SPEED, MIN_POS);
-
-                    //Reset position
-
-            }
+                    //On floor front
+                } else if (gamepad.b) {
+                    //Drive position
+                } else if (gamepad.y) {
+                    //Between line 1 and 2 front
+                } else if (gamepad.x) {
+                    //Between line 2 and 3 front
+                } else if (gamepad.dpad_down) {
+                    //On floor back
+                } else if (gamepad.dpad_up) {
+                    //Between line 1 and 2 back
+                } else if (gamepad.dpad_left) {
+                    //Between line 2 and 3 back
+                } else if (gamepad.dpad_up) {
+                    //Straight up and down
+                }
         }
     }
 }
