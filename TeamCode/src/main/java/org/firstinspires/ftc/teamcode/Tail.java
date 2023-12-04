@@ -35,7 +35,7 @@ public class Tail extends Thread{
         while (!isInterrupted()) {
 
             tailCounts = tail.getCurrentPosition();
-
+            /*
             if (gamepad.start) {
                 if (inAir) {
                     setPosition(TAIL_SPEED, 0);
@@ -46,7 +46,7 @@ public class Tail extends Thread{
                 }
 
             }
-            /*
+            */
             if (gamepad.dpad_up) {
                 int pos = tail.getCurrentPosition() + 100;
                 setPosition(TAIL_SPEED, pos);
@@ -55,7 +55,7 @@ public class Tail extends Thread{
                 setPosition(TAIL_SPEED, pos);
             }
 
-             */
+
         }
     }
 }
