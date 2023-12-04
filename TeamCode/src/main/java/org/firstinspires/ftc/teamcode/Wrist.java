@@ -13,6 +13,7 @@ public class Wrist extends Thread{
     private Shoulder shoulder;
     private Gamepad gamepad;
 
+
     private static ArrayList<Double> s = new ArrayList<Double>(List.of(
             0.0, //On the floor front
             0.16, //90 degree front
