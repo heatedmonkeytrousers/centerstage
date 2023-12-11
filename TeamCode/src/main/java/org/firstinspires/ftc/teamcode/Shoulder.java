@@ -131,10 +131,6 @@ public class Shoulder extends Thread {
             }
             setPosition(power, pos);
 
-
-
-
-
                 if (gamepad.a) {
                     setPosition(SHOULDER_SPEED, MIN_POS);
                     //On floor front
