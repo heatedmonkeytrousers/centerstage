@@ -40,7 +40,7 @@ public class Shoulder extends Thread {
         this.shoulderDrive = shoulderDrive;
         this.arm = arm;
         this.gamepad = gamepad;
-        this.shoulderDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        this.shoulderDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
     /**
@@ -84,7 +84,6 @@ public class Shoulder extends Thread {
         power = Range.clip(power, MIN_SHOULDER_SPEED, MAX_SHOULDER_SPEED);
         //Sets the position of the shoulder
         shoulderDrive.setTargetPosition(position);
-        shoulderDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         shoulderDrive.setPower(power);
     }
 
@@ -99,7 +98,7 @@ public class Shoulder extends Thread {
             //Sets the max pos to an int value based on how far the arm is out
             MAX_POS = (int) Math.round(arm.getArmRatio() * (MAX_POS_ARM_OUT-MAX_POS_ARM_IN) + MAX_POS_ARM_IN);
 
-
+/*
                 if (gamepad.dpad_left) {
                     int pos = shoulderDrive.getCurrentPosition() + SHOULDER_MANUAL;
                     setPosition(SHOULDER_SPEED, Range.clip(pos, MAX_POS, MIN_POS));
@@ -110,15 +109,29 @@ public class Shoulder extends Thread {
                     //Raise manually
                     }
 
-
-
-/*
-            //Doesn't work since shoulder de powers if joystick reaches neutral position
-            double SHOULDER_SPEED = gamepad.right_stick_y;
-            int pos = (SHOULDER_SPEED >= 0) ? MIN_POS:MAX_POS;
-            setPosition(SHOULDER_SPEED, pos);
-
  */
+
+            //Doesn't work since shoulder de-powers if joystick reaches neutral position
+
+            double SHOULDER_SPEED = gamepad.right_stick_y;
+            int pos;
+            double power;
+            if (SHOULDER_SPEED > -0.15 && SHOULDER_SPEED < 0.15) {
+                pos = totalCounts;
+                power = 1;
+                shoulderDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            } else if (SHOULDER_SPEED > 0) {
+                pos = MIN_POS;
+                power = SHOULDER_SPEED;
+                shoulderDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            } else {
+                pos = MAX_POS;
+                power = Math.abs(SHOULDER_SPEED);
+                shoulderDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            }
+            setPosition(power, pos);
+
+
 
 
 
