@@ -5,9 +5,11 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.util.Range;
 
 public class Tail extends Thread{
-    private static double TAIL_SPEED = 1;
+    private static double TAIL_SPEED = 0.5;
     private static double MIN_TAIL_SPEED = -1;
     private static double MAX_TAIL_SPEED = 1;
+    private static int MIN_POS = 0;
+    private static int MAX_POS = 929;
     private int tailCounts;
     private boolean inAir = false;
 
@@ -35,18 +37,19 @@ public class Tail extends Thread{
         while (!isInterrupted()) {
 
             tailCounts = tail.getCurrentPosition();
-            /*
+
             if (gamepad.start) {
                 if (inAir) {
-                    setPosition(TAIL_SPEED, 0);
+                    setPosition(TAIL_SPEED, MIN_POS);
                     inAir = false;
                 } else {
-                    setPosition(TAIL_SPEED, 500);
+                    setPosition(TAIL_SPEED, MAX_POS);
                     inAir = true;
                 }
 
             }
-            */
+            /*
+            //929
             if (gamepad.dpad_up) {
                 int pos = tail.getCurrentPosition() + 100;
                 setPosition(TAIL_SPEED, pos);
@@ -54,6 +57,8 @@ public class Tail extends Thread{
                 int pos = tail.getCurrentPosition() - 100;
                 setPosition(TAIL_SPEED, pos);
             }
+
+             */
 
 
         }

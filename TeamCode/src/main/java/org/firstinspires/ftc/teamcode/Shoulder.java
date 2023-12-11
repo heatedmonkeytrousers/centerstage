@@ -40,7 +40,7 @@ public class Shoulder extends Thread {
         this.shoulderDrive = shoulderDrive;
         this.arm = arm;
         this.gamepad = gamepad;
-        this.shoulderDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        this.shoulderDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
     /**
@@ -89,6 +89,8 @@ public class Shoulder extends Thread {
 
     @Override
     public void run() {
+        int pos;
+        boolean hold = false;
         while (!isInterrupted()) {
             //Sets total counts to the shoulder's current position
             totalCounts = shoulderDrive.getCurrentPosition();
@@ -108,46 +110,51 @@ public class Shoulder extends Thread {
                     setPosition(SHOULDER_SPEED, Range.clip(pos, MAX_POS, MIN_POS));
                     //Raise manually
                     }
-
- */
-
-            //Doesn't work since shoulder de-powers if joystick reaches neutral position
+*/
 
             double SHOULDER_SPEED = gamepad.right_stick_y;
-            int pos;
             double power;
-            if (SHOULDER_SPEED > -0.15 && SHOULDER_SPEED < 0.15) {
-                pos = totalCounts;
-                power = 1;
-                shoulderDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            } else if (SHOULDER_SPEED > 0) {
+            if (!hold && Math.abs(SHOULDER_SPEED) < 0.15) {
+                pos = shoulderDrive.getCurrentPosition();
+                power=1;
+                setPosition(power, pos);
+                hold = true;
+            } else if (SHOULDER_SPEED > 0.15) {
                 pos = MIN_POS;
                 power = SHOULDER_SPEED;
-                shoulderDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            } else {
+                setPosition(power, pos);
+                hold = false;
+            } else if (SHOULDER_SPEED < -0.15) {
                 pos = MAX_POS;
                 power = Math.abs(SHOULDER_SPEED);
-                shoulderDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                setPosition(power, pos);
+                hold = false;
             }
-            setPosition(power, pos);
 
                 if (gamepad.a) {
                     setPosition(SHOULDER_SPEED, MIN_POS);
                     //On floor front
                 } else if (gamepad.b) {
                     //Drive position
+                    setPosition(1, -347);
                 } else if (gamepad.y) {
                     //Between line 1 and 2 front
+                    setPosition(1, -655);
                 } else if (gamepad.x) {
                     //Between line 2 and 3 front
+                    setPosition(1, -739);
                 } else if (gamepad.dpad_down) {
                     //On floor back
-                } else if (gamepad.dpad_up) {
-                    //Between line 1 and 2 back
+                    setPosition(1, -2600);
                 } else if (gamepad.dpad_left) {
+                    //Between line 1 and 2 back
+                    setPosition(1, -1936);
+                } else if (gamepad.dpad_right) {
                     //Between line 2 and 3 back
+                    setPosition(1, -1800);
                 } else if (gamepad.dpad_up) {
                     //Straight up and down
+                    setPosition(1, -1325);
                 }
         }
     }
