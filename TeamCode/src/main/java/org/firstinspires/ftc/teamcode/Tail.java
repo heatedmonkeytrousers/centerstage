@@ -47,9 +47,10 @@ public class Tail extends Thread{
                     inAir = true;
                 }
 
+
             }
+
             /*
-            //929
             if (gamepad.dpad_up) {
                 int pos = tail.getCurrentPosition() + 100;
                 setPosition(TAIL_SPEED, pos);

@@ -31,6 +31,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -68,6 +69,7 @@ public class BasicOpMode_Linear extends LinearOpMode {
     private DcMotor shoulderDrive = null;
     private DcMotor tailDrive = null;
     private Servo wristServo = null;
+    private AnalogInput wristAnalog = null;
     private Servo clawServo1 = null;
     private Servo clawServo2 = null;
 
@@ -87,6 +89,7 @@ public class BasicOpMode_Linear extends LinearOpMode {
         armDrive2 = hardwareMap.get(DcMotor.class, "armDrive2"); //ch2 expansion hub Motor
         shoulderDrive = hardwareMap.get(DcMotor.class, "shoulderDrive"); //ch0 Motor
         wristServo = hardwareMap.get(Servo.class, "wrist"); //ch0 expansion hub Servo
+        wristAnalog = hardwareMap.get(AnalogInput.class, "wristAnalog"); //ch1 expansion hub analog input
         clawServo1 = hardwareMap.get(Servo.class, "clawServo1"); //ch1 expansion hub Servo
         clawServo2 = hardwareMap.get(Servo.class, "clawServo2"); //ch2 expansion hub Servo
         tailDrive = hardwareMap.get(DcMotor.class, "tailDrive"); //ch3 expansion hub Motor
@@ -130,7 +133,7 @@ public class BasicOpMode_Linear extends LinearOpMode {
         Motion motion = new Motion(frontLeftDrive, frontRightDrive, rearLeftDrive, rearRightDrive, gamepad1);
         Arm arm = new Arm(armDrive1, armDrive2, gamepad2);
         Shoulder shoulder = new Shoulder(shoulderDrive, arm, gamepad2);
-        Wrist wrist = new Wrist(wristServo, shoulder, gamepad2);
+        Wrist wrist = new Wrist(wristServo, wristAnalog, shoulder, gamepad2);
         Claw claw = new Claw(gamepad2, clawServo1, clawServo2, shoulder);
         Tail tail = new Tail(tailDrive, gamepad2);
 
@@ -154,7 +157,7 @@ public class BasicOpMode_Linear extends LinearOpMode {
             telemetry.addData("Shoulder Ratio", "(%.2f)", shoulder.shoulderAngle());
             telemetry.addData("Arm Count1", "(%7d)", arm.getArmCounts1());
             telemetry.addData("Arm Count2", "(%7d)", arm.getArmCounts2());
-            telemetry.addData("Wrist Count", "(%7f)", wrist.getWristCounts());
+            telemetry.addData("Wrist Angle", "(%7f)", wrist.getWristAngleDegrees());
             telemetry.addData("Shoulder Count", "(%7d)", shoulder.getShoulderCounts());
             telemetry.addData("Claw 1 Count", "(%.2f)", claw.getClaw1Counts());
             telemetry.addData("Claw 2 Count", "(%.2f)", claw.getClaw2Counts());

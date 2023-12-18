@@ -116,17 +116,17 @@ public class Shoulder extends Thread {
             double power;
             if (!hold && Math.abs(SHOULDER_SPEED) < 0.15) {
                 pos = shoulderDrive.getCurrentPosition();
-                power=1;
+                power=0.75;
                 setPosition(power, pos);
                 hold = true;
             } else if (SHOULDER_SPEED > 0.15) {
                 pos = MIN_POS;
-                power = SHOULDER_SPEED;
+                power = SHOULDER_SPEED * 0.75;
                 setPosition(power, pos);
                 hold = false;
             } else if (SHOULDER_SPEED < -0.15) {
                 pos = MAX_POS;
-                power = Math.abs(SHOULDER_SPEED);
+                power = Math.abs(SHOULDER_SPEED) * 0.75;
                 setPosition(power, pos);
                 hold = false;
             }
@@ -136,25 +136,25 @@ public class Shoulder extends Thread {
                     //On floor front
                 } else if (gamepad.b) {
                     //Drive position
-                    setPosition(1, -347);
+                    setPosition(0.75, -347);
                 } else if (gamepad.y) {
                     //Between line 1 and 2 front
-                    setPosition(1, -655);
+                    setPosition(0.75, -655);
                 } else if (gamepad.x) {
                     //Between line 2 and 3 front
-                    setPosition(1, -739);
+                    setPosition(0.75, -739);
                 } else if (gamepad.dpad_down) {
                     //On floor back
-                    setPosition(1, -2600);
+                    setPosition(0.75, -2600);
                 } else if (gamepad.dpad_left) {
                     //Between line 1 and 2 back
-                    setPosition(1, -1936);
+                    setPosition(0.75, -1936);
                 } else if (gamepad.dpad_right) {
                     //Between line 2 and 3 back
-                    setPosition(1, -1800);
+                    setPosition(0.75, -1800);
                 } else if (gamepad.dpad_up) {
                     //Straight up and down
-                    setPosition(1, -1325);
+                    setPosition(0.75, -1325);
                 }
         }
     }

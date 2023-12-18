@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode;
+import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.Range;
 import com.sun.tools.javac.util.List;
 import java.util.ArrayList;
 
@@ -10,8 +12,12 @@ public class Wrist extends Thread{
     private static double totalCounts;
     //Setting up vars for threading
     private Servo wristServo;
+    private AnalogInput wristAnalog;
     private Shoulder shoulder;
     private Gamepad gamepad;
+
+    double position = 1.0;
+    double delta = 0.001;
 
     private static ArrayList<Double> s = new ArrayList<Double>(List.of(
             0.0, //On the floor front
@@ -23,28 +29,32 @@ public class Wrist extends Thread{
             0.83, //90 degree back
             0.96)); //On the floor back
     private static ArrayList<Double> w = new ArrayList<Double>(List.of(
-            0.35, //Wrist on floor front
-            0.174, //Wrist flat 90 degree front
-            0.43, //Wrist at 60 90 degree front
-            0.31, //Wrist at 60 front
-            0.86, //Wrist at 60 back
-            0.68, //Wrist at 60 90 degree back
-            0.88, //Wrist flat 90 degree back
-            0.8 //Wrist on floor back
+            0.914, //Wrist on floor front
+            1.0, //Wrist flat 90 degree front
+            0.814, //Wrist at 60 90 degree front
+            0.933, //Wrist at 60 front
+            0.465, //Wrist at 60 back
+            0.596, //Wrist at 60 90 degree back
+            0.424, //Wrist flat 90 degree back
+            0.525 //Wrist on floor back
     ));
 
+
+
     //Threading the wrist
-    public Wrist(Servo wristServo, Shoulder shoulder, Gamepad gamepad) {
+    public Wrist(Servo wristServo, AnalogInput wristAnalog, Shoulder shoulder, Gamepad gamepad) {
         this.wristServo = wristServo;
+        this.wristAnalog = wristAnalog;
         this.shoulder = shoulder;
         this.gamepad = gamepad;
     }
 
-    protected double getWristCounts() {
-        return totalCounts;
+    protected double getWristAngleDegrees() {
+        return position;
     }
 
     //Figures out what range we're in and sets the wrist's position accordingly
+
     public double wristPos(double shoulderAngle) {
         int i = 0;
         //Goes through the shoulder list
@@ -65,11 +75,25 @@ public class Wrist extends Thread{
     @Override
     public void run() {
         while (!isInterrupted()) {
+/*
+            if (gamepad.back) {
+                position = Range.clip(position-delta, 0.4, 1.0);
+                wristServo.setPosition(position);
+            } else if (gamepad.start) {
+                position = Range.clip(position+delta, 0.4, 1.0);
+                wristServo.setPosition(position);
+            }
+
+ */
+
+
             //Gets the total counts for telemetry purposes
             totalCounts = wristServo.getPosition();
 
             //Set the position of the wrist based on the shoulder's location
             wristServo.setPosition(wristPos(shoulder.shoulderAngle()));
+
+
         }
     }
 
