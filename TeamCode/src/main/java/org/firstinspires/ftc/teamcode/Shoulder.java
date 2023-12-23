@@ -20,7 +20,7 @@ public class Shoulder extends Thread {
     private int MAX_POS;
 
     //Pre-set min and max pos based on if the arm is in or out
-    public static int MIN_POS_ARM_IN = 0;
+    public static int MIN_POS_ARM_IN = -28;
     public static int MAX_POS_ARM_IN = -2657;
     public static int MIN_POS_ARM_OUT = -225;
     public static int MAX_POS_ARM_OUT = -2417;
@@ -100,22 +100,10 @@ public class Shoulder extends Thread {
             //Sets the max pos to an int value based on how far the arm is out
             MAX_POS = (int) Math.round(arm.getArmRatio() * (MAX_POS_ARM_OUT-MAX_POS_ARM_IN) + MAX_POS_ARM_IN);
 
-/*
-                if (gamepad.dpad_left) {
-                    int pos = shoulderDrive.getCurrentPosition() + SHOULDER_MANUAL;
-                    setPosition(SHOULDER_SPEED, Range.clip(pos, MAX_POS, MIN_POS));
-                    //Lower manually
-                } else if (gamepad.dpad_right) {
-                    int pos = shoulderDrive.getCurrentPosition() -SHOULDER_MANUAL;
-                    setPosition(SHOULDER_SPEED, Range.clip(pos, MAX_POS, MIN_POS));
-                    //Raise manually
-                    }
-*/
-
             double SHOULDER_SPEED = gamepad.right_stick_y;
             double power;
             if (!hold && Math.abs(SHOULDER_SPEED) < 0.15) {
-                pos = shoulderDrive.getCurrentPosition();
+                pos = totalCounts;
                 power=0.75;
                 setPosition(power, pos);
                 hold = true;
@@ -130,13 +118,30 @@ public class Shoulder extends Thread {
                 setPosition(power, pos);
                 hold = false;
             }
+            /*
+            else if (totalCounts < MIN_POS) {
+                pos = MIN_POS;
+                power = 0.75;
+                setPosition(power, pos);
+                hold = false;
+            } else if (totalCounts > MAX_POS) {
+                pos = MAX_POS;
+                power = 0.75;
+                setPosition(power, pos);
+                hold = false;
+            }
+
+             */
+
+
 
                 if (gamepad.a) {
-                    setPosition(SHOULDER_SPEED, MIN_POS);
+                    //setPosition(SHOULDER_SPEED, MIN_POS);
+                    setPosition(0.75, -28);
                     //On floor front
                 } else if (gamepad.b) {
-                    //Drive position
-                    setPosition(0.75, -347);
+                    //Maybe cycle through pixel stack???
+                    //setPosition(0.75, -347);
                 } else if (gamepad.y) {
                     //Between line 1 and 2 front
                     setPosition(0.75, -655);

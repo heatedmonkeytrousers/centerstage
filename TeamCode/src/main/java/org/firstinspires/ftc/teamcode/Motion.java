@@ -49,10 +49,13 @@ public class Motion extends Thread {
     public void run() {
         while (!isInterrupted()) {
             // Debug
+            /*
             if(gamepad.start){
                 rotation(Motion.Direction.RIGHT, 90, 0.5);
                 continue;
             }
+
+             */
             // Setup a variable for each drive wheel to save power level for telemetry
             double frontLeftPower;
             double frontRightPower;
@@ -70,6 +73,7 @@ public class Motion extends Thread {
             frontRightPower = Range.clip(drive - turn + strafe, -1.0, 1.0) * PF;
             rearRightPower = Range.clip(drive - turn - strafe, -1.0, 1.0) * PF;
 
+            /*
             if (gamepad.right_bumper) {
                 frontLeftPower *= 1;
                 rearLeftPower *= 1;
@@ -102,6 +106,8 @@ public class Motion extends Thread {
             } else if (gamepad.right_trigger > 0.5) {
                 rotation(Direction.RIGHT, 90, 1);
             }
+
+             */
 
             // Send calculated power to wheels
             frontLeftDrive.setPower(frontLeftPower);

@@ -58,12 +58,6 @@ public class Arm extends Thread{
     public void run() {
         while (!isInterrupted()) {
 
-            if (shoulder != null) {
-                SHOULDER_MAX = (int) Math.round(shoulder.getShoulderRatio());
-            } else {
-                SHOULDER_MAX = 0;
-            }
-
             totalCounts1 = armDrive1.getCurrentPosition();
             totalCounts2 = armDrive1.getCurrentPosition();
 

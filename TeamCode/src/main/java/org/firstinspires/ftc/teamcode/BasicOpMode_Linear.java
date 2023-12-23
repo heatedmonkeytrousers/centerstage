@@ -67,11 +67,11 @@ public class BasicOpMode_Linear extends LinearOpMode {
     private DcMotor armDrive1 = null;
     private DcMotor armDrive2 = null;
     private DcMotor shoulderDrive = null;
-    private DcMotor tailDrive = null;
     private Servo wristServo = null;
     private AnalogInput wristAnalog = null;
     private Servo clawServo1 = null;
     private Servo clawServo2 = null;
+    private Servo droneLauncherServo = null;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -92,7 +92,8 @@ public class BasicOpMode_Linear extends LinearOpMode {
         wristAnalog = hardwareMap.get(AnalogInput.class, "wristAnalog"); //ch1 expansion hub analog input
         clawServo1 = hardwareMap.get(Servo.class, "clawServo1"); //ch1 expansion hub Servo
         clawServo2 = hardwareMap.get(Servo.class, "clawServo2"); //ch2 expansion hub Servo
-        tailDrive = hardwareMap.get(DcMotor.class, "tailDrive"); //ch3 expansion hub Motor
+        droneLauncherServo = hardwareMap.get(Servo.class, "drone"); //ch3 expansion hub Servo
+
 
         // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
         // Pushing the left stick forward MUST make robot go forward. So adjust these two lines based on your first test drive.
@@ -107,7 +108,7 @@ public class BasicOpMode_Linear extends LinearOpMode {
         wristServo.setDirection(Servo.Direction.FORWARD);
         clawServo1.setDirection(Servo.Direction.FORWARD);
         clawServo2.setDirection(Servo.Direction.FORWARD);
-        tailDrive.setDirection(DcMotorSimple.Direction.FORWARD);
+        droneLauncherServo.setDirection(Servo.Direction.FORWARD);
 
         armDrive1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         armDrive1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -117,14 +118,10 @@ public class BasicOpMode_Linear extends LinearOpMode {
         shoulderDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         shoulderDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        tailDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        tailDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
         // Wait for the game to start (driver presses PLAY)
         armDrive1.setTargetPosition(0);
         armDrive2.setTargetPosition(0);
         shoulderDrive.setTargetPosition(0);
-        tailDrive.setTargetPosition(0);
 
         waitForStart();
         runtime.reset();
@@ -135,7 +132,7 @@ public class BasicOpMode_Linear extends LinearOpMode {
         Shoulder shoulder = new Shoulder(shoulderDrive, arm, gamepad2);
         Wrist wrist = new Wrist(wristServo, wristAnalog, shoulder, gamepad2);
         Claw claw = new Claw(gamepad2, clawServo1, clawServo2, shoulder);
-        Tail tail = new Tail(tailDrive, gamepad2);
+        DroneLauncher droneLauncher = new DroneLauncher(gamepad1, droneLauncherServo);
 
         arm.setShoulder(shoulder);
 
@@ -144,7 +141,7 @@ public class BasicOpMode_Linear extends LinearOpMode {
         shoulder.start();
         wrist.start();
         claw.start();
-        tail.start();
+        droneLauncher.start();
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
@@ -161,7 +158,6 @@ public class BasicOpMode_Linear extends LinearOpMode {
             telemetry.addData("Shoulder Count", "(%7d)", shoulder.getShoulderCounts());
             telemetry.addData("Claw 1 Count", "(%.2f)", claw.getClaw1Counts());
             telemetry.addData("Claw 2 Count", "(%.2f)", claw.getClaw2Counts());
-            telemetry.addData("Tail Count", "(%7d)", tail.getTailCounts());
             telemetry.addData("Front Left Motor", "(%7d)", frontLeftDrive.getCurrentPosition());
             telemetry.addData("Front Right Motor", "(%7d)", frontRightDrive.getCurrentPosition());
             telemetry.addData("Rear Left Motor", "(%7d)", rearLeftDrive.getCurrentPosition());
@@ -174,14 +170,14 @@ public class BasicOpMode_Linear extends LinearOpMode {
         shoulder.interrupt();
         wrist.interrupt();
         claw.interrupt();
-        tail.interrupt();
+        droneLauncher.interrupt();
         try {
             motion.join();
             arm.join();
             shoulder.join();
             wrist.join();
             claw.join();
-            tail.join();
+            droneLauncher.join();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

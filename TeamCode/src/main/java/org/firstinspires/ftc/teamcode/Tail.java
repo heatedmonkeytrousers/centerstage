@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.util.Range;
 
 public class Tail extends Thread{
+    /*
     private static double TAIL_SPEED = 0.5;
     private static double MIN_TAIL_SPEED = -1;
     private static double MAX_TAIL_SPEED = 1;
@@ -50,7 +51,7 @@ public class Tail extends Thread{
 
             }
 
-            /*
+
             if (gamepad.dpad_up) {
                 int pos = tail.getCurrentPosition() + 100;
                 setPosition(TAIL_SPEED, pos);
@@ -59,10 +60,11 @@ public class Tail extends Thread{
                 setPosition(TAIL_SPEED, pos);
             }
 
-             */
+
 
 
         }
     }
+            */
 }
 
