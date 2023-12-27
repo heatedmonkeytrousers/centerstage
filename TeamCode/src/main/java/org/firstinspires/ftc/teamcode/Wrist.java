@@ -29,7 +29,7 @@ public class Wrist extends Thread{
             0.83, //90 degree back
             0.96)); //On the floor back
     private static ArrayList<Double> w = new ArrayList<Double>(List.of(
-            0.925, //Wrist on floor front
+            0.914, //Wrist on floor front
             1.0, //Wrist flat 90 degree front
             0.814, //Wrist at 60 90 degree front
             0.933, //Wrist at 60 front

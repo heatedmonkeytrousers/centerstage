@@ -166,7 +166,7 @@ public class CameraSetupOpMode extends LinearOpMode {
             telemetry.addData("Red Total", (int) redTot);
             //telemetry.addData("Green Total", (int) greenTot);
             telemetry.addData("Blue Total", (int) blueTot);
-            telemetry.addData("Mean", "%d %d %d", (int) mu.val[0], (int) mu.val[1], (int) mu.val[2]);
+            telemetry.addData("Mean", "%d %d", (int) mu.val[0], (int) mu.val[2]);
             telemetry.update();
             return input;
         }

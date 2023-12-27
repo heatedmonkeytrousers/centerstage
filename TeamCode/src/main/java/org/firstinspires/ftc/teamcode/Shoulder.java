@@ -20,7 +20,7 @@ public class Shoulder extends Thread {
     private int MAX_POS;
 
     //Pre-set min and max pos based on if the arm is in or out
-    public static int MIN_POS_ARM_IN = -28;
+    public static int MIN_POS_ARM_IN = -27;
     public static int MAX_POS_ARM_IN = -2657;
     public static int MIN_POS_ARM_OUT = -225;
     public static int MAX_POS_ARM_OUT = -2417;
@@ -137,7 +137,7 @@ public class Shoulder extends Thread {
 
                 if (gamepad.a) {
                     //setPosition(SHOULDER_SPEED, MIN_POS);
-                    setPosition(0.75, -28);
+                    setPosition(0.75, MIN_POS_ARM_IN);
                     //On floor front
                 } else if (gamepad.b) {
                     //Maybe cycle through pixel stack???
