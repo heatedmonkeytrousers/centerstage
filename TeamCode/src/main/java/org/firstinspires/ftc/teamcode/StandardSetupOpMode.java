@@ -21,13 +21,18 @@ public class StandardSetupOpMode extends CameraSetupOpMode {
     protected DcMotor rearRightDrive = null;
 
     protected Motion motion = null;
-    protected DcMotor armDrive1 = null;
-    protected DcMotor armDrive2 = null;
-    protected DcMotor shoulderDrive = null;
-    protected Servo wristServo = null;
-    protected AnalogInput wristAnalog = null;
-    protected Servo clawServo1 = null;
-    protected Servo clawServo2 = null;
+    protected Arm arm = null;
+    protected Shoulder shoulder = null;
+    protected Claw claw = null;
+    protected Wrist wrist = null;
+
+    private DcMotor armDrive1 = null;
+    private DcMotor armDrive2 = null;
+    private DcMotor shoulderDrive = null;
+    private Servo wristServo = null;
+    private AnalogInput wristAnalog = null;
+    private Servo clawServo1 = null;
+    private Servo clawServo2 = null;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -78,10 +83,10 @@ public class StandardSetupOpMode extends CameraSetupOpMode {
 
         // Build the Motion class and give it a motion object
         motion = new Motion(frontLeftDrive, frontRightDrive, rearLeftDrive, rearRightDrive, null);
-        Arm arm = new Arm(armDrive1, armDrive2, null);
-        Shoulder shoulder = new Shoulder(shoulderDrive, arm, null);
-        Wrist wrist = new Wrist(wristServo, wristAnalog, shoulder, null);
-        Claw claw = new Claw(gamepad2, clawServo1, clawServo2, null);
+        arm = new Arm(armDrive1, armDrive2, null);
+        shoulder = new Shoulder(shoulderDrive, arm, null);
+        wrist = new Wrist(wristServo, wristAnalog, shoulder, null);
+        claw = new Claw(gamepad2, clawServo1, clawServo2, null);
 
     }
 }

@@ -33,6 +33,22 @@ public class Claw extends Thread {
         return totalCountsTwo;
     }
 
+    public void leftOpen() {
+        clawServo1.setPosition(OPEN);
+    }
+
+    public void leftClose() {
+        clawServo1.setPosition(CLOSE);
+    }
+
+    public void rightOpen() {
+        clawServo2.setPosition(OPEN);
+    }
+
+    public void rightClose() {
+        clawServo2.setPosition(CLOSE);
+    }
+
     @Override
     public void run() {
         while (!isInterrupted()) {
@@ -40,15 +56,15 @@ public class Claw extends Thread {
             totalCountsTwo = clawServo2.getPosition();
 
                 if (gamepad.left_bumper) {
-                    clawServo1.setPosition(OPEN);
+                    leftOpen();
                 } else if (gamepad.left_trigger > 0) {
-                    clawServo1.setPosition(CLOSE);
+                    leftClose();
                 }
 
                 if (gamepad.right_bumper) {
-                    clawServo2.setPosition(OPEN);
+                    rightOpen();
                 } else if (gamepad.right_trigger > 0) {
-                    clawServo2.setPosition(CLOSE);
+                    rightClose();
                 }
 
         }
