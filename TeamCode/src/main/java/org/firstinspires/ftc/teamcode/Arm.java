@@ -46,7 +46,7 @@ public class Arm extends Thread{
      */
     public double getArmRatio() {return Range.clip((double) totalCounts1 / (double) MAX_POS, 0.0, 1.0);}
 
-    private void setPosition(double power, int position) {
+    public void setArmPosition(double power, int position) {
         power = Range.clip(power, MIN_ARM_SPEED, MAX_ARM_SPEED);
         armDrive1.setPower(power);
         armDrive2.setPower(power);
@@ -63,7 +63,7 @@ public class Arm extends Thread{
 
             double ARM_SPEED = gamepad.left_stick_y;
             int pos = (ARM_SPEED >= 0) ? MIN_POS:MAX_POS;
-            setPosition(ARM_SPEED, pos);
+            setArmPosition(ARM_SPEED, pos);
 
         }
     }

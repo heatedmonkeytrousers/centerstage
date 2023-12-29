@@ -49,7 +49,7 @@ public class CameraSetupOpMode extends LinearOpMode {
             public void onOpened() {
                 //Camera Starts Running
                 //1920, 1080
-                webcam.startStreaming(432, 240, OpenCvCameraRotation.UPRIGHT);
+                webcam.startStreaming(1600, 896, OpenCvCameraRotation.UPRIGHT);
             }
 
             @Override
@@ -77,7 +77,7 @@ public class CameraSetupOpMode extends LinearOpMode {
 
             //Crops the input but sets the output to the un-cropped input
             Mat input2 = input;
-            input = input.submat(new Rect(146, 90, 100, 60));
+            input = input.submat(new Rect(146, 90, 500, 500));
             output = input2;
 
             //Badger Bots ideal values
@@ -166,7 +166,7 @@ public class CameraSetupOpMode extends LinearOpMode {
             telemetry.addData("Red Total", (int) redTot);
             //telemetry.addData("Green Total", (int) greenTot);
             telemetry.addData("Blue Total", (int) blueTot);
-            telemetry.addData("Mean", "%d %d %d", (int) mu.val[0], (int) mu.val[1], (int) mu.val[2]);
+            telemetry.addData("Mean", "%d %d", (int) mu.val[0], (int) mu.val[2]);
             telemetry.update();
             return input;
         }

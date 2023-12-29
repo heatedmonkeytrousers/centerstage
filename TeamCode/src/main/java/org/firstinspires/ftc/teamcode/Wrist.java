@@ -9,7 +9,7 @@ import java.util.ArrayList;
 public class Wrist extends Thread{
 
     //Setting up vars for telemetry
-    private static double totalCounts;
+    private double totalCounts;
     //Setting up vars for threading
     private Servo wristServo;
     private AnalogInput wristAnalog;
@@ -17,7 +17,7 @@ public class Wrist extends Thread{
     private Gamepad gamepad;
 
     double position = 1.0;
-    double delta = 0.001;
+    double delta = 0.01;
 
     private static ArrayList<Double> s = new ArrayList<Double>(List.of(
             0.00, //On the floor front
@@ -29,7 +29,7 @@ public class Wrist extends Thread{
             0.83, //90 degree back
             0.96)); //On the floor back
     private static ArrayList<Double> w = new ArrayList<Double>(List.of(
-            0.925, //Wrist on floor front
+            0.93, //Wrist on floor front
             1.0, //Wrist flat 90 degree front
             0.814, //Wrist at 60 90 degree front
             0.933, //Wrist at 60 front
@@ -50,7 +50,7 @@ public class Wrist extends Thread{
     }
 
     protected double getWristAngleDegrees() {
-        return position;
+        return totalCounts;
     }
 
     //Figures out what range we're in and sets the wrist's position accordingly
@@ -75,18 +75,23 @@ public class Wrist extends Thread{
     @Override
     public void run() {
         while (!isInterrupted()) {
-/*
-            if (gamepad.back) {
-                position = Range.clip(position-delta, 0.4, 1.0);
-                wristServo.setPosition(position);
-            } else if (gamepad.start) {
-                position = Range.clip(position+delta, 0.4, 1.0);
-                wristServo.setPosition(position);
-            }
 
- */
             //Gets the total counts for telemetry purposes
             totalCounts = wristServo.getPosition();
+
+            if (gamepad.back) {
+                //position = Range.clip(position - delta, 0.4, 1.0);
+                totalCounts -= delta;
+                wristServo.setPosition(totalCounts);
+            } else if (gamepad.start) {
+                //position = Range.clip(position + delta, 0.4, 1.0);
+                totalCounts += delta;
+                wristServo.setPosition(totalCounts);
+            }
+
+
+            //Gets the total counts for telemetry purposes
+            //totalCounts = wristServo.getPosition();
 
             //Set the position of the wrist based on the shoulder's location
             wristServo.setPosition(wristPos(shoulder.shoulderAngle()));
