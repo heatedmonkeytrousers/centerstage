@@ -20,6 +20,10 @@ public class AutonomousOpMode_Linear extends StandardSetupOpMode {
         // Initial parking spot
         Motion.PARKING_SPOT parkingSpot = position;
 
+        //If red alliance then yScale is -1.0
+        //If blue alliance then yScale is 1.0
+        double yScale = -1.0;
+
         // Reset the 30 second runtime timer
         runtime.reset();
 
@@ -27,8 +31,6 @@ public class AutonomousOpMode_Linear extends StandardSetupOpMode {
 
         super.arm.setShoulder(shoulder);
 
-        //super.arm.start();
-        //super.shoulder.start();
         super.wrist.start();
 
         super.claw.rightClose();
@@ -48,28 +50,14 @@ public class AutonomousOpMode_Linear extends StandardSetupOpMode {
                     super.claw.leftOpen();
                 })
 
-
-
-
-/*
-                .addDisplacementMarker(() -> {
-                    super.shoulder.setShoulderPosition(0.75, -655);
-                    super.arm.setArmPosition(1, 2180);
-                })
-                .addDisplacementMarker(() -> {
-                    super.claw.rightOpen();
-                })
-                .lineToSplineHeading(new Pose2d(-24, 0, Math.toRadians(25.5)))
-
- */
                 .build();
 
         Trajectory board = drive.trajectoryBuilder(new Pose2d())
                 .addTemporalMarker(0, () -> {
                     super.shoulder.setShoulderPosition(0.75, -739);
                 })
-                .lineToSplineHeading(new Pose2d(25.5, -34, Math.toRadians(270)))
-                .addTemporalMarker(1.5, () -> {
+                .lineToSplineHeading(new Pose2d(25.5, 34 * yScale, Math.toRadians((360+(yScale*90)) % 360)))
+                .addTemporalMarker(1.7, () -> {
                     super.claw.rightOpen();
                 })
                 .build();
@@ -82,7 +70,7 @@ public class AutonomousOpMode_Linear extends StandardSetupOpMode {
                 .addTemporalMarker(0.5, () -> {
                     super.shoulder.setShoulderPosition(0.75, -20);
                 })
-                .lineToSplineHeading(new Pose2d(4, -30, Math.toRadians(90)))
+                .lineToSplineHeading(new Pose2d(4, 30 * yScale, Math.toRadians(-90 * yScale)))
                 .build();
         // Wait to start autonomous
         waitForStart();
@@ -92,7 +80,7 @@ public class AutonomousOpMode_Linear extends StandardSetupOpMode {
         drive.followTrajectory(start);
         sleep(1500);
         drive.followTrajectory(board);
-        sleep(1600);
+        sleep(1900);
         drive.followTrajectory(park);
         sleep(5000);
 
