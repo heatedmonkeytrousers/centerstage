@@ -78,7 +78,7 @@ public class Wrist extends Thread{
 
             //Gets the total counts for telemetry purposes
             totalCounts = wristServo.getPosition();
-
+/*
             if (gamepad.back) {
                 //position = Range.clip(position - delta, 0.4, 1.0);
                 totalCounts -= delta;
@@ -88,6 +88,8 @@ public class Wrist extends Thread{
                 totalCounts += delta;
                 wristServo.setPosition(totalCounts);
             }
+            
+ */
 
 
             //Gets the total counts for telemetry purposes

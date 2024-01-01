@@ -84,7 +84,7 @@ public class StandardSetupOpMode extends CameraSetupOpMode {
         // Build the Motion class and give it a motion object
         motion = new Motion(frontLeftDrive, frontRightDrive, rearLeftDrive, rearRightDrive, null);
         arm = new Arm(armDrive1, armDrive2, null);
-        shoulder = new Shoulder(shoulderDrive, arm, null);
+        shoulder = new Shoulder(shoulderDrive, arm, gamepad2);
         wrist = new Wrist(wristServo, wristAnalog, shoulder, null);
         claw = new Claw(gamepad2, clawServo1, clawServo2, null);
 

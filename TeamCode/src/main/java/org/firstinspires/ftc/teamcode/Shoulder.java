@@ -79,6 +79,7 @@ public class Shoulder extends Thread {
      * @param power double, power of the shoulder motor
      * @param position int, position/angle to set the shoulder to
      */
+    //Change so the user inputs the ratio
     public  void  setShoulderPosition(double power, int position) {
         //Sets the power to the inputted power, clips the power to make sure it is within 0-1
         power = Range.clip(power, MIN_SHOULDER_SPEED, MAX_SHOULDER_SPEED);
