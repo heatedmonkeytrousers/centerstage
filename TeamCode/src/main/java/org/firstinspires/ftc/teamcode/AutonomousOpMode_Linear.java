@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
-@Autonomous(name="Robot: Generic Automation", group="Robot")
+@Autonomous(name="Autonomous: Near", group="Robot")
 
 public class AutonomousOpMode_Linear extends StandardSetupOpMode {
     public AutonomousOpMode_Linear() {
@@ -68,10 +68,11 @@ public class AutonomousOpMode_Linear extends StandardSetupOpMode {
                     super.arm.setArmPosition(1, 0);
                 })
                 .addTemporalMarker(0.5, () -> {
-                    super.shoulder.setShoulderPosition(0.75, -20);
+                    super.shoulder.setShoulderPosition(0.75, -40);
                 })
                 .lineToSplineHeading(new Pose2d(4, 30 * yScale, Math.toRadians(-90 * yScale)))
                 .build();
+
         // Wait to start autonomous
         waitForStart();
 
