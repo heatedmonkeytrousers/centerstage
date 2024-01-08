@@ -18,7 +18,7 @@ public class AutonomousOpMode_Linear extends StandardSetupOpMode {
         super.runOpMode();
 
         // Initial parking spot
-        Motion.PARKING_SPOT parkingSpot = position;
+        Motion.COLOR parkingSpot = color;
 
         //If red alliance then yScale is -1.0
         //If blue alliance then yScale is 1.0
@@ -85,7 +85,7 @@ public class AutonomousOpMode_Linear extends StandardSetupOpMode {
         sleep(5000);
 
         // Determine parking spot
-        parkingSpot = position;
+        parkingSpot = color;
         telemetry.addData("Parking Spot", parkingSpot);
         telemetry.update();
 

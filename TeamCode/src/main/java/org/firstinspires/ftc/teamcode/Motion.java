@@ -31,10 +31,16 @@ public class Motion extends Thread {
         LEFT
     }
 
-    public enum PARKING_SPOT {
-        PARK_ONE,
-        PARK_TWO,
-        PARK_THREE
+    public enum COLOR {
+        RED,
+        BLUE
+    }
+
+    public enum HAMSTER_POS
+    {
+        LEFT,
+        CENTER,
+        RIGHT
     }
 
     public Motion(DcMotor frontLeftDrive, DcMotor frontRightDrive, DcMotor rearLeftDrive, DcMotor rearRightDrive, Gamepad gamepad) {
