@@ -5,9 +5,9 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
-@Autonomous(name="Autonomous: Near", group="Robot")
+@Autonomous(name="Autonomous: Near Board", group="Robot")
 
-public class AutonomousNearBoard extends StandardSetupOpMode {
+public class AutonomousNearBoard extends AutonomousOpMode {
     public AutonomousNearBoard() {
 
     }
@@ -17,11 +17,11 @@ public class AutonomousNearBoard extends StandardSetupOpMode {
         super.runOpMode();
 
         // Initial parking spot
-        Motion.PARKING_SPOT parkingSpot = position;
+        //Motion.PARKING_SPOT parkingSpot = position;
 
         // Determine parking spot
-        parkingSpot = position;
-        telemetry.addData("Parking Spot", parkingSpot);
+        //parkingSpot = position;
+        //telemetry.addData("Parking Spot", parkingSpot);
         telemetry.update();
 
         //If red alliance then yScale is -1.0
@@ -31,26 +31,24 @@ public class AutonomousNearBoard extends StandardSetupOpMode {
         // Reset the 30 second runtime timer
         runtime.reset();
 
-        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+        super.setup(hardwareMap);
         super.arm.setShoulder(shoulder);
         super.wrist.start();
         super.claw.rightClose();
         super.claw.leftClose();
 
         // Poses
-        Pose2d startPose = new Pose2d();
-        Pose2d dropPose = new Pose2d(16.5, 0, 0);
         Pose2d boardPose = new Pose2d(25.5, 34 * yScale, Math.toRadians((360+(yScale*90)) % 360));
         Pose2d parkPose = new Pose2d(4, 30 * yScale, Math.toRadians(-90 * yScale));
 
         // Trajectories
         Trajectory start = drive.trajectoryBuilder(startPose)
                 .addTemporalMarker(0, () -> {
-                    super.shoulder.setShoulderPosition(0.75, -200);
+                    super.shoulder.setShoulderPosition(0.75, -220);
                 })
                 .lineToLinearHeading(dropPose)
                 .addTemporalMarker(0.5, () -> {
-                    super.arm.setArmPosition(1, 1650);
+                    super.arm.setArmPosition(1, 1630);
                 })
                 .addTemporalMarker(1.5, () -> {
                     super.claw.leftOpen();
@@ -74,7 +72,7 @@ public class AutonomousNearBoard extends StandardSetupOpMode {
                     super.arm.setArmPosition(1, 0);
                 })
                 .addTemporalMarker(0.5, () -> {
-                    super.shoulder.setShoulderPosition(0.75, 0);
+                    super.shoulder.setShoulderPosition(0.75, -40);
                 })
                 .lineToSplineHeading(parkPose)
                 .build();

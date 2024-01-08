@@ -20,7 +20,7 @@ public class Shoulder extends Thread {
     private int MAX_POS;
 
     //Pre-set min and max pos based on if the arm is in or out
-    public static int MIN_POS_ARM_IN = -25;
+    public static int MIN_POS_ARM_IN = -10;
     public static int MAX_POS_ARM_IN = -2657;
     public static int MIN_POS_ARM_OUT = -225;
     public static int MAX_POS_ARM_OUT = -2417;
