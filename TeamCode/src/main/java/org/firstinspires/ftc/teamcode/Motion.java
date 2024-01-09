@@ -31,18 +31,6 @@ public class Motion extends Thread {
         LEFT
     }
 
-    public enum COLOR {
-        RED,
-        BLUE
-    }
-
-    public enum HAMSTER_POS
-    {
-        LEFT,
-        CENTER,
-        RIGHT
-    }
-
     public Motion(DcMotor frontLeftDrive, DcMotor frontRightDrive, DcMotor rearLeftDrive, DcMotor rearRightDrive, Gamepad gamepad) {
         this.frontLeftDrive = frontLeftDrive;
         this.frontRightDrive = frontRightDrive;
