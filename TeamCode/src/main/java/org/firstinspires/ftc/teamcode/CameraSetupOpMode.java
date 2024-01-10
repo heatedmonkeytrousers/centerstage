@@ -35,8 +35,7 @@ public class CameraSetupOpMode extends LinearOpMode {
 
     protected OpenCvWebcam webcam = null;
     protected Scalar mu = new Scalar(0, 0, 0);
-    protected Motion.COLOR color = Motion.COLOR.RED;
-
+    protected AutonomousOpMode.COLOR color = AutonomousOpMode.COLOR.RED;
 
     @Override
     public void runOpMode() throws InterruptedException {

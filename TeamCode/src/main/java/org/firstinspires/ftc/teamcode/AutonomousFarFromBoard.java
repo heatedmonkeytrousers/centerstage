@@ -1,44 +1,31 @@
 package org.firstinspires.ftc.teamcode;
+
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
-@Autonomous(name="Autonomous: Far From Board", group="Robot")
+@Autonomous(name = "Autonomous: Far From Board", group = "Robot")
 
 public class AutonomousFarFromBoard extends AutonomousOpMode {
 
-    protected static final double LEFT_WIGGLE = -20;
-    protected static final double RIGHT_WIGGLE = 38;
     public AutonomousFarFromBoard() {
 
     }
 
     @Override
     public void runOpMode() throws InterruptedException {
+        // Setup
         super.runOpMode();
-
-        //If red alliance then yScale is -1.0
-        //If blue alliance then yScale is 1.0
-        double yScale = -1.0;
-
-        // Reset the 30 second runtime timer
-        runtime.reset();
-
-        super.setup(hardwareMap);
-        super.arm.setShoulder(shoulder);
-        super.wrist.start();
-        super.claw.rightClose();
-        super.claw.leftClose();
+        super.setup(hardwareMap, START_POS.FAR, HAMSTER_POS.RIGHT, COLOR.RED);
 
         // Robot Poses
-        Pose2d dropPose = new Pose2d(16.5, 0, Math.toRadians(RIGHT_WIGGLE * yScale));
-        Pose2d avoidPose = new Pose2d(14,yScale * -19, Math.toRadians(90 * yScale));
-        Pose2d alignPose = new Pose2d(53,yScale * -19, Math.toRadians(90 * yScale));
-        Pose2d backPose = new Pose2d(53,yScale * 85, Math.toRadians(90 * yScale));
-        Pose2d releasePose = new Pose2d(25,yScale * 86, Math.toRadians(90 * yScale));
-        Pose2d parkPose = new Pose2d(30,yScale * 85, Math.toRadians(-90 * yScale));
+        Pose2d avoidPose = new Pose2d(14, yScale * -19, Math.toRadians(90 * yScale));
+        Pose2d alignPose = new Pose2d(53, yScale * -19, Math.toRadians(90 * yScale));
+        Pose2d backPose = new Pose2d(53, yScale * 83, Math.toRadians(90 * yScale));
+        Pose2d releasePose = new Pose2d(25, yScale * 83, Math.toRadians(90 * yScale));
+        Pose2d parkPose = new Pose2d(30, yScale * 82, Math.toRadians(-90 * yScale));
 
         Trajectory start = drive.trajectoryBuilder(startPose)
                 .addTemporalMarker(0, () -> {
@@ -97,7 +84,7 @@ public class AutonomousFarFromBoard extends AutonomousOpMode {
         // Wait to start autonomous
         waitForStart();
 
-        if(isStopRequested()) return;
+        if (isStopRequested()) return;
 
         drive.followTrajectory(start);
         sleep(1000);
