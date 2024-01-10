@@ -156,8 +156,8 @@ public class BasicOpMode_Linear extends LinearOpMode {
             telemetry.addData("Arm Count2", "(%7d)", arm.getArmCounts2());
             telemetry.addData("Wrist Angle", "(%7f)", wrist.getWristAngleDegrees());
             telemetry.addData("Shoulder Count", "(%7d)", shoulder.getShoulderCounts());
-            telemetry.addData("Claw 1 Count", "(%.2f)", claw.getClaw1Counts());
-            telemetry.addData("Claw 2 Count", "(%.2f)", claw.getClaw2Counts());
+            telemetry.addData("Claw Right Count", "(%.2f)", claw.getClawLeftCounts());
+            telemetry.addData("Claw Left Count", "(%.2f)", claw.getClawRightCounts());
             telemetry.addData("Front Left Motor", "(%7d)", frontLeftDrive.getCurrentPosition());
             telemetry.addData("Front Right Motor", "(%7d)", frontRightDrive.getCurrentPosition());
             telemetry.addData("Rear Left Motor", "(%7d)", rearLeftDrive.getCurrentPosition());
