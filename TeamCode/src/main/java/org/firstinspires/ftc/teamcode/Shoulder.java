@@ -88,6 +88,14 @@ public class Shoulder extends Thread {
         shoulderDrive.setPower(power);
     }
 
+    public  void  setShoulderPosition(double power, double position) {
+        //Sets the power to the inputted power, clips the power to make sure it is within 0-1
+        power = Range.clip(power, MIN_SHOULDER_SPEED, MAX_SHOULDER_SPEED);
+        //Sets the position of the shoulder
+        shoulderDrive.setTargetPosition((int) ((MAX_POS_ARM_OUT-MIN_POS_ARM_IN) * position) + MIN_POS_ARM_IN);
+        shoulderDrive.setPower(power);
+    }
+
     @Override
     public void run() {
         int pos;

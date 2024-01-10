@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import org.checkerframework.checker.units.qual.A;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
@@ -69,6 +70,7 @@ public class CameraSetupOpMode extends LinearOpMode {
         private void colorDetermination(Mat input, AtomicInteger redCount, AtomicInteger blueCount) {
             int redTot = 0;
             int blueTot = 0;
+            int greenTot = 0;
 
             double redDist = 0;
             double blueDist = 0;
@@ -77,6 +79,7 @@ public class CameraSetupOpMode extends LinearOpMode {
             //Badger Bots ideal values
             Scalar red = new Scalar(90, 42, 72);
             Scalar blue = new Scalar(25, 70, 123);
+            Scalar green = new Scalar(55, 101, 88);
             Scalar grey = new Scalar(140,140,140);
 
             Mat mask = new Mat(input.rows() , input.cols(), input.type());
@@ -87,12 +90,12 @@ public class CameraSetupOpMode extends LinearOpMode {
                 for (int c = 0; c < input.cols(); c++) {
                     double[] v = input.get(r, c);
                     //Gets averages for each color
+
                     redDist = Math.sqrt(Math.pow((v[0] - red.val[0]), 2) + Math.pow((v[1] - red.val[1]), 2) + Math.pow((v[2] - red.val[2]), 2));
                     blueDist = Math.sqrt(Math.pow((v[0] - blue.val[0]), 2) + Math.pow((v[1] - blue.val[1]), 2) + Math.pow((v[2] - blue.val[2]), 2));
-                    //greyDist = Math.sqrt(Math.pow((v[0] - grey.val[0]), 2) + Math.pow((v[1] - grey.val[1]), 2) + Math.pow((v[2] - grey.val[2]), 2));
 
                     if (redDist < blueDist) {
-                        if (redDist < 50) {
+                        if (redDist < 40) {
                             redTot++;
                         }
                     } else {
@@ -100,27 +103,9 @@ public class CameraSetupOpMode extends LinearOpMode {
                             blueTot++;
                         }
                     }
-                    //If grey is the closest point
-                    /*
-                    if (greyDist < redDist && greyDist < blueDist) {
-
-                    } else {
-                        //Masks the pixel
-                        double[] data = {255, 255, 255, 255};
-                        mask.put(r, c, data);
-                        //Increments the total of red, green, and blue pixels
-                        count++;
-                        redTot += v[0];
-                        //greenTot += v[1];
-                        blueTot += v[2];
-                    }
-
-                     */
 
                 }
             }
-
-            //Core.bitwise_and(mask, input, input);
 
             redCount.set(redTot);
             blueCount.set(blueTot);
@@ -129,31 +114,26 @@ public class CameraSetupOpMode extends LinearOpMode {
 
         @Override
         public Mat processFrame(Mat input) {
-
-            //Crops the input but sets the output to the un-cropped input
-            //Mat input2 = input;
-            //input = input.submat(new Rect(146, 90, 500, 500));
             output = input;
+            int buffer = 30;
 
-            //Red val without Hamster region 1
-
-            Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(0,0);
-            Point REGION2_TOPLEFT_ANCHOR_POINT = new Point(106,0);
-            Point REGION3_TOPLEFT_ANCHOR_POINT = new Point(212,0);
+            Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(0,80);
+            Point REGION2_TOPLEFT_ANCHOR_POINT = new Point(106-buffer,80);
+            Point REGION3_TOPLEFT_ANCHOR_POINT = new Point(212,80);
             int REGION_WIDTH = 106;
-            int REGION_HEIGHT = 240;
+            int REGION_HEIGHT = 100;
 
             Point region1_pointA = new Point(
                     REGION1_TOPLEFT_ANCHOR_POINT.x,
                     REGION1_TOPLEFT_ANCHOR_POINT.y);
             Point region1_pointB = new Point(
-                    REGION1_TOPLEFT_ANCHOR_POINT.x + REGION_WIDTH,
+                    REGION1_TOPLEFT_ANCHOR_POINT.x + REGION_WIDTH-buffer,
                     REGION1_TOPLEFT_ANCHOR_POINT.y + REGION_HEIGHT);
             Point region2_pointA = new Point(
                     REGION2_TOPLEFT_ANCHOR_POINT.x,
                     REGION2_TOPLEFT_ANCHOR_POINT.y);
             Point region2_pointB = new Point(
-                    REGION2_TOPLEFT_ANCHOR_POINT.x + REGION_WIDTH,
+                    REGION2_TOPLEFT_ANCHOR_POINT.x + REGION_WIDTH+buffer,
                     REGION2_TOPLEFT_ANCHOR_POINT.y + REGION_HEIGHT);
             Point region3_pointA = new Point(
                     REGION3_TOPLEFT_ANCHOR_POINT.x,
@@ -166,6 +146,28 @@ public class CameraSetupOpMode extends LinearOpMode {
             Mat region2 = input.submat(new Rect(region2_pointA, region2_pointB));
             Mat region3= input.submat(new Rect(region3_pointA, region3_pointB));
 
+            Mat test = input.submat(new Rect(160, 160, 10,10));
+
+            double count = 0;
+            double redTot = 0;
+            double greenTot = 0;
+            double blueTot = 0;
+            for (int r = 0; r < test.rows(); r++) {
+                for (int c = 0; c < test.cols(); c++) {
+                    double[] v = test.get(r, c);
+                    //Gets averages for each color
+                        //Increments the total of red, green, and blue pixels
+                        count++;
+                        redTot += v[0];
+                        greenTot += v[1];
+                        blueTot += v[2];
+
+                }
+            }
+            double averageRed = redTot / count;
+            double averageGreen = greenTot / count;
+            double averageBlue = blueTot / count;
+
             AtomicInteger red1 = new AtomicInteger();
             AtomicInteger blue1 = new AtomicInteger();
             AtomicInteger red2 = new AtomicInteger();
@@ -176,6 +178,26 @@ public class CameraSetupOpMode extends LinearOpMode {
             colorDetermination(region1, red1, blue1);
             colorDetermination(region2, red2, blue2);
             colorDetermination(region3, red3, blue3);
+
+
+
+            //Red val w/o Hamster 1
+            int initRed1 = 0;
+            //red1.set(red1.get() - initRed1);
+            //Red val w/o Hamster 2
+            int initRed2 = 0;
+            //red2.set(red2.get() - initRed2);
+            //Red val w/o Hamster 3
+            int initRed3 = 11;
+            //red3.set(red3.get() - initRed3);
+
+            //Blue val w/o Hamster 1
+            int initBlue1;
+            //Blue val w/o Hamster 2
+            int initBlue2;
+            //Blue val w/o Hamster 3
+            int initBlue3;
+
             //Use Math.max to determine if it is red or blue
             //Use nested if statements to determine which region it is in
             String colors;
@@ -234,6 +256,13 @@ public class CameraSetupOpMode extends LinearOpMode {
                     region3_pointB, // Second point which defines the rectangle
                     new Scalar(0, 0, 0), // The color the rectangle is drawn in
                     2); // Thickness of the rectangle lines
+
+            Imgproc.rectangle(
+                    input,
+                    new Point(100, 100),
+                    new Point(110, 110),
+                    new Scalar(0,0,0),
+                    1);
 /*
             Imgproc.rectangle(
                     output,
@@ -254,6 +283,9 @@ public class CameraSetupOpMode extends LinearOpMode {
 
             //  Debug
             telemetry.addData("Parking Spot", color);
+            telemetry.addData("Red avg", averageRed);
+            telemetry.addData("Green avg", averageGreen);
+            telemetry.addData("Blue avg", averageBlue);
             telemetry.addData("Red 1", red1.get());
             telemetry.addData("Red 2", red2.get());
             telemetry.addData("Red 3", red3.get());

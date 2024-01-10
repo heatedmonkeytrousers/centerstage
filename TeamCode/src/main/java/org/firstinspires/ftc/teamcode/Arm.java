@@ -54,6 +54,19 @@ public class Arm extends Thread{
         armDrive1.setTargetPosition(position);
     }
 
+    /**
+     * Sets the position of the arm based on a value 0.0-1.0
+     * @param power the power of the arm
+     * @param position a value 0.0-1.0 which determines the position
+     */
+    public void setArmPosition(double power, double position) {
+        power = Range.clip(power, MIN_ARM_SPEED, MAX_ARM_SPEED);
+        armDrive1.setPower(power);
+        armDrive2.setPower(power);
+        armDrive2.setTargetPosition((int) ((MAX_POS-MIN_POS) * position) + MIN_POS);
+        armDrive1.setTargetPosition((int) (MAX_POS * position));
+    }
+
     @Override
     public void run() {
         while (!isInterrupted()) {
