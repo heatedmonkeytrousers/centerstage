@@ -15,9 +15,13 @@ public class AutonomousNearBoard extends AutonomousOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
+        // Get position and color from camera
+        //HAMSTER_POS hamsterPos = HAMSTER_POS.RIGHT;
+        //COLOR color = COLOR.BLUE;
+
         //Setup
         super.runOpMode();
-        super.setup(hardwareMap, START_POS.NEAR, HAMSTER_POS.RIGHT, COLOR.RED);
+        super.setup(hardwareMap, START_POS.NEAR, hamsterPos, color);
 
         // Poses
         Pose2d boardPose = new Pose2d(25.5, 35 * yScale, Math.toRadians((360 + (yScale * 90)) % 360));
@@ -64,9 +68,9 @@ public class AutonomousNearBoard extends AutonomousOpMode {
 
         // Wait to start autonomous
         waitForStart();
-
         if (isStopRequested()) return;
 
+        // Initial drop, drive to board and drop then park
         drive.followTrajectory(start);
         sleep(1000);
         drive.followTrajectory(board);

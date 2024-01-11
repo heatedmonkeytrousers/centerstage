@@ -16,9 +16,14 @@ public class AutonomousFarFromBoard extends AutonomousOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
+        // Get position and color from camera
+        //HAMSTER_POS hamsterPos = HAMSTER_POS.RIGHT;
+        //COLOR color = COLOR.BLUE;
+
         // Setup
         super.runOpMode();
-        super.setup(hardwareMap, START_POS.FAR, HAMSTER_POS.RIGHT, COLOR.RED);
+        super.sleep(500);
+        super.setup(hardwareMap, START_POS.FAR, hamsterPos, color);
 
         // Robot Poses
         Pose2d avoidPose = new Pose2d(14, yScale * -19, Math.toRadians(90 * yScale));
@@ -83,9 +88,9 @@ public class AutonomousFarFromBoard extends AutonomousOpMode {
 
         // Wait to start autonomous
         waitForStart();
-
         if (isStopRequested()) return;
 
+        // Initial drop, drive to board and drop then park
         drive.followTrajectory(start);
         sleep(1000);
         drive.followTrajectory(back);

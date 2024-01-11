@@ -27,6 +27,8 @@ public class AutonomousOpMode extends StandardSetupOpMode {
         NEAR
     }
 
+    private static final double FORWARD = 16.5;
+    private static final double WIGGLE = 2.5;
     private static final double SMALL_TURN = 25;
     private static final double LARGE_TURN = 38;
 
@@ -39,48 +41,59 @@ public class AutonomousOpMode extends StandardSetupOpMode {
     protected HAMSTER_POS hamsterPos;
     protected COLOR color;
 
-    //If red alliance then yScale is -1.0
-    //If blue alliance then yScale is 1.0
+    // Scale applied to flip the y-axis
     protected double yScale;
-    protected double sScale;
 
     protected void setup(HardwareMap hardwareMap, START_POS startPos, HAMSTER_POS hamsterPos, COLOR color) {
         // Variable setup
         drive = new SampleMecanumDrive(hardwareMap);
         this.startPos = startPos;
         this.hamsterPos = hamsterPos;
+
+        //If red alliance then yScale is -1.0
+        //If blue alliance then yScale is 1.0
         this.yScale = (color == COLOR.RED) ? -1.0 : 1.0;
-        this.sScale = (startPos == START_POS.FAR) ? 1.0 : -1.0;
 
         // Reset the 30 second runtime timer
         runtime.reset();
 
+        // Telemetry
         telemetry.addData("hamsterPos", hamsterPos);
         telemetry.addData("color", color);
         telemetry.update();
 
         // Drop angle
-        double dropAngle = 0;
+        double deltaY; // Wiggle amount from the center
+        double dropAngle; // Angle to turn for drop
         switch (hamsterPos) {
             case LEFT:
-                if (color == COLOR.RED)
+                if (color == COLOR.RED) {
                     dropAngle = ((startPos == START_POS.FAR) ? SMALL_TURN : LARGE_TURN);
-                else
+                    deltaY = ((startPos == START_POS.FAR) ? WIGGLE : -WIGGLE);
+                }
+                else {
                     dropAngle = ((startPos == START_POS.FAR) ? LARGE_TURN : SMALL_TURN);
+                    deltaY = ((startPos == START_POS.FAR) ? -WIGGLE : WIGGLE);
+                }
                 break;
             case RIGHT:
-                if (color == COLOR.RED)
+                if (color == COLOR.RED) {
                     dropAngle = ((startPos == START_POS.FAR) ? -LARGE_TURN : -SMALL_TURN);
-                else
+                    deltaY = ((startPos == START_POS.FAR) ? WIGGLE : -WIGGLE);
+                }
+                else {
                     dropAngle = ((startPos == START_POS.FAR) ? -SMALL_TURN : -LARGE_TURN);
+                    deltaY = ((startPos == START_POS.FAR) ? -WIGGLE : WIGGLE);
+                }
                 break;
-            case CENTER:
+            default:
+                deltaY = 0;
                 dropAngle = 0;
                 break;
         }
 
-        // Common drop pose for all starting positions
-        dropPose = new Pose2d(16.5, -2.5 * sScale * yScale, Math.toRadians(dropAngle));
+        // Drop pose from unique starting positions
+        dropPose = new Pose2d(FORWARD, deltaY, Math.toRadians(dropAngle));
 
         // Class Setup
         super.arm.setShoulder(shoulder);
