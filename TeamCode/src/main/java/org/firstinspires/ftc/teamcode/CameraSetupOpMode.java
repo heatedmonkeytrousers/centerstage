@@ -167,34 +167,11 @@ public class CameraSetupOpMode extends LinearOpMode {
             Mat region3= input.submat(new Rect(region3_pointA, region3_pointB));
 
             //A test region to find the color values of an object
-            Mat test = input.submat(new Rect(160, 160, 10,10));
+            //Mat test = input.submat(new Rect(160, 160, 10,10));
 
-            //A var to keep track of the total number of pixels
-            double count = 0;
-            //Vars to keep track of our red, green, and blue totals
-            double redTot = 0;
-            double greenTot = 0;
-            double blueTot = 0;
-
-            //Goes through each pixel
-            for (int row = 0; row < test.rows(); row++) {
-                for (int col = 0; col < test.cols(); col++) {
-                    //Gets the color data at a specific pixel
-                    double[] colorDat = test.get(row, col);
-                    //Increments the count of total pixels
-                    count++;
-                    //Increments the count of each color value
-                    //based on the color data found at the pixel
-                    redTot += colorDat[0];
-                    greenTot += colorDat[1];
-                    blueTot += colorDat[2];
-                }
-            }
-            //Gets the average of each color by dividing our color counts by the total amount of pixels
-            //Maybe use Core.mean(test) to find mean of each color
-            double averageRed = redTot / count;
-            double averageGreen = greenTot / count;
-            double averageBlue = blueTot / count;
+            //Gets the average of each color inside the test area
+            //For finding the color value of objects
+            //Scalar mean = Core.mean(test);
 
             //Creating vars to store the red and blue values for each of these regions
             AtomicInteger red1 = new AtomicInteger();
@@ -293,16 +270,13 @@ public class CameraSetupOpMode extends LinearOpMode {
 
             Imgproc.rectangle(
                     input,
-                    new Point(100, 100),
-                    new Point(110, 110),
+                    new Point(160, 160),
+                    new Point(170, 170),
                     new Scalar(0,0,0),
                     1);
 
             //  Debug
             telemetry.addData("Parking Spot", color);
-            telemetry.addData("Red avg", averageRed);
-            telemetry.addData("Green avg", averageGreen);
-            telemetry.addData("Blue avg", averageBlue);
             telemetry.addData("Red 1", red1.get());
             telemetry.addData("Red 2", red2.get());
             telemetry.addData("Red 3", red3.get());
@@ -311,7 +285,7 @@ public class CameraSetupOpMode extends LinearOpMode {
             telemetry.addData("Blue 3", blue3.get());
             telemetry.addData("Color", colors);
             telemetry.addData("Region", region);
-            telemetry.addData("Mean", "%d %d", (int) mu.val[0], (int) mu.val[2]);
+            //telemetry.addData("Mean", "%d %d %d", (int) mean.val[0], (int) mean.val[1], (int) mean.val[2]);
             telemetry.update();
             return input;
         }
