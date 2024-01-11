@@ -22,7 +22,7 @@ public class AutonomousFarFromBoard extends AutonomousOpMode {
 
         // Setup
         super.runOpMode();
-        super.sleep(500);
+        super.sleep(3000);
         super.setup(hardwareMap, START_POS.FAR, hamsterPos, color);
 
         // Robot Poses

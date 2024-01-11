@@ -62,8 +62,8 @@ public class CameraSetupOpMode extends LinearOpMode {
     }
 
     //Badger Bots ideal values
-    static final Scalar RED = new Scalar(90, 42, 72);
-    static final Scalar BLUE = new Scalar(25, 70, 123);
+    static final Scalar RED = new Scalar(140, 23, 21);
+    static final Scalar BLUE = new Scalar(5, 39, 80);
     static final Scalar GREY = new Scalar(140,140,140);
     static final int RED_THRESH = 50;
     static final int BLUE_THRESH = 50;

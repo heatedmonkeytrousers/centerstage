@@ -38,8 +38,6 @@ public class AutonomousOpMode extends StandardSetupOpMode {
     protected Pose2d startPose = new Pose2d();
     protected Pose2d dropPose;
     protected START_POS startPos;
-    protected HAMSTER_POS hamsterPos;
-    protected COLOR color;
 
     // Scale applied to flip the y-axis
     protected double yScale;
