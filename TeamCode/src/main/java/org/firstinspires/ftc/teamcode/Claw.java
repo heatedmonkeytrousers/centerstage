@@ -7,65 +7,104 @@ import com.qualcomm.robotcore.util.Range;
 
 public class Claw extends Thread {
 
-    private final Servo clawServo1;
-    private final Servo clawServo2;
+    //Vars for both claw servos
+    private final Servo clawServoLeft;
+    private final Servo clawServoRight;
+    //Vars for the gamepad and shoulder
     private final Gamepad gamepad;
     private final Shoulder shoulder;
-    private double totalCountsOne;
-    private double totalCountsTwo;
+    //Vars for the positions of each claw servo
+    private double totalCountsLeft;
+    private double totalCountsRight;
 
-    private static double OPEN = 0.57;
-    private static double CLOSE = 0.2;
+    //Value of the claw servo when it is open
+    private static final double OPEN = 0.57;
+    //Value of the claw servo when it is closed
+    private static final double CLOSE = 0.2;
 
-    public static int STRAIGHT_UP = -1370;
-
+    /**
+     * Constructor for the claw
+     * @param gamepad the gamepad used to control the claw
+     * @param clawServo1 the servo for the left claw
+     * @param clawServo2 the servo for the right claw
+     * @param shoulder the shoulder motor
+     */
     public Claw(Gamepad gamepad, Servo clawServo1, Servo clawServo2, Shoulder shoulder) {
         this.gamepad = gamepad;
-        this.clawServo1 = clawServo1;
-        this.clawServo2 = clawServo2;
+        this.clawServoLeft = clawServo1;
+        this.clawServoRight = clawServo2;
         this.shoulder = shoulder;
     }
 
-    protected double getClaw1Counts() {
-        return totalCountsOne;
+    /**
+     * Gets the position of the left claw
+     * @return totalCountsOne the position of the left claw
+     */
+    protected double getClawRightCounts() {
+        return totalCountsRight;
     }
-    protected double getClaw2Counts() {
-        return totalCountsTwo;
+    /**
+     * Gets the position of the left claw
+     * @return totalCountsTwo the position of the left claw
+     */
+    protected double getClawLeftCounts() {
+        return totalCountsLeft;
     }
 
+    /**
+     * Opens the left claw
+     */
     public void leftOpen() {
-        clawServo1.setPosition(OPEN);
+        clawServoLeft.setPosition(OPEN);
     }
 
+    /**
+     * Closes the left claw
+     */
     public void leftClose() {
-        clawServo1.setPosition(CLOSE);
+        clawServoLeft.setPosition(CLOSE);
     }
 
+    /**
+     * Opens the rightClaw
+     */
     public void rightOpen() {
-        clawServo2.setPosition(OPEN);
+        clawServoRight.setPosition(OPEN);
     }
 
+    /**
+     * Closes the right claw
+     */
     public void rightClose() {
-        clawServo2.setPosition(CLOSE);
+        clawServoRight.setPosition(CLOSE);
     }
 
     @Override
     public void run() {
         while (!isInterrupted()) {
-            totalCountsOne = clawServo1.getPosition();
-            totalCountsTwo = clawServo2.getPosition();
+            //Gets the positions of the claws
+            totalCountsLeft = clawServoLeft.getPosition();
+            totalCountsRight = clawServoRight.getPosition();
 
-                if (gamepad.left_bumper) {
-                    leftOpen();
-                } else if (gamepad.left_trigger > 0) {
-                    leftClose();
-                }
+            //If the left bumper is pressed
+            if (gamepad.left_bumper) {
+                //Opens the left claw
+                leftOpen();
+            //If the left trigger is pressed
+            } else if (gamepad.left_trigger > 0) {
+                //Closes the left claw
+                leftClose();
+            }
 
-                if (gamepad.right_bumper) {
-                    rightOpen();
-                } else if (gamepad.right_trigger > 0) {
-                    rightClose();
-                }
+            //If the right bumper is pressed
+            if (gamepad.right_bumper) {
+                //Opens the right claw
+                rightOpen();
+            //If the right trigger is pressed
+            } else if (gamepad.right_trigger > 0) {
+                //Closes the right claw
+                rightClose();
+            }
 
         }
     }

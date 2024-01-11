@@ -19,6 +19,7 @@ public class Wrist extends Thread{
     double position = 1.0;
     double delta = 0.01;
 
+    //A list of all the shoulder positions where we want the wrist to change
     private static ArrayList<Double> s = new ArrayList<Double>(List.of(
             0.00, //On the floor front
             0.16, //90 degree front
@@ -28,6 +29,7 @@ public class Wrist extends Thread{
             0.83, //90 degree back
             0.83, //90 degree back
             0.96)); //On the floor back
+    //A list of all the wrist positions
     private static ArrayList<Double> w = new ArrayList<Double>(List.of(
             0.93, //Wrist on floor front
             1.0, //Wrist flat 90 degree front
@@ -40,8 +42,13 @@ public class Wrist extends Thread{
     ));
 
 
-
-    //Threading the wrist
+    /**
+     * A constructor for the wrist
+     * @param wristServo the servo for the wrist
+     * @param wristAnalog the analog servo for the wrist
+     * @param shoulder the shoulder motor
+     * @param gamepad the gamepad used to control the wrist
+     */
     public Wrist(Servo wristServo, AnalogInput wristAnalog, Shoulder shoulder, Gamepad gamepad) {
         this.wristServo = wristServo;
         this.wristAnalog = wristAnalog;
@@ -49,12 +56,19 @@ public class Wrist extends Thread{
         this.gamepad = gamepad;
     }
 
+    /**
+     * Gets the position of the wrist
+     * @return totalCounts, the position of the wrist
+     */
     protected double getWristAngleDegrees() {
         return totalCounts;
     }
 
-    //Figures out what range we're in and sets the wrist's position accordingly
-
+    /**
+     *Figures out what range we're in and sets the wrist's position accordingly    public double wristPos(double shoulderAngle) {
+     * @param shoulderAngle the current position of the shoulder
+     * @return the position of the wrist
+     */
     public double wristPos(double shoulderAngle) {
         int i = 0;
         //Goes through the shoulder list
@@ -79,6 +93,7 @@ public class Wrist extends Thread{
             //Gets the total counts for telemetry purposes
             totalCounts = wristServo.getPosition();
 /*
+            //Manual for the wrist
             if (gamepad.back) {
                 //position = Range.clip(position - delta, 0.4, 1.0);
                 totalCounts -= delta;
@@ -90,8 +105,6 @@ public class Wrist extends Thread{
             }
             
  */
-
-
             //Gets the total counts for telemetry purposes
             //totalCounts = wristServo.getPosition();
 
