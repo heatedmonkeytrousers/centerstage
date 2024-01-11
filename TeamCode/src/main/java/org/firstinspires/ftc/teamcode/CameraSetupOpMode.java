@@ -1,13 +1,9 @@
 package org.firstinspires.ftc.teamcode;
 
-import android.bluetooth.le.ScanCallback;
-import android.util.MutableInt;
-
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.checkerframework.checker.units.qual.A;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
@@ -33,9 +29,13 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Disabled
 public class CameraSetupOpMode extends LinearOpMode {
 
+    // Camera can do up to 1920x1080
+    static final int IMAGE_WIDTH = 320;
+    static final int IMAGE_HEIGHT = 180;
+
     protected OpenCvWebcam webcam = null;
-    protected Scalar mu = new Scalar(0, 0, 0);
     protected AutonomousOpMode.COLOR color = AutonomousOpMode.COLOR.RED;
+    protected AutonomousOpMode.HAMSTER_POS hamsterPos = AutonomousOpMode.HAMSTER_POS.CENTER;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -51,7 +51,7 @@ public class CameraSetupOpMode extends LinearOpMode {
             public void onOpened() {
                 //Camera Starts Running
                 //1920, 1080
-                webcam.startStreaming(320, 240, OpenCvCameraRotation.UPRIGHT);
+                webcam.startStreaming(IMAGE_WIDTH, IMAGE_HEIGHT, OpenCvCameraRotation.UPRIGHT);
             }
 
             @Override
@@ -61,66 +61,51 @@ public class CameraSetupOpMode extends LinearOpMode {
         });
     }
 
+    //Badger Bots ideal values
+    static final Scalar RED = new Scalar(140, 23, 21);
+    static final Scalar BLUE = new Scalar(5, 39, 80);
+    static final Scalar GREY = new Scalar(140,140,140);
+    static final int RED_THRESH = 50;
+    static final int BLUE_THRESH = 50;
+
+    static final int RED_REGION1_CAL = 0;
+    static final int RED_REGION2_CAL = 0;
+    static final int RED_REGION3_CAL = 0;
+    static final int BLUE_REGION1_CAL = 0;
+    static final int BLUE_REGION2_CAL = 0;
+    static final int BLUE_REGION3_CAL = 0;
+
     public class CameraCalibration extends OpenCvPipeline {
 
-        //Sets up position var and output
-        Mat output = new Mat();
-
-        /**
-         * Gets the total amount oof red and blue pixels
-         * @param input the image we want to find the red and blue pixels in
-         * @param redCount The place to store the amount of red pixels
-         * @param blueCount The place to store the amount of blue pixels
-         */
         private void colorDetermination(Mat input, AtomicInteger redCount, AtomicInteger blueCount) {
-            //Initializes vars to keep track of the total amount of each color
             int redTot = 0;
             int blueTot = 0;
-            int greenTot = 0;
 
-            //Vars to find the distance from ideal color values
             double redDist = 0;
             double blueDist = 0;
-            double greyDist = 0;
-
-            //Badger Bots ideal values
-            Scalar red = new Scalar(90, 42, 72);
-            Scalar blue = new Scalar(25, 70, 123);
-            Scalar green = new Scalar(55, 101, 88);
-            Scalar grey = new Scalar(140,140,140);
-
-            Mat mask = new Mat(input.rows() , input.cols(), input.type());
-            int count = 0;
 
             //Goes through every pixel of input
             for (int r = 0; r < input.rows(); r++) {
                 for (int c = 0; c < input.cols(); c++) {
-                    //Gets the color values at the current pixel
+                    // Get pixel RGB value
                     double[] v = input.get(r, c);
 
-                    //Finds the distance of the color values of the current pixel from our ideal values
-                    redDist = Math.sqrt(Math.pow((v[0] - red.val[0]), 2) + Math.pow((v[1] - red.val[1]), 2) + Math.pow((v[2] - red.val[2]), 2));
-                    blueDist = Math.sqrt(Math.pow((v[0] - blue.val[0]), 2) + Math.pow((v[1] - blue.val[1]), 2) + Math.pow((v[2] - blue.val[2]), 2));
+                    // Get distances
+                    redDist = Math.sqrt(Math.pow((v[0] - RED.val[0]), 2) + Math.pow((v[1] - RED.val[1]), 2) + Math.pow((v[2] - RED.val[2]), 2));
+                    blueDist = Math.sqrt(Math.pow((v[0] - BLUE.val[0]), 2) + Math.pow((v[1] - BLUE.val[1]), 2) + Math.pow((v[2] - BLUE.val[2]), 2));
 
-                    //If the pixel is closer to being red
+                    // Increment counts if within threshold
                     if (redDist < blueDist) {
-                        //And if the pixel is closer than 40 away from being red
-                        if (redDist < 40) {
-                            //Then increase the red total
+                        if (redDist < RED_THRESH) {
                             redTot++;
                         }
-                    //If the pixel is closer to being blue
                     } else {
-                        //And if the pixel is closer than 50 away from being blue
-                        if (blueDist < 50) {
-                            //Increase the blue total
+                        if (blueDist < BLUE_THRESH) {
                             blueTot++;
                         }
                     }
                 }
             }
-
-            //Set the value of the red and blue totals
             redCount.set(redTot);
             blueCount.set(blueTot);
         }
@@ -128,31 +113,25 @@ public class CameraSetupOpMode extends LinearOpMode {
 
         @Override
         public Mat processFrame(Mat input) {
-            //Output will be used to display our information
-            output = input;
-            //Buffer is used to adjust the regions
-            int buffer = 30;
 
-            //The points we will use to draw the regions
-            Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(0,80);
-            Point REGION2_TOPLEFT_ANCHOR_POINT = new Point(106-buffer,80);
-            Point REGION3_TOPLEFT_ANCHOR_POINT = new Point(212,80);
-            //The height and width of each region
-            int REGION_WIDTH = 106;
-            int REGION_HEIGHT = 100;
+            // Dynamic sizing
+            Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(0,IMAGE_HEIGHT / 3);
+            Point REGION2_TOPLEFT_ANCHOR_POINT = new Point(IMAGE_WIDTH / 3,IMAGE_HEIGHT / 3);
+            Point REGION3_TOPLEFT_ANCHOR_POINT = new Point(IMAGE_WIDTH / 3 * 2,IMAGE_HEIGHT / 3);
+            int REGION_WIDTH = IMAGE_WIDTH / 3;
+            int REGION_HEIGHT = IMAGE_HEIGHT - IMAGE_HEIGHT /3;
 
-            //Creating more points that will help us draw our regions
             Point region1_pointA = new Point(
                     REGION1_TOPLEFT_ANCHOR_POINT.x,
                     REGION1_TOPLEFT_ANCHOR_POINT.y);
             Point region1_pointB = new Point(
-                    REGION1_TOPLEFT_ANCHOR_POINT.x + REGION_WIDTH-buffer,
+                    REGION1_TOPLEFT_ANCHOR_POINT.x + REGION_WIDTH,
                     REGION1_TOPLEFT_ANCHOR_POINT.y + REGION_HEIGHT);
             Point region2_pointA = new Point(
                     REGION2_TOPLEFT_ANCHOR_POINT.x,
                     REGION2_TOPLEFT_ANCHOR_POINT.y);
             Point region2_pointB = new Point(
-                    REGION2_TOPLEFT_ANCHOR_POINT.x + REGION_WIDTH+buffer,
+                    REGION2_TOPLEFT_ANCHOR_POINT.x + REGION_WIDTH,
                     REGION2_TOPLEFT_ANCHOR_POINT.y + REGION_HEIGHT);
             Point region3_pointA = new Point(
                     REGION3_TOPLEFT_ANCHOR_POINT.x,
@@ -181,71 +160,55 @@ public class CameraSetupOpMode extends LinearOpMode {
             AtomicInteger red3 = new AtomicInteger();
             AtomicInteger blue3 = new AtomicInteger();
 
-            //Gets the red and blue totals for each region
             colorDetermination(region1, red1, blue1);
             colorDetermination(region2, red2, blue2);
             colorDetermination(region3, red3, blue3);
 
-            //Red val w/o Hamster 1
-            int initRed1 = 0;
-            //red1.set(red1.get() - initRed1);
-            //Red val w/o Hamster 2
-            int initRed2 = 0;
-            //red2.set(red2.get() - initRed2);
-            //Red val w/o Hamster 3
-            int initRed3 = 11;
-            //red3.set(red3.get() - initRed3);
+            // Remove calibration values from counts
+            red1.addAndGet(-RED_REGION1_CAL);
+            red2.addAndGet(-RED_REGION2_CAL);
+            red3.addAndGet(-RED_REGION3_CAL);
+            blue1.addAndGet(-BLUE_REGION1_CAL);
+            blue2.addAndGet(-BLUE_REGION2_CAL);
+            blue3.addAndGet(-BLUE_REGION3_CAL);
 
-            //Blue val w/o Hamster 1
-            int initBlue1;
-            //Blue val w/o Hamster 2
-            int initBlue2;
-            //Blue val w/o Hamster 3
-            int initBlue3;
-
+            //Use Math.max to determine if it is red or blue
+            //Use nested if statements to determine which region it is in
             String colors;
             String region;
-            //If the largest red value across all three regions is greater than the largest blue value across all three regions
-            if (Math.max(red1.get(), Math.max(red2.get(), red3.get())) > Math.max(blue1.get(), Math.max(blue2.get(), blue3.get()))) {
+            int maxRed = Math.max(red1.get(), Math.max(red2.get(), red3.get()));
+            int maxBlue = Math.max(blue1.get(), Math.max(blue2.get(), blue3.get()));
+            if (maxRed > maxBlue) {
                 //It is red
-                //If the red value in region 1 is greatest
+                color = AutonomousOpMode.COLOR.RED;
+                colors = "red";
                 if (red1.get() > red2.get() && red1.get() > red3.get()) {
-                    //It is in region 1
-                    colors = "red";
-                    region = "1";
-                //If the red value in region 2 is greatest
+                    hamsterPos = AutonomousOpMode.HAMSTER_POS.LEFT;
+                    region = "left";
                 } else if (red2.get() > red3.get()) {
-                    //It is in region 2
-                    region = "2";
-                    colors = "red";
-                //If the red value in region 3 is greatest
+                    hamsterPos = AutonomousOpMode.HAMSTER_POS.CENTER;
+                    region = "center";
                 } else {
-                    //It is in region 3
-                    colors = "red";
-                    region = "3";
+                    hamsterPos = AutonomousOpMode.HAMSTER_POS.RIGHT;
+                    region = "right";
                 }
-            //If the largest blue value is greater than the largest red value
             } else {
                 //It is blue
-                //If the blue value in region 1 is greatest
+                colors = "blue";
+                color = AutonomousOpMode.COLOR.BLUE;
                 if (blue1.get() > blue2.get() && blue1.get() > blue3.get()) {
-                    //It is in region 1
-                    colors = "blue";
-                    region = "1";
-                //If the blue value in region 2 is greatest
+                    hamsterPos = AutonomousOpMode.HAMSTER_POS.LEFT;
+                    region = "left";
                 } else if (blue2.get() > blue3.get()) {
-                    //It is in region 2
-                    colors = "blue";
-                    region = "2";
-                //If the blue value in region 3 is greatest
+                    hamsterPos = AutonomousOpMode.HAMSTER_POS.CENTER;
+                    region = "center";
                 } else {
-                    //It is in region 3
-                    colors = "blue";
-                    region = "3";
+                    hamsterPos = AutonomousOpMode.HAMSTER_POS.RIGHT;
+                    region = "right";
                 }
             }
 
-            //Displays a rectangle for lining up the webcam
+            //Displays rectangles for lining up the webcam
             Imgproc.rectangle(
                     input, // Buffer to draw on
                     region1_pointA, // First point which defines the rectangle
@@ -260,7 +223,6 @@ public class CameraSetupOpMode extends LinearOpMode {
                     new Scalar(0, 0, 0), // The color the rectangle is drawn in
                     2); // Thickness of the rectangle lines
 
-
             Imgproc.rectangle(
                     input, // Buffer to draw on
                     region3_pointA, // First point which defines the rectangle
@@ -268,12 +230,16 @@ public class CameraSetupOpMode extends LinearOpMode {
                     new Scalar(0, 0, 0), // The color the rectangle is drawn in
                     2); // Thickness of the rectangle lines
 
+            //webcam.closeCameraDevice();
+            /*
             Imgproc.rectangle(
                     input,
                     new Point(160, 160),
                     new Point(170, 170),
                     new Scalar(0,0,0),
                     1);
+
+             */
 
             //  Debug
             telemetry.addData("Parking Spot", color);
