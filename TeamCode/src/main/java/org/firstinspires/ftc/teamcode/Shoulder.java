@@ -173,19 +173,19 @@ public class Shoulder extends Thread {
             //Pre set buttons for setting the position
                 if (gamepad.a) {
                     //Driving position
-                    setShoulderPosition(0.75, MIN_POS_ARM_IN);
-                } else if (gamepad.b) {
-                    //On the floor
                     setShoulderPosition(0.75, 0);
+                } else if (gamepad.b) {
+                    //Between line 2 and 3 front
+                    setShoulderPosition(0.75, -739);
                 } else if (gamepad.y) {
                     //Between line 1 and 2 front
                     setShoulderPosition(0.75, -655);
                 } else if (gamepad.x) {
-                    //Between line 2 and 3 front
-                    setShoulderPosition(0.75, -739);
-                } else if (gamepad.dpad_down) {
-                    //On floor back
-                    setShoulderPosition(0.75, -2600);
+                    //Driving position
+                    setShoulderPosition(0.75, -50 );
+                } else if (gamepad.back) {
+                    MIN_POS_ARM_IN += 5;
+                    setShoulderPosition(0.5, MIN_POS_ARM_IN);
                 } else if (gamepad.dpad_left) {
                     //Between line 1 and 2 back
                     setShoulderPosition(0.75, -1936);

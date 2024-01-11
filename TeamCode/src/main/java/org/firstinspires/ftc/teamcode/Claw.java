@@ -88,22 +88,22 @@ public class Claw extends Thread {
 
             //If the left bumper is pressed
             if (gamepad.left_bumper) {
-                //Opens the left claw
-                leftOpen();
-            //If the left trigger is pressed
-            } else if (gamepad.left_trigger > 0) {
                 //Closes the left claw
                 leftClose();
+            //If the left trigger is pressed
+            } else if (gamepad.left_trigger > 0) {
+                //Opens the left claw
+                leftOpen();
             }
 
             //If the right bumper is pressed
             if (gamepad.right_bumper) {
-                //Opens the right claw
-                rightOpen();
-            //If the right trigger is pressed
-            } else if (gamepad.right_trigger > 0) {
                 //Closes the right claw
                 rightClose();
+            //If the right trigger is pressed
+            } else if (gamepad.right_trigger > 0) {
+                //Opens the right claw
+                rightOpen();
             }
 
         }

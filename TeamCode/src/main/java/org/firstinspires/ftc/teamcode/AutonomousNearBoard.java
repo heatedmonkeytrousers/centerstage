@@ -21,7 +21,7 @@ public class AutonomousNearBoard extends AutonomousOpMode {
 
         //Setup
         super.runOpMode();
-        super.sleep(3000);
+        super.sleep(4000);
         super.setup(hardwareMap, START_POS.NEAR, hamsterPos, color);
 
         // Poses

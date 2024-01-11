@@ -128,7 +128,7 @@ public class BasicOpMode_Linear extends LinearOpMode {
 
         //Launch Threads
         Motion motion = new Motion(frontLeftDrive, frontRightDrive, rearLeftDrive, rearRightDrive, gamepad1);
-        Arm arm = new Arm(armDrive1, armDrive2, gamepad2);
+        Arm arm = new Arm(armDrive1, armDrive2, gamepad2, null);
         Shoulder shoulder = new Shoulder(shoulderDrive, arm, gamepad2);
         Wrist wrist = new Wrist(wristServo, wristAnalog, shoulder, gamepad2);
         Claw claw = new Claw(gamepad2, clawServo1, clawServo2, shoulder);

@@ -29,10 +29,11 @@ public class Arm extends Thread{
      * @param armDrive2 the motor for the second arm
      * @param gamepad the gamepad used to control the arm
      */
-    public Arm(DcMotor armDrive1, DcMotor armDrive2, Gamepad gamepad) {
+    public Arm(DcMotor armDrive1, DcMotor armDrive2, Gamepad gamepad, Shoulder shoulder) {
         this.armDrive1 = armDrive1;
         this.armDrive2 = armDrive2;
         this.gamepad = gamepad;
+        this.shoulder = shoulder;
         this.armDrive1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         this.armDrive2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
@@ -113,6 +114,17 @@ public class Arm extends Thread{
             //Sets the arm pos based on the pos we just calculated
             setArmPosition(ARM_SPEED, pos);
 
+            if (shoulder != null) {
+                int shoulderCounts = shoulder.getShoulderCounts();
+                if (shoulderCounts > Shoulder.MIN_POS_ARM_OUT) {
+                    double shoulderRatio = (double) (shoulderCounts - Shoulder.MIN_POS_ARM_IN) / (double) (Shoulder.MIN_POS_ARM_OUT-Shoulder.MIN_POS_ARM_IN);
+                    double armRatio = getArmRatio();
+                    if (armRatio > shoulderRatio) {
+                        int newPos = (int) ((double) (Shoulder.MIN_POS_ARM_OUT-Shoulder.MIN_POS_ARM_IN) * armRatio) + Shoulder.MIN_POS_ARM_IN;
+                        shoulder.setShoulderPosition(0.75, newPos);
+                    }
+                }
+            }
         }
     }
 }
