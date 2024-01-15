@@ -29,8 +29,11 @@ public class AutonomousOpMode extends StandardSetupOpMode {
 
     private static final double FORWARD = 16.5;
     private static final double WIGGLE = 2.5;
-    private static final double SMALL_TURN = 25;
+    private static final double SMALL_TURN = 27;
     private static final double LARGE_TURN = 38;
+
+    protected static final int ARM_DROP = 1600;
+    protected static final int INITIAL_SHOULDER_RAISE = -100;
 
     protected SampleMecanumDrive drive;
 

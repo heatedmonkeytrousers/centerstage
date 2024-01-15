@@ -17,7 +17,7 @@ public class Wrist extends Thread{
     private Gamepad gamepad;
 
     double position = 1.0;
-    double delta = 0.01;
+    static double delta = 0.03;
 
     //A list of all the shoulder positions where we want the wrist to change
     private static ArrayList<Double> s = new ArrayList<Double>(List.of(
@@ -31,14 +31,14 @@ public class Wrist extends Thread{
             0.96)); //On the floor back
     //A list of all the wrist positions
     private static ArrayList<Double> w = new ArrayList<Double>(List.of(
-            0.93, //Wrist on floor front
-            1.0, //Wrist flat 90 degree front
-            0.814, //Wrist at 60 90 degree front
-            0.933, //Wrist at 60 front
-            0.465, //Wrist at 60 back
-            0.596, //Wrist at 60 90 degree back
-            0.424, //Wrist flat 90 degree back
-            0.525 //Wrist on floor back
+            0.93-delta, //Wrist on floor front
+            1.0-delta, //Wrist flat 90 degree front
+            0.814-delta, //Wrist at 60 90 degree front
+            0.933-delta, //Wrist at 60 front
+            0.465-delta, //Wrist at 60 back
+            0.596-delta, //Wrist at 60 90 degree back
+            0.424-delta, //Wrist flat 90 degree back
+            0.525-delta //Wrist on floor back
     ));
 
 
@@ -80,7 +80,7 @@ public class Wrist extends Thread{
             }
         }
         //Using the i value we found from the for loop, we find the position of the wrist
-        //We first the ratio of the shoulder angle to the range it is in
+        //We first find the ratio of the shoulder angle to the range it is in
         //Then we multiply it by the range of the wrist angles for that range
         //Lastly we add the wrist pos found at the index
         return ( (shoulderAngle - s.get(i)) / (s.get(i+1) - s.get(i)) ) * (w.get(i+1) - w.get(i)) + w.get(i);

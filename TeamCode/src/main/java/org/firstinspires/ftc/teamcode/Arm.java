@@ -115,11 +115,19 @@ public class Arm extends Thread{
             setArmPosition(ARM_SPEED, pos);
 
             if (shoulder != null) {
+                //Gets the shoulder's current position
                 int shoulderCounts = shoulder.getShoulderCounts();
+                //Checks if the shoulder is close to the floor
                 if (shoulderCounts > Shoulder.MIN_POS_ARM_OUT) {
+                    //Finds the ratio of the shoulder in the floor zone
+                    //Divides shoulder's current position int the zone by the full range of the floor zone
                     double shoulderRatio = (double) (shoulderCounts - Shoulder.MIN_POS_ARM_IN) / (double) (Shoulder.MIN_POS_ARM_OUT-Shoulder.MIN_POS_ARM_IN);
+                    //Gets the arm ratio, which is how far the arm is extended
                     double armRatio = getArmRatio();
+                    //Checks if the arm is too far extended
                     if (armRatio > shoulderRatio) {
+                        //Multiplies the full range of the floor zone by the arm ratio and adds the min pos (in case the min pos wasn't 0)
+                        //Places the shoulder in the floor zone based on the arm ratio
                         int newPos = (int) ((double) (Shoulder.MIN_POS_ARM_OUT-Shoulder.MIN_POS_ARM_IN) * armRatio) + Shoulder.MIN_POS_ARM_IN;
                         shoulder.setShoulderPosition(0.75, newPos);
                     }

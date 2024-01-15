@@ -33,12 +33,14 @@ public class AutonomousFarFromBoard extends AutonomousOpMode {
         Pose2d parkPose = new Pose2d(30, yScale * 82, Math.toRadians(-90 * yScale));
 
         Trajectory start = drive.trajectoryBuilder(startPose)
+
                 .addTemporalMarker(0, () -> {
-                    super.shoulder.setShoulderPosition(0.75, -220);
+                    super.shoulder.setShoulderPosition(0.75, INITIAL_SHOULDER_RAISE);
                 })
+
                 .lineToLinearHeading(dropPose)
                 .addTemporalMarker(0.5, () -> {
-                    super.arm.setArmPosition(1, 1630);
+                    super.arm.setArmPosition(1, ARM_DROP);
                 })
                 .addTemporalMarker(1.5, () -> {
                     super.claw.leftOpen();
@@ -97,7 +99,7 @@ public class AutonomousFarFromBoard extends AutonomousOpMode {
         drive.followTrajectory(forward1);
         drive.followTrajectory(forward2);
         drive.followTrajectory(board);
-        sleep(500);
+        sleep(700);
         drive.followTrajectory(park);
     }
 }
