@@ -32,19 +32,6 @@ public class AutonomousFarFromBoard extends AutonomousOpMode {
         Pose2d releasePose = new Pose2d(25, yScale * 83, Math.toRadians(90 * yScale));
         Pose2d parkPose = new Pose2d(30, yScale * 82, Math.toRadians(-90 * yScale));
 
-        Trajectory start = drive.trajectoryBuilder(startPose)
-                .addTemporalMarker(0, () -> {
-                    super.shoulder.setShoulderPosition(0.75, -220);
-                })
-                .lineToLinearHeading(dropPose)
-                .addTemporalMarker(0.5, () -> {
-                    super.arm.setArmPosition(1, 1630);
-                })
-                .addTemporalMarker(1.5, () -> {
-                    super.claw.leftOpen();
-                })
-                .build();
-
         Trajectory back = drive.trajectoryBuilder(dropPose)
                 .addTemporalMarker(0, () -> {
                     super.arm.setArmPosition(1.0, 0);
@@ -92,7 +79,7 @@ public class AutonomousFarFromBoard extends AutonomousOpMode {
 
         // Initial drop, drive to board and drop then park
         drive.followTrajectory(start);
-        sleep(1000);
+        sleep(500);
         drive.followTrajectory(back);
         drive.followTrajectory(forward1);
         drive.followTrajectory(forward2);

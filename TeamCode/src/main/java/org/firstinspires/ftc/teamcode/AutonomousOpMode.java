@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
@@ -38,6 +39,9 @@ public class AutonomousOpMode extends StandardSetupOpMode {
     protected Pose2d startPose = new Pose2d();
     protected Pose2d dropPose;
     protected START_POS startPos;
+
+    // Trajectories
+    protected Trajectory start;
 
     // Scale applied to flip the y-axis
     protected double yScale;
@@ -92,6 +96,23 @@ public class AutonomousOpMode extends StandardSetupOpMode {
 
         // Drop pose from unique starting positions
         dropPose = new Pose2d(FORWARD, deltaY, Math.toRadians(dropAngle));
+
+        // Trajectories
+        Trajectory start = drive.trajectoryBuilder(startPose)
+                .addTemporalMarker(0, () -> {
+                    super.shoulder.setShoulderPosition(0.75, -220);
+                })
+                .lineToLinearHeading(dropPose)
+                .addTemporalMarker(0.5, () -> {
+                    super.arm.setArmPosition(1, 1630);
+                })
+                .addTemporalMarker(1.5, () -> {
+                    super.claw.leftOpen();
+                })
+                .addTemporalMarker(2.0, () -> {
+                    super.arm.setArmPosition(1, 950);
+                })
+                .build();
 
         // Class Setup
         super.arm.setShoulder(shoulder);
