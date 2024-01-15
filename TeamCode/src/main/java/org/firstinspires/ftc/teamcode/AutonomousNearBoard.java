@@ -38,7 +38,7 @@ public class AutonomousNearBoard extends AutonomousOpMode {
 
                 .lineToLinearHeading(dropPose)
                 .addTemporalMarker(0.5, () -> {
-                    super.arm.setArmPosition(1, ARM_DROP);
+                    super.arm.setArmPosition(1, INITIAL_ARM_EXTENTION);
                 })
                 .addTemporalMarker(1.5, () -> {
                     super.claw.leftOpen();

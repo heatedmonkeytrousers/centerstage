@@ -99,7 +99,7 @@ public class Shoulder extends Thread {
      * @param power the power of the shoulder
      * @param position a value 0.0-1.0 that sets the position of the shoulder
      */
-    public  void  setShoulderPosition(double power, double position) {
+    public  void setShoulderPosition(double power, double position) {
         //Sets the power to the inputted power, clips the power to make sure it is within 0-1
         power = Range.clip(power, MIN_SHOULDER_SPEED, MAX_SHOULDER_SPEED);
         //Sets the position of the shoulder based on the position given
@@ -124,53 +124,39 @@ public class Shoulder extends Thread {
             MAX_POS = (int) Math.round(arm.getArmRatio() * (MAX_POS_ARM_OUT-MAX_POS_ARM_IN) + MAX_POS_ARM_IN);
 
             //Sets the shoulder speed to a value -1 through 1 based on the right stick
-            double SHOULDER_SPEED = gamepad.right_stick_y;
-            double power;
-            //If the shoulder is not told to hold it's position and the speed is less than 0.15
-            //Make the shoulder hold it's current position
-            if (!hold && Math.abs(SHOULDER_SPEED) < 0.15) {
-                //Set the pos to the shoulder's current position
-                pos = totalCounts;
-                power=0.75;
-                setShoulderPosition(power, pos);
-                hold = true;
-            //If the shoulder speed is greater than 0.15
-            } else if (SHOULDER_SPEED > 0.15) {
-                //Move the shoulder towards the min pos
-                pos = MIN_POS;
-                //If the shoulder is up high enough, lower the speed
-                PF = isUp() ? 0.5:0.75;
-                //Multiplies speed by the power factor
-                power = SHOULDER_SPEED * PF;
-                setShoulderPosition(power, pos);
-                hold = false;
-            //If the shoulder speed is less than -0.15
-            } else if (SHOULDER_SPEED < -0.15) {
-                //Moves the shoulder towards the max pos
-                pos = MAX_POS;
-                //If the shoulder is up high enough, lower the speed
-                PF = isUp() ? 0.5:0.75;
-                //Multiplies speed by the power factor
-                power = Math.abs(SHOULDER_SPEED) * PF;
-                setShoulderPosition(power, pos);
-                hold = false;
-            }
-            /*
-            else if (totalCounts < MIN_POS) {
-                pos = MIN_POS;
-                power = 0.75;
-                setPosition(power, pos);
-                hold = false;
-            } else if (totalCounts > MAX_POS) {
-                pos = MAX_POS;
-                power = 0.75;
-                setPosition(power, pos);
-                hold = false;
-            }
-
-             */
-
-            //Pre set buttons for setting the position
+            if (gamepad != null) {
+                double SHOULDER_SPEED = gamepad.right_stick_y;
+                double power;
+                //If the shoulder is not told to hold it's position and the speed is less than 0.15
+                //Make the shoulder hold it's current position
+                if (!hold && Math.abs(SHOULDER_SPEED) < 0.15) {
+                    //Set the pos to the shoulder's current position
+                    pos = totalCounts;
+                    power = 0.75;
+                    setShoulderPosition(power, pos);
+                    hold = true;
+                    //If the shoulder speed is greater than 0.15
+                } else if (SHOULDER_SPEED > 0.15) {
+                    //Move the shoulder towards the min pos
+                    pos = MIN_POS;
+                    //If the shoulder is up high enough, lower the speed
+                    PF = isUp() ? 0.5 : 0.75;
+                    //Multiplies speed by the power factor
+                    power = SHOULDER_SPEED * PF;
+                    setShoulderPosition(power, pos);
+                    hold = false;
+                    //If the shoulder speed is less than -0.15
+                } else if (SHOULDER_SPEED < -0.15) {
+                    //Moves the shoulder towards the max pos
+                    pos = MAX_POS;
+                    //If the shoulder is up high enough, lower the speed
+                    PF = isUp() ? 0.5 : 0.75;
+                    //Multiplies speed by the power factor
+                    power = Math.abs(SHOULDER_SPEED) * PF;
+                    setShoulderPosition(power, pos);
+                    hold = false;
+                }
+                //Pre set buttons for setting the position
                 if (gamepad.a) {
                     //Driving position
                     setShoulderPosition(0.75, 0);
@@ -182,7 +168,7 @@ public class Shoulder extends Thread {
                     setShoulderPosition(0.75, -655);
                 } else if (gamepad.x) {
                     //Driving position
-                    setShoulderPosition(0.75, -50 );
+                    setShoulderPosition(0.75, -50);
                 } else if (gamepad.back) {
                     MIN_POS_ARM_IN += 5;
                     setShoulderPosition(0.5, MIN_POS_ARM_IN);
@@ -196,6 +182,7 @@ public class Shoulder extends Thread {
                     //Straight up and down
                     setShoulderPosition(0.75, -1325);
                 }
+            }
         }
     }
 }

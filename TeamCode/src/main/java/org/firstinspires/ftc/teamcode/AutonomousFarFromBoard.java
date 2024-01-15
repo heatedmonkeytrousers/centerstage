@@ -26,20 +26,21 @@ public class AutonomousFarFromBoard extends AutonomousOpMode {
         super.setup(hardwareMap, START_POS.FAR, hamsterPos, color);
 
         // Robot Poses
-        Pose2d avoidPose = new Pose2d(14, yScale * -24, Math.toRadians(90 * yScale));
+        Pose2d avoidPose = new Pose2d(14, yScale * -23, Math.toRadians(90 * yScale));
         Pose2d alignPose = new Pose2d(53, yScale * -19, Math.toRadians(90 * yScale));
         Pose2d backPose = new Pose2d(53, yScale * 83, Math.toRadians(90 * yScale));
-        double boardDropX = (hamsterPos == HAMSTER_POS.LEFT) ? 25-(2 * yScale): (hamsterPos == HAMSTER_POS.RIGHT) ? 25+(5 * yScale): 25;
-        Pose2d releasePose = new Pose2d(boardDropX, yScale * 81, Math.toRadians(90 * yScale));
-        Pose2d parkPose = new Pose2d(30, yScale * 82, Math.toRadians(-90 * yScale));
+        double boardDropX = (hamsterPos == HAMSTER_POS.LEFT) ? 25-(7 * yScale): (hamsterPos == HAMSTER_POS.RIGHT) ? 25+(6 * yScale): 25;
+        Pose2d releasePose = new Pose2d(boardDropX, yScale * 83, Math.toRadians(90 * yScale));
+        Pose2d boardBackUp = new Pose2d(boardDropX, yScale * 81, Math.toRadians(90 * yScale));
+        Pose2d parkPose = new Pose2d(32, yScale * 82, Math.toRadians(-90 * yScale));
 
         Trajectory start = drive.trajectoryBuilder(startPose)
                 .addTemporalMarker(0, () -> {
-                    super.shoulder.setShoulderPosition(0.75, -220);
+                    super.shoulder.setShoulderPosition(0.75, -200);
                 })
                 .lineToLinearHeading(dropPose)
                 .addTemporalMarker(0.5, () -> {
-                    super.arm.setArmPosition(1, 1630);
+                    super.arm.setArmPosition(1, INITIAL_ARM_EXTENTION);
                 })
                 .addTemporalMarker(1.5, () -> {
                     super.claw.leftOpen();
@@ -54,6 +55,9 @@ public class AutonomousFarFromBoard extends AutonomousOpMode {
                     super.shoulder.setShoulderPosition(0.75, -100);
                 })
                 .lineToLinearHeading(avoidPose)
+                .addTemporalMarker(1, () -> {
+                    super.shoulder.setShoulderPosition(0.75, -50);
+                })
                 .build();
 
         Trajectory forward1 = drive.trajectoryBuilder(avoidPose)
@@ -69,20 +73,24 @@ public class AutonomousFarFromBoard extends AutonomousOpMode {
                 .addTemporalMarker(0, () -> {
                     super.shoulder.setShoulderPosition(0.75, -480);
                 })
-                .addTemporalMarker(0, () -> {
+                .addTemporalMarker(1, () -> {
                     super.arm.setArmPosition(1, 800);
                 })
                 .addTemporalMarker(2, () -> {
                     super.claw.rightOpen();
                 })
                 .build();
-
-        Trajectory park = drive.trajectoryBuilder(releasePose)
-                .lineToLinearHeading(parkPose)
+        Trajectory backUp = drive.trajectoryBuilder(releasePose)
+                .lineToLinearHeading(boardBackUp)
                 .addTemporalMarker(0, () -> {
                     super.arm.setArmPosition(1, 0);
                 })
-                .addTemporalMarker(0.5, () -> {
+                .build();
+
+
+        Trajectory park = drive.trajectoryBuilder(boardBackUp)
+                .lineToLinearHeading(parkPose)
+                .addTemporalMarker(1, () -> {
                     super.shoulder.setShoulderPosition(0.75, -40);
                 })
                 .build();
@@ -98,6 +106,8 @@ public class AutonomousFarFromBoard extends AutonomousOpMode {
         drive.followTrajectory(forward1);
         drive.followTrajectory(forward2);
         drive.followTrajectory(board);
+        sleep(700);
+        drive.followTrajectory(backUp);
         sleep(500);
         drive.followTrajectory(park);
     }

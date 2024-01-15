@@ -31,10 +31,11 @@ public class AutonomousOpMode extends StandardSetupOpMode {
     private static final double FORWARD = 16.5;
     private static final double WIGGLE = 2.5;
     private static final double SMALL_TURN = 27;
-    private static final double LARGE_TURN = 38;
+    private static final double LARGE_TURN = 42;
 
     protected static final int ARM_DROP = 1600;
-    protected static final int INITIAL_SHOULDER_RAISE = -100;
+    protected static final int INITIAL_SHOULDER_RAISE = -75;
+    protected int INITIAL_ARM_EXTENTION = 0; //How far the arm extends to drop the pixel on the tape
 
     protected SampleMecanumDrive drive;
 
@@ -73,27 +74,32 @@ public class AutonomousOpMode extends StandardSetupOpMode {
         switch (hamsterPos) {
             case LEFT:
                 if (color == COLOR.RED) {
-                    dropAngle = ((startPos == START_POS.FAR) ? SMALL_TURN : LARGE_TURN);
+                    dropAngle = ((startPos == START_POS.FAR) ? SMALL_TURN : 45);
                     deltaY = ((startPos == START_POS.FAR) ? WIGGLE : -WIGGLE);
+                    INITIAL_ARM_EXTENTION = ((startPos == START_POS.FAR) ? 398:1262);
                 }
                 else {
                     dropAngle = ((startPos == START_POS.FAR) ? LARGE_TURN : SMALL_TURN);
                     deltaY = ((startPos == START_POS.FAR) ? -WIGGLE : WIGGLE);
+                    INITIAL_ARM_EXTENTION = ((startPos == START_POS.FAR) ? 1262:398);
                 }
                 break;
             case RIGHT:
                 if (color == COLOR.RED) {
                     dropAngle = ((startPos == START_POS.FAR) ? -LARGE_TURN : -SMALL_TURN);
                     deltaY = ((startPos == START_POS.FAR) ? WIGGLE : -WIGGLE);
+                    INITIAL_ARM_EXTENTION = ((startPos == START_POS.FAR) ? 1262:398);
                 }
                 else {
-                    dropAngle = ((startPos == START_POS.FAR) ? -SMALL_TURN : -LARGE_TURN);
+                    dropAngle = ((startPos == START_POS.FAR) ? -35 : -LARGE_TURN);
                     deltaY = ((startPos == START_POS.FAR) ? -WIGGLE : WIGGLE);
+                    INITIAL_ARM_EXTENTION = ((startPos == START_POS.FAR) ? 850:398);
                 }
                 break;
             default:
                 deltaY = 0;
                 dropAngle = 0;
+                INITIAL_ARM_EXTENTION = 1262;
                 break;
         }
 
@@ -107,7 +113,7 @@ public class AutonomousOpMode extends StandardSetupOpMode {
                 })
                 .lineToLinearHeading(dropPose)
                 .addTemporalMarker(0.5, () -> {
-                    super.arm.setArmPosition(1, 1630);
+                    super.arm.setArmPosition(1, INITIAL_ARM_EXTENTION);
                 })
                 .addTemporalMarker(1.5, () -> {
                     super.claw.leftOpen();
@@ -120,6 +126,7 @@ public class AutonomousOpMode extends StandardSetupOpMode {
         // Class Setup
         super.arm.setShoulder(shoulder);
         super.wrist.start();
+        super.shoulder.start();
         super.claw.rightClose();
         super.claw.leftClose();
     }
