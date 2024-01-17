@@ -20,7 +20,7 @@ public class Claw extends Thread {
     //Value of the claw servo when it is open
     private static final double OPEN = 0.57;
     //Value of the claw servo when it is closed
-    private static final double CLOSE = 0.2;
+    private static final double CLOSE = 0.26;
 
     /**
      * Constructor for the claw

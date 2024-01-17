@@ -16,7 +16,7 @@ public class Motion extends Thread {
 
     public static int ROTATE_360 = 3800;
 
-    private static double PF = 0.75;
+    private static double PF = 1.0;
 
     private final DcMotor frontLeftDrive;
     private final DcMotor frontRightDrive;
