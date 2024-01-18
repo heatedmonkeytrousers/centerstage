@@ -9,20 +9,16 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 @Autonomous(name = "Autonomous: Far From Board", group = "Robot")
 
 public class AutonomousFarFromBoard extends AutonomousOpMode {
-
+    private double PARTNER_WAIT_SECONDS = 0.0;
     public AutonomousFarFromBoard() {
 
     }
 
     @Override
     public void runOpMode() throws InterruptedException {
-        // Get position and color from camera
-        //HAMSTER_POS hamsterPos = HAMSTER_POS.RIGHT;
-        //COLOR color = COLOR.BLUE;
-
         // Setup
-        super.runOpMode();
-        super.sleep(4000);
+        super.runOpMode(); // Gets hamster position and color from camera
+        super.sleep(3000);
         super.setup(hardwareMap, START_POS.FAR, hamsterPos, color);
 
         // Robot Poses
@@ -60,11 +56,11 @@ public class AutonomousFarFromBoard extends AutonomousOpMode {
                 })
                 .build();
 
-        Trajectory forward1 = drive.trajectoryBuilder(avoidPose)
+        Trajectory slide = drive.trajectoryBuilder(avoidPose)
                 .lineToLinearHeading(alignPose)
                 .build();
 
-        Trajectory forward2 = drive.trajectoryBuilder(alignPose)
+        Trajectory forward = drive.trajectoryBuilder(alignPose)
                 .lineToLinearHeading(backPose)
                 .build();
 
@@ -103,8 +99,9 @@ public class AutonomousFarFromBoard extends AutonomousOpMode {
         drive.followTrajectory(start);
         sleep(1000);
         drive.followTrajectory(back);
-        drive.followTrajectory(forward1);
-        drive.followTrajectory(forward2);
+        drive.followTrajectory(slide);
+        drive.followTrajectory(forward);
+        sleep((int)(PARTNER_WAIT_SECONDS*1000));
         drive.followTrajectory(board);
         sleep(700);
         drive.followTrajectory(backUp);

@@ -71,6 +71,95 @@ public class AutonomousOpMode extends StandardSetupOpMode {
         // Drop angle
         double deltaY; // Wiggle amount from the center
         double dropAngle; // Angle to turn for drop
+
+        // NEAR
+        if(startPos == START_POS.NEAR)
+        {
+            if(color == COLOR.RED) {
+                // NEAR/RED/LEFT
+                if(hamsterPos == HAMSTER_POS.LEFT){
+                    dropAngle = LARGE_TURN;
+                    deltaY = -WIGGLE;
+                    INITIAL_ARM_EXTENTION = 1262;
+                }
+                // NEAR/RED/CENTER
+                else if(hamsterPos == HAMSTER_POS.CENTER){
+                    dropAngle = 0;
+                    deltaY = 0;
+                    INITIAL_ARM_EXTENTION = 1262;
+                }
+                // NEAR/RED/RIGHT
+                else{
+                    dropAngle = -35;
+                    deltaY = -WIGGLE;
+                    INITIAL_ARM_EXTENTION = 850;
+                }
+            }
+            else {
+                // NEAR/BLUE/LEFT
+                if(hamsterPos == HAMSTER_POS.LEFT){
+                    dropAngle = SMALL_TURN;
+                    deltaY = WIGGLE;
+                    INITIAL_ARM_EXTENTION = 398;
+                }
+                // NEAR/BLUE/CENTER
+                else if(hamsterPos == HAMSTER_POS.CENTER){
+                    dropAngle = 0;
+                    deltaY = 0;
+                    INITIAL_ARM_EXTENTION = 1262;
+                }
+                // NEAR/BLUE/RIGHT
+                else{
+                    dropAngle = -LARGE_TURN;
+                    deltaY = WIGGLE;
+                    INITIAL_ARM_EXTENTION = 1262;
+                }
+            }
+        }
+        // FAR
+        else {
+            if(color == COLOR.RED) {
+                // FAR/RED/LEFT
+                if(hamsterPos == HAMSTER_POS.LEFT){
+                    dropAngle = SMALL_TURN;
+                    deltaY = WIGGLE;
+                    INITIAL_ARM_EXTENTION = 398;
+                }
+                // FAR/RED/CENTER
+                else if(hamsterPos == HAMSTER_POS.CENTER){
+                    dropAngle = 0;
+                    deltaY = 0;
+                    INITIAL_ARM_EXTENTION = 1262;
+                }
+                // FAR/RED/RIGHT
+                else{
+                    dropAngle = -LARGE_TURN;
+                    deltaY = WIGGLE;
+                    INITIAL_ARM_EXTENTION = 1262;
+                }
+            }
+            else {
+                // FAR/BLUE/LEFT
+                if(hamsterPos == HAMSTER_POS.LEFT){
+                    dropAngle = LARGE_TURN;
+                    deltaY = -WIGGLE;
+                    INITIAL_ARM_EXTENTION = 1262;
+                }
+                // FAR/BLUE/CENTER
+                else if(hamsterPos == HAMSTER_POS.CENTER){
+                    dropAngle = 0;
+                    deltaY = 0;
+                    INITIAL_ARM_EXTENTION = 1262;
+                }
+                // FAR/BLUE/RIGHT
+                else{
+                    dropAngle = -35;
+                    deltaY = -WIGGLE;
+                    INITIAL_ARM_EXTENTION = 850;
+                }
+            }
+        }
+        /*
         switch (hamsterPos) {
             case LEFT:
                 if (color == COLOR.RED) {
@@ -102,6 +191,7 @@ public class AutonomousOpMode extends StandardSetupOpMode {
                 INITIAL_ARM_EXTENTION = 1262;
                 break;
         }
+        */
 
         // Drop pose from unique starting positions
         dropPose = new Pose2d(FORWARD, deltaY, Math.toRadians(dropAngle));
