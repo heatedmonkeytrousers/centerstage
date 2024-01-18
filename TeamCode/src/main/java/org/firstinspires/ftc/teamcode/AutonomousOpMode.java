@@ -80,7 +80,7 @@ public class AutonomousOpMode extends StandardSetupOpMode {
                 if(hamsterPos == HAMSTER_POS.LEFT){
                     dropAngle = LARGE_TURN;
                     deltaY = -WIGGLE;
-                    INITIAL_ARM_EXTENTION = CENTER_ARM_EXTENSION;
+                    INITIAL_ARM_EXTENTION = 1200;
                 }
                 // NEAR/RED/CENTER
                 else if(hamsterPos == HAMSTER_POS.CENTER){
@@ -90,9 +90,9 @@ public class AutonomousOpMode extends StandardSetupOpMode {
                 }
                 // NEAR/RED/RIGHT
                 else{
-                    dropAngle = -35;
+                    dropAngle = -36;
                     deltaY = -WIGGLE;
-                    INITIAL_ARM_EXTENTION = 850;
+                    INITIAL_ARM_EXTENTION = 820;
                 }
             }
             else {
@@ -143,7 +143,7 @@ public class AutonomousOpMode extends StandardSetupOpMode {
                 if(hamsterPos == HAMSTER_POS.LEFT){
                     dropAngle = LARGE_TURN;
                     deltaY = -WIGGLE;
-                    INITIAL_ARM_EXTENTION = CENTER_ARM_EXTENSION;
+                    INITIAL_ARM_EXTENTION = 1200;
                 }
                 // FAR/BLUE/CENTER
                 else if(hamsterPos == HAMSTER_POS.CENTER){
@@ -153,45 +153,12 @@ public class AutonomousOpMode extends StandardSetupOpMode {
                 }
                 // FAR/BLUE/RIGHT
                 else{
-                    dropAngle = -35;
+                    dropAngle = -36;
                     deltaY = -WIGGLE;
-                    INITIAL_ARM_EXTENTION = 850;
+                    INITIAL_ARM_EXTENTION = 820;
                 }
             }
         }
-        /*
-        switch (hamsterPos) {
-            case LEFT:
-                if (color == COLOR.RED) {
-                    dropAngle = ((startPos == START_POS.FAR) ? SMALL_TURN : 45);
-                    deltaY = ((startPos == START_POS.FAR) ? WIGGLE : -WIGGLE);
-                    INITIAL_ARM_EXTENTION = ((startPos == START_POS.FAR) ? 398:1262);
-                }
-                else {
-                    dropAngle = ((startPos == START_POS.FAR) ? LARGE_TURN : SMALL_TURN);
-                    deltaY = ((startPos == START_POS.FAR) ? -WIGGLE : WIGGLE);
-                    INITIAL_ARM_EXTENTION = ((startPos == START_POS.FAR) ? 1262:398);
-                }
-                break;
-            case RIGHT:
-                if (color == COLOR.RED) {
-                    dropAngle = ((startPos == START_POS.FAR) ? -LARGE_TURN : -SMALL_TURN);
-                    deltaY = ((startPos == START_POS.FAR) ? WIGGLE : -WIGGLE);
-                    INITIAL_ARM_EXTENTION = ((startPos == START_POS.FAR) ? 1262:398);
-                }
-                else {
-                    dropAngle = ((startPos == START_POS.FAR) ? -35 : -LARGE_TURN);
-                    deltaY = ((startPos == START_POS.FAR) ? -WIGGLE : WIGGLE);
-                    INITIAL_ARM_EXTENTION = ((startPos == START_POS.FAR) ? 850:398);
-                }
-                break;
-            default:
-                deltaY = 0;
-                dropAngle = 0;
-                INITIAL_ARM_EXTENTION = 1262;
-                break;
-        }
-        */
 
         // Drop pose from unique starting positions
         dropPose = new Pose2d(FORWARD, deltaY, Math.toRadians(dropAngle));
