@@ -25,8 +25,8 @@ public class AutonomousNearBoard extends AutonomousOpMode {
         super.setup(hardwareMap, START_POS.NEAR, hamsterPos, color);
 
         // Poses
-        double boardDropX = (hamsterPos == HAMSTER_POS.LEFT) ? 25.5-(2 * yScale): (hamsterPos == HAMSTER_POS.RIGHT) ? 25.5+(5 * yScale): 26.5;
-        Pose2d boardPose = new Pose2d(boardDropX, 35 * yScale, Math.toRadians((360 + (yScale * 90)) % 360));
+        double boardDropX = (hamsterPos == HAMSTER_POS.LEFT) ? 25.5-(6 * yScale): (hamsterPos == HAMSTER_POS.RIGHT) ? 25.5+(5 * yScale): 26.5;
+        Pose2d boardPose = new Pose2d(boardDropX, 34 * yScale, Math.toRadians((360 + (yScale * 90)) % 360));
         Pose2d parkPose = new Pose2d(4, 33 * yScale, Math.toRadians(-90 * yScale));
 
         // Trajectories
@@ -43,8 +43,11 @@ public class AutonomousNearBoard extends AutonomousOpMode {
                 .addTemporalMarker(1.5, () -> {
                     super.claw.leftOpen();
                 })
+                .addTemporalMarker(2.5, () -> {
+                    super.arm.setArmPosition(1, INITIAL_ARM_EXTENTION-100);
+                })
                 .addTemporalMarker(2.0, () -> {
-                    super.shoulder.setShoulderPosition(1, -200);
+                    super.shoulder.setShoulderPosition(0.5, -200);
                 })
                 .build();
 
@@ -83,7 +86,5 @@ public class AutonomousNearBoard extends AutonomousOpMode {
         drive.followTrajectory(board);
         sleep(200);
         drive.followTrajectory(park);
-        sleep(5000);
-
     }
 }

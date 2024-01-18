@@ -162,25 +162,25 @@ public class Shoulder extends Thread {
                     setShoulderPosition(0.75, 0);
                 } else if (gamepad.b) {
                     //Between line 2 and 3 front
-                    setShoulderPosition(0.75, -739);
+                    setShoulderPosition(0.75, -655); //-739
                 } else if (gamepad.y) {
                     //Between line 1 and 2 front
-                    setShoulderPosition(0.75, -655);
+                    setShoulderPosition(0.75, -525); //-655
                 } else if (gamepad.x) {
                     //Driving position
-                    setShoulderPosition(0.75, -50);
+                    setShoulderPosition(0.5, -60);
                 } else if (gamepad.back) {
                     MIN_POS_ARM_IN += 5;
                     setShoulderPosition(0.5, MIN_POS_ARM_IN);
                 } else if (gamepad.dpad_left) {
                     //Between line 1 and 2 back
-                    setShoulderPosition(0.75, -1936);
+                    setShoulderPosition(0.75, -1800); // -1936
                 } else if (gamepad.dpad_right) {
                     //Between line 2 and 3 back
-                    setShoulderPosition(0.75, -1800);
+                    setShoulderPosition(0.75, -739); // -1800
                 } else if (gamepad.dpad_up) {
                     //Straight up and down
-                    setShoulderPosition(0.75, -1325);
+                    setShoulderPosition(0.75, -1325); // -1325
                 }
             }
         }
