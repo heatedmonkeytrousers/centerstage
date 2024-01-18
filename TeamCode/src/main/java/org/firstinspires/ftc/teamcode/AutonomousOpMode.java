@@ -33,7 +33,7 @@ public class AutonomousOpMode extends StandardSetupOpMode {
     private static final double SMALL_TURN = 27;
     private static final double LARGE_TURN = 42;
 
-    protected static final int ARM_DROP = 1600;
+    protected static final int CENTER_ARM_EXTENSION = 1262;
     protected static final int INITIAL_SHOULDER_RAISE = -75;
     protected int INITIAL_ARM_EXTENTION = 0; //How far the arm extends to drop the pixel on the tape
 
@@ -80,13 +80,13 @@ public class AutonomousOpMode extends StandardSetupOpMode {
                 if(hamsterPos == HAMSTER_POS.LEFT){
                     dropAngle = LARGE_TURN;
                     deltaY = -WIGGLE;
-                    INITIAL_ARM_EXTENTION = 1262;
+                    INITIAL_ARM_EXTENTION = CENTER_ARM_EXTENSION;
                 }
                 // NEAR/RED/CENTER
                 else if(hamsterPos == HAMSTER_POS.CENTER){
                     dropAngle = 0;
                     deltaY = 0;
-                    INITIAL_ARM_EXTENTION = 1262;
+                    INITIAL_ARM_EXTENTION = CENTER_ARM_EXTENSION;
                 }
                 // NEAR/RED/RIGHT
                 else{
@@ -106,13 +106,13 @@ public class AutonomousOpMode extends StandardSetupOpMode {
                 else if(hamsterPos == HAMSTER_POS.CENTER){
                     dropAngle = 0;
                     deltaY = 0;
-                    INITIAL_ARM_EXTENTION = 1262;
+                    INITIAL_ARM_EXTENTION = CENTER_ARM_EXTENSION;
                 }
                 // NEAR/BLUE/RIGHT
                 else{
                     dropAngle = -LARGE_TURN;
                     deltaY = WIGGLE;
-                    INITIAL_ARM_EXTENTION = 1262;
+                    INITIAL_ARM_EXTENTION = CENTER_ARM_EXTENSION;
                 }
             }
         }
@@ -129,13 +129,13 @@ public class AutonomousOpMode extends StandardSetupOpMode {
                 else if(hamsterPos == HAMSTER_POS.CENTER){
                     dropAngle = 0;
                     deltaY = 0;
-                    INITIAL_ARM_EXTENTION = 1262;
+                    INITIAL_ARM_EXTENTION = CENTER_ARM_EXTENSION;
                 }
                 // FAR/RED/RIGHT
                 else{
                     dropAngle = -LARGE_TURN;
                     deltaY = WIGGLE;
-                    INITIAL_ARM_EXTENTION = 1262;
+                    INITIAL_ARM_EXTENTION = CENTER_ARM_EXTENSION;
                 }
             }
             else {
@@ -143,13 +143,13 @@ public class AutonomousOpMode extends StandardSetupOpMode {
                 if(hamsterPos == HAMSTER_POS.LEFT){
                     dropAngle = LARGE_TURN;
                     deltaY = -WIGGLE;
-                    INITIAL_ARM_EXTENTION = 1262;
+                    INITIAL_ARM_EXTENTION = CENTER_ARM_EXTENSION;
                 }
                 // FAR/BLUE/CENTER
                 else if(hamsterPos == HAMSTER_POS.CENTER){
                     dropAngle = 0;
                     deltaY = 0;
-                    INITIAL_ARM_EXTENTION = 1262;
+                    INITIAL_ARM_EXTENTION = CENTER_ARM_EXTENSION;
                 }
                 // FAR/BLUE/RIGHT
                 else{
