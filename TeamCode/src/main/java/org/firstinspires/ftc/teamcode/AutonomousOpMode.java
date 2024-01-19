@@ -112,7 +112,7 @@ public class AutonomousOpMode extends StandardSetupOpMode {
                 else{
                     dropAngle = -50;
                     deltaY = WIGGLE;
-                    INITIAL_ARM_EXTENTION = CENTER_ARM_EXTENSION-200;
+                    INITIAL_ARM_EXTENTION = CENTER_ARM_EXTENSION-190;
                 }
             }
         }
@@ -135,7 +135,7 @@ public class AutonomousOpMode extends StandardSetupOpMode {
                 else{
                     dropAngle = -50;
                     deltaY = WIGGLE;
-                    INITIAL_ARM_EXTENTION = CENTER_ARM_EXTENSION-200;
+                    INITIAL_ARM_EXTENTION = CENTER_ARM_EXTENSION-190;
                 }
             }
             else {

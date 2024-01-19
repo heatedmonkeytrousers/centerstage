@@ -25,7 +25,7 @@ public class AutonomousNearBoard extends AutonomousOpMode {
         super.setup(hardwareMap, START_POS.NEAR, hamsterPos, color);
 
         // Poses
-        double boardDropX = (hamsterPos == HAMSTER_POS.LEFT) ? 25.5-(6 * yScale): (hamsterPos == HAMSTER_POS.RIGHT) ? 25.5+(5 * yScale): 26.5;
+        double boardDropX = (hamsterPos == HAMSTER_POS.LEFT) ? 26.5-(6 * yScale): (hamsterPos == HAMSTER_POS.RIGHT) ? 26.5+(4 * yScale): 26.5;
         Pose2d boardPose = new Pose2d(boardDropX, 35 * yScale, Math.toRadians((360 + (yScale * 90)) % 360));
         Pose2d parkPose = new Pose2d(4, 33 * yScale, Math.toRadians(-90 * yScale));
 
@@ -38,13 +38,13 @@ public class AutonomousNearBoard extends AutonomousOpMode {
 
                 .lineToLinearHeading(dropPose)
                 .addTemporalMarker(0.5, () -> {
-                    super.arm.setArmPosition(1, INITIAL_ARM_EXTENTION);
+                    super.arm.setArmPosition(0.5, INITIAL_ARM_EXTENTION);
                 })
                 .addTemporalMarker(1.5, () -> {
                     super.claw.leftOpen();
                 })
                 .addTemporalMarker(2.5, () -> {
-                    super.arm.setArmPosition(1, INITIAL_ARM_EXTENTION-100);
+                    super.arm.setArmPosition(0.5, INITIAL_ARM_EXTENTION-100);
                 })
                 .addTemporalMarker(2.0, () -> {
                     super.shoulder.setShoulderPosition(0.5, -200);
@@ -54,7 +54,7 @@ public class AutonomousNearBoard extends AutonomousOpMode {
         // Setting initial pose to startPose makes the robot avoid the drop areas
         Trajectory board = drive.trajectoryBuilder(startPose)
                 .addTemporalMarker(0, () -> {
-                    super.shoulder.setShoulderPosition(0.75, -500);
+                    super.shoulder.setShoulderPosition(0.5, -550);
                 })
                 .addTemporalMarker(0, () -> {
                     super.arm.setArmPosition(1, 950);

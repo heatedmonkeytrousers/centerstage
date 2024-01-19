@@ -24,9 +24,9 @@ public class AutonomousFarFromBoard extends AutonomousOpMode {
         // Robot Poses
         Pose2d avoidPose = new Pose2d(14, yScale * -23, Math.toRadians(90 * yScale));
         Pose2d alignPose = new Pose2d(53, yScale * -19, Math.toRadians(90 * yScale));
-        Pose2d backPose = new Pose2d(53, yScale * 83, Math.toRadians(90 * yScale));
+        Pose2d backPose = new Pose2d(53, yScale * 81, Math.toRadians(90 * yScale));
         double boardDropX = (hamsterPos == HAMSTER_POS.LEFT) ? 25-(7 * yScale): (hamsterPos == HAMSTER_POS.RIGHT) ? 25+(6 * yScale): 25;
-        Pose2d releasePose = new Pose2d(boardDropX, yScale * 83, Math.toRadians(90 * yScale));
+        Pose2d releasePose = new Pose2d(boardDropX, yScale * 84, Math.toRadians(90 * yScale));
         Pose2d boardBackUp = new Pose2d(boardDropX, yScale * 81, Math.toRadians(90 * yScale));
         Pose2d parkPose = new Pose2d(32, yScale * 82, Math.toRadians(-90 * yScale));
 
