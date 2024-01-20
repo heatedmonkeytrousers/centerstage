@@ -9,7 +9,7 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 @Autonomous(name = "Autonomous: Far From Board", group = "Robot")
 
 public class AutonomousFarFromBoard extends AutonomousOpMode {
-    private double PARTNER_WAIT_SECONDS = 0.0;
+    private double PARTNER_WAIT_SECONDS = 5.0;
     public AutonomousFarFromBoard() {
 
     }
@@ -18,7 +18,11 @@ public class AutonomousFarFromBoard extends AutonomousOpMode {
     public void runOpMode() throws InterruptedException {
         // Setup
         super.runOpMode(); // Gets hamster position and color from camera
-        super.sleep(3000);
+        //super.sleep(3000);
+
+        // Wait to start autonomous
+        waitForStart();
+        super.set();
         super.setup(hardwareMap, START_POS.FAR, hamsterPos, color);
 
         // Robot Poses
@@ -90,9 +94,6 @@ public class AutonomousFarFromBoard extends AutonomousOpMode {
                     super.shoulder.setShoulderPosition(0.75, -40);
                 })
                 .build();
-
-        // Wait to start autonomous
-        waitForStart();
         if (isStopRequested()) return;
 
         // Initial drop, drive to board and drop then park

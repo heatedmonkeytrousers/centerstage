@@ -21,7 +21,11 @@ public class AutonomousNearBoard extends AutonomousOpMode {
 
         //Setup
         super.runOpMode();
-        super.sleep(3000);
+        //super.sleep(3000);
+
+        // Wait to start autonomous
+        waitForStart();
+        super.set();
         super.setup(hardwareMap, START_POS.NEAR, hamsterPos, color);
 
         // Poses
@@ -76,8 +80,6 @@ public class AutonomousNearBoard extends AutonomousOpMode {
                 .lineToSplineHeading(parkPose)
                 .build();
 
-        // Wait to start autonomous
-        waitForStart();
         if (isStopRequested()) return;
 
         // Initial drop, drive to board and drop then park

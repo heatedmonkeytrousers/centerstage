@@ -23,6 +23,10 @@ public class Arm extends Thread{
     private int totalCounts1;
     private int totalCounts2;
 
+    private boolean ignoreGamepad = false;
+
+    public void ignoreGamepad() {ignoreGamepad = true;}
+
     /**
      * Constructor for the arm
      * @param armDrive1 the motor for the first arm
@@ -107,7 +111,7 @@ public class Arm extends Thread{
             totalCounts2 = armDrive1.getCurrentPosition();
 
             //Sets the arm speed to a number -1 through 1 based on the left stick's position
-            double ARM_SPEED = gamepad.left_stick_y;
+            double ARM_SPEED = (ignoreGamepad) ? 0: gamepad.left_stick_y;
             //If the arm speed is positive, then we move the arm towards the min pos
             //If the arm speed is negative, then we move the arm towards the max pos
             int pos = (ARM_SPEED >= 0) ? MIN_POS:MAX_POS;

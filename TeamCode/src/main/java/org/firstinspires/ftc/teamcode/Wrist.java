@@ -19,6 +19,7 @@ public class Wrist extends Thread{
     double position = 1.0;
     static double delta = 0.0;
 
+
     //A list of all the shoulder positions where we want the wrist to change
     private static ArrayList<Double> s = new ArrayList<Double>(List.of(
             0.00, //On the floor front

@@ -33,9 +33,14 @@ public class CameraSetupOpMode extends LinearOpMode {
     static final int IMAGE_WIDTH = 320;
     static final int IMAGE_HEIGHT = 180;
 
+    protected boolean set = false;
     protected OpenCvWebcam webcam = null;
     protected AutonomousOpMode.COLOR color = AutonomousOpMode.COLOR.RED;
     protected AutonomousOpMode.HAMSTER_POS hamsterPos = AutonomousOpMode.HAMSTER_POS.CENTER;
+
+    public void set(){
+        set = true;
+    }
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -77,6 +82,7 @@ public class CameraSetupOpMode extends LinearOpMode {
 
     public class CameraCalibration extends OpenCvPipeline {
 
+
         private void colorDetermination(Mat input, AtomicInteger redCount, AtomicInteger blueCount) {
             int redTot = 0;
             int blueTot = 0;
@@ -113,6 +119,7 @@ public class CameraSetupOpMode extends LinearOpMode {
 
         @Override
         public Mat processFrame(Mat input) {
+            if(set)return input;
 
             // Dynamic sizing
             Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(0,IMAGE_HEIGHT / 3);

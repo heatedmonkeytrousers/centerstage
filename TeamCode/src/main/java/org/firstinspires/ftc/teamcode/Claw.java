@@ -21,6 +21,9 @@ public class Claw extends Thread {
     private static final double OPEN = 0.57;
     //Value of the claw servo when it is closed
     private static final double CLOSE = 0.26;
+    private boolean ignoreGamepad = false;
+
+    public void ignoreGamepad() {ignoreGamepad = true;}
 
     /**
      * Constructor for the claw
@@ -87,23 +90,25 @@ public class Claw extends Thread {
             totalCountsRight = clawServoRight.getPosition();
 
             //If the left bumper is pressed
-            if (gamepad.left_bumper) {
-                //Closes the left claw
-                leftClose();
-            //If the left trigger is pressed
-            } else if (gamepad.left_trigger > 0) {
-                //Opens the left claw
-                leftOpen();
-            }
+            if (!ignoreGamepad) {
+                if (gamepad.left_bumper) {
+                    //Closes the left claw
+                    leftClose();
+                    //If the left trigger is pressed
+                } else if (gamepad.left_trigger > 0) {
+                    //Opens the left claw
+                    leftOpen();
+                }
 
-            //If the right bumper is pressed
-            if (gamepad.right_bumper) {
-                //Closes the right claw
-                rightClose();
-            //If the right trigger is pressed
-            } else if (gamepad.right_trigger > 0) {
-                //Opens the right claw
-                rightOpen();
+                //If the right bumper is pressed
+                if (gamepad.right_bumper) {
+                    //Closes the right claw
+                    rightClose();
+                    //If the right trigger is pressed
+                } else if (gamepad.right_trigger > 0) {
+                    //Opens the right claw
+                    rightOpen();
+                }
             }
 
         }

@@ -28,6 +28,9 @@ public class Shoulder extends Thread {
     private final Gamepad gamepad;
     //Var for motor counts
     private int totalCounts;
+    private boolean ignoreGamepad = false;
+
+    public void ignoreGamepad() {ignoreGamepad = true;}
 
     /**
      * Constructor for the shoulder
@@ -124,7 +127,7 @@ public class Shoulder extends Thread {
             MAX_POS = (int) Math.round(arm.getArmRatio() * (MAX_POS_ARM_OUT-MAX_POS_ARM_IN) + MAX_POS_ARM_IN);
 
             //Sets the shoulder speed to a value -1 through 1 based on the right stick
-            if (gamepad != null) {
+            if (gamepad != null && !ignoreGamepad) {
                 double SHOULDER_SPEED = gamepad.right_stick_y;
                 double power;
                 //If the shoulder is not told to hold it's position and the speed is less than 0.15
