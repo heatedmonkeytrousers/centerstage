@@ -33,7 +33,7 @@ public class AutonomousOpMode extends StandardSetupOpMode {
     private static final double SMALL_TURN = 27;
     private static final double LARGE_TURN = 42;
 
-    protected static final int CENTER_ARM_EXTENSION = 1262;
+    protected static final int CENTER_ARM_EXTENSION = 1300;
     protected static final int INITIAL_SHOULDER_RAISE = -75;
     protected int INITIAL_ARM_EXTENTION = 0; //How far the arm extends to drop the pixel on the tape
 

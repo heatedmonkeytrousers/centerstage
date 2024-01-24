@@ -80,6 +80,8 @@ public class CameraSetupOpMode extends LinearOpMode {
     static final int BLUE_REGION2_CAL = 0;
     static final int BLUE_REGION3_CAL = 0;
 
+    public boolean red = false;
+
     public class CameraCalibration extends OpenCvPipeline {
 
 
@@ -103,11 +105,15 @@ public class CameraSetupOpMode extends LinearOpMode {
                     // Increment counts if within threshold
                     if (redDist < blueDist) {
                         if (redDist < RED_THRESH) {
-                            redTot++;
+                            if (red) {
+                                redTot++;
+                            }
                         }
                     } else {
                         if (blueDist < BLUE_THRESH) {
-                            blueTot++;
+                            if (!red) {
+                                blueTot++;
+                            }
                         }
                     }
                 }

@@ -4,20 +4,21 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+@Autonomous(name = "Autonomous: Far From Board Red", group = "Robot")
 
-@Autonomous(name = "Autonomous: Far From Board", group = "Robot")
-
-public class AutonomousFarFromBoard extends AutonomousOpMode {
+public class AutonomousFarFromBoardRed extends AutonomousOpMode {
     private double PARTNER_WAIT_SECONDS = 5.0;
-    public AutonomousFarFromBoard() {
+    public AutonomousFarFromBoardRed() {
 
     }
 
     @Override
     public void runOpMode() throws InterruptedException {
         // Setup
+        super.red = true;
         super.runOpMode(); // Gets hamster position and color from camera
+        super.claw.leftClose();
+        super.claw.rightClose();
         //super.sleep(3000);
 
         // Wait to start autonomous
