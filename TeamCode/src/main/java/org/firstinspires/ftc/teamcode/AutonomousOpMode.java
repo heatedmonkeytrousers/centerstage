@@ -34,7 +34,7 @@ public class AutonomousOpMode extends StandardSetupOpMode {
     private static final double LARGE_TURN = 42;
 
     protected static final int CENTER_ARM_EXTENSION = 1300;
-    protected static final int INITIAL_SHOULDER_RAISE = -75;
+    protected int INITIAL_SHOULDER_RAISE = -150; //How high do we raise at the start
     protected int INITIAL_ARM_EXTENTION = 0; //How far the arm extends to drop the pixel on the tape
 
     protected SampleMecanumDrive drive;
@@ -45,10 +45,20 @@ public class AutonomousOpMode extends StandardSetupOpMode {
     protected START_POS startPos;
 
     // Trajectories
-    protected Trajectory start;
+    //protected Trajectory start;
 
     // Scale applied to flip the y-axis
     protected double yScale;
+
+    @Override
+    public void runOpMode() throws InterruptedException {
+        // Parent opmode call
+        super.runOpMode();
+
+        // Ensure claws are closed
+        super.claw.leftClose();
+        super.claw.rightClose();
+    }
 
     protected void setup(HardwareMap hardwareMap, START_POS startPos, HAMSTER_POS hamsterPos, COLOR color) {
         // Variable setup
@@ -80,18 +90,21 @@ public class AutonomousOpMode extends StandardSetupOpMode {
                 if(hamsterPos == HAMSTER_POS.LEFT){
                     dropAngle = LARGE_TURN+1;
                     deltaY = -WIGGLE;
+                    INITIAL_SHOULDER_RAISE = -100;
                     INITIAL_ARM_EXTENTION = 1200;
                 }
                 // NEAR/RED/CENTER
                 else if(hamsterPos == HAMSTER_POS.CENTER){
                     dropAngle = 0;
                     deltaY = 0;
+                    INITIAL_SHOULDER_RAISE = -200;
                     INITIAL_ARM_EXTENTION = CENTER_ARM_EXTENSION;
                 }
                 // NEAR/RED/RIGHT
                 else{
                     dropAngle = -36;
                     deltaY = -WIGGLE;
+                    INITIAL_SHOULDER_RAISE = -100;
                     INITIAL_ARM_EXTENTION = 820;
                 }
             }
@@ -100,18 +113,21 @@ public class AutonomousOpMode extends StandardSetupOpMode {
                 if(hamsterPos == HAMSTER_POS.LEFT){
                     dropAngle = SMALL_TURN;
                     deltaY = WIGGLE;
+                    INITIAL_SHOULDER_RAISE = -100;
                     INITIAL_ARM_EXTENTION = 820;
                 }
                 // NEAR/BLUE/CENTER
                 else if(hamsterPos == HAMSTER_POS.CENTER){
                     dropAngle = 0;
                     deltaY = 0;
+                    INITIAL_SHOULDER_RAISE = -200;
                     INITIAL_ARM_EXTENTION = CENTER_ARM_EXTENSION;
                 }
                 // NEAR/BLUE/RIGHT
                 else{
                     dropAngle = -50;
                     deltaY = WIGGLE;
+                    INITIAL_SHOULDER_RAISE = -100;
                     INITIAL_ARM_EXTENTION = CENTER_ARM_EXTENSION-190;
                 }
             }
@@ -123,18 +139,21 @@ public class AutonomousOpMode extends StandardSetupOpMode {
                 if(hamsterPos == HAMSTER_POS.LEFT){
                     dropAngle = SMALL_TURN;
                     deltaY = WIGGLE;
+                    INITIAL_SHOULDER_RAISE = -100;
                     INITIAL_ARM_EXTENTION = 820;
                 }
                 // FAR/RED/CENTER
                 else if(hamsterPos == HAMSTER_POS.CENTER){
                     dropAngle = 0;
                     deltaY = 0;
+                    INITIAL_SHOULDER_RAISE = -200;
                     INITIAL_ARM_EXTENTION = CENTER_ARM_EXTENSION;
                 }
                 // FAR/RED/RIGHT
                 else{
                     dropAngle = -50;
                     deltaY = WIGGLE;
+                    INITIAL_SHOULDER_RAISE = -100;
                     INITIAL_ARM_EXTENTION = CENTER_ARM_EXTENSION-190;
                 }
             }
@@ -143,18 +162,21 @@ public class AutonomousOpMode extends StandardSetupOpMode {
                 if(hamsterPos == HAMSTER_POS.LEFT){
                     dropAngle = LARGE_TURN+1;
                     deltaY = -WIGGLE;
+                    INITIAL_SHOULDER_RAISE = -100;
                     INITIAL_ARM_EXTENTION = 1200;
                 }
                 // FAR/BLUE/CENTER
                 else if(hamsterPos == HAMSTER_POS.CENTER){
                     dropAngle = 0;
                     deltaY = 0;
+                    INITIAL_SHOULDER_RAISE = -200;
                     INITIAL_ARM_EXTENTION = CENTER_ARM_EXTENSION;
                 }
                 // FAR/BLUE/RIGHT
                 else{
                     dropAngle = -36;
                     deltaY = -WIGGLE;
+                    INITIAL_SHOULDER_RAISE = -100;
                     INITIAL_ARM_EXTENTION = 820;
                 }
             }
@@ -164,6 +186,7 @@ public class AutonomousOpMode extends StandardSetupOpMode {
         dropPose = new Pose2d(FORWARD, deltaY, Math.toRadians(dropAngle));
 
         // Trajectories
+        /* Doesn't know hamster position yet
         Trajectory start = drive.trajectoryBuilder(startPose)
                 .addTemporalMarker(0, () -> {
                     super.shoulder.setShoulderPosition(0.75, -250);
@@ -179,6 +202,7 @@ public class AutonomousOpMode extends StandardSetupOpMode {
                     super.arm.setArmPosition(1, 950);
                 })
                 .build();
+        */
 
         // Class Setup
         super.arm.setShoulder(shoulder);

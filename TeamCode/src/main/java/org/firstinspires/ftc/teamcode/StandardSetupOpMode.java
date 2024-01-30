@@ -88,6 +88,5 @@ public class StandardSetupOpMode extends CameraSetupOpMode {
         arm.setShoulder(shoulder);
         wrist = new Wrist(wristServo, wristAnalog, shoulder, null);
         claw = new Claw(gamepad2, clawServo1, clawServo2, null);
-
     }
 }

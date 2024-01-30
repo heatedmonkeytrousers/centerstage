@@ -48,7 +48,6 @@ public class CameraSetupOpMode extends LinearOpMode {
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
         webcam.setPipeline(new CameraCalibration());
-
         //webcam.setMillisecondsPermissionTimeout(2500); // Timeout for obtaining permission is configurable. Set before opening.
         webcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
 
@@ -83,7 +82,6 @@ public class CameraSetupOpMode extends LinearOpMode {
     public boolean red = false;
 
     public class CameraCalibration extends OpenCvPipeline {
-
 
         private void colorDetermination(Mat input, AtomicInteger redCount, AtomicInteger blueCount) {
             int redTot = 0;
