@@ -18,7 +18,7 @@ public class Claw extends Thread {
     private double totalCountsRight;
 
     //Value of the claw servo when it is open
-    private static final double OPEN = 0.57;
+    private static final double OPEN = 0.5; //was 0.57
     //Value of the claw servo when it is closed
     private static final double CLOSE = 0.26;
     private boolean ignoreGamepad = false;
