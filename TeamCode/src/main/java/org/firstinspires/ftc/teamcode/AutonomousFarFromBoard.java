@@ -4,7 +4,7 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 
 public class AutonomousFarFromBoard extends AutonomousOpMode {
-    private double PARTNER_WAIT_SECONDS = 5.0;
+    private double PARTNER_WAIT_SECONDS = 0.0;
 
     public AutonomousFarFromBoard() {
     }
@@ -20,7 +20,8 @@ public class AutonomousFarFromBoard extends AutonomousOpMode {
         super.setup(hardwareMap, START_POS.FAR, hamsterPos, color);
 
         // Robot Poses
-        Pose2d avoidPose = new Pose2d(14, yScale * -23, Math.toRadians(90 * yScale));
+        Pose2d avoidPose = new Pose2d(14, yScale * -23, Math.toRadians(-90 * yScale));
+        Pose2d grabPose = new Pose2d(48,yScale * -20, Math.toRadians(-90 * yScale));
         Pose2d alignPose = new Pose2d(52, yScale * -19, Math.toRadians(90 * yScale));
         Pose2d backPose = new Pose2d(50, yScale * 81, Math.toRadians(90 * yScale));
         double boardDropX = (hamsterPos == HAMSTER_POS.LEFT) ? 25-(7 * yScale): (hamsterPos == HAMSTER_POS.RIGHT) ? 25+(6 * yScale): 25;
@@ -54,8 +55,18 @@ public class AutonomousFarFromBoard extends AutonomousOpMode {
                 })
                 .build();
 
-        Trajectory slide = drive.trajectoryBuilder(avoidPose)
+        Trajectory grab = drive.trajectoryBuilder(avoidPose)
+                .lineToLinearHeading(grabPose)
+                .addTemporalMarker(0,() -> {
+                    super.shoulder.setShoulderPosition(0.75,-230);
+                })
+                .build();
+
+        Trajectory slide = drive.trajectoryBuilder(grabPose)
                 .lineToLinearHeading(alignPose)
+                .addTemporalMarker(0, () -> {
+                    super.shoulder.setShoulderPosition(0.5, -50);
+                })
                 .build();
 
         Trajectory forward = drive.trajectoryBuilder(alignPose)
@@ -65,13 +76,16 @@ public class AutonomousFarFromBoard extends AutonomousOpMode {
         Trajectory board = drive.trajectoryBuilder(backPose)
                 .lineToLinearHeading(releasePose)
                 .addTemporalMarker(0, () -> {
-                    super.shoulder.setShoulderPosition(0.5, -520);
+                    super.shoulder.setShoulderPosition(0.5, -600);
                 })
                 .addTemporalMarker(1, () -> {
                     super.arm.setArmPosition(1, 800);
                 })
                 .addTemporalMarker(2, () -> {
                     super.claw.rightOpen();
+                })
+                .addTemporalMarker(2.5, () -> {
+                    super.claw.leftOpen();
                 })
                 .build();
 
@@ -92,8 +106,15 @@ public class AutonomousFarFromBoard extends AutonomousOpMode {
 
         // Initial drop, drive to board and drop then park
         drive.followTrajectory(start);
-        sleep(1000);
+        sleep(500);
         drive.followTrajectory(back);
+        drive.followTrajectory(grab);
+        arm.setArmPosition(0.5, 625);
+        sleep(1000);
+        claw.leftClose();
+        sleep(1000);
+        arm.setArmPosition(1, 0);
+        sleep(500);
         drive.followTrajectory(slide);
         drive.followTrajectory(forward);
         sleep((int)(PARTNER_WAIT_SECONDS*1000));
