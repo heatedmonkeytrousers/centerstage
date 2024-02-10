@@ -29,6 +29,9 @@ public class Shoulder extends Thread {
     //Var for motor counts
     private int totalCounts;
     private boolean ignoreGamepad = false;
+    private boolean isMoving = false;
+    private int targetPos = 0;
+    private int threshold = 20;
 
     public void ignoreGamepad() {ignoreGamepad = true;}
 
@@ -128,63 +131,86 @@ public class Shoulder extends Thread {
 
             //Sets the shoulder speed to a value -1 through 1 based on the right stick
             if (gamepad != null && !ignoreGamepad) {
-                double SHOULDER_SPEED = gamepad.right_stick_y;
-                double power;
-                //If the shoulder is not told to hold it's position and the speed is less than 0.15
-                //Make the shoulder hold it's current position
-                if (!hold && Math.abs(SHOULDER_SPEED) < 0.15) {
-                    //Set the pos to the shoulder's current position
-                    pos = totalCounts;
-                    power = 0.75;
-                    setShoulderPosition(power, pos);
-                    hold = true;
-                    //If the shoulder speed is greater than 0.15
-                } else if (SHOULDER_SPEED > 0.15) {
-                    //Move the shoulder towards the min pos
-                    pos = MIN_POS;
-                    //If the shoulder is up high enough, lower the speed
-                    PF = isUp() ? 0.5 : 0.75;
-                    //Multiplies speed by the power factor
-                    power = SHOULDER_SPEED * PF;
-                    setShoulderPosition(power, pos);
-                    hold = false;
-                    //If the shoulder speed is less than -0.15
-                } else if (SHOULDER_SPEED < -0.15) {
-                    //Moves the shoulder towards the max pos
-                    pos = MAX_POS;
-                    //If the shoulder is up high enough, lower the speed
-                    PF = isUp() ? 0.5 : 0.75;
-                    //Multiplies speed by the power factor
-                    power = Math.abs(SHOULDER_SPEED) * PF;
-                    setShoulderPosition(power, pos);
-                    hold = false;
+                if (!isMoving) {
+                    double SHOULDER_SPEED = gamepad.right_stick_y;
+                    double power;
+                    //If the shoulder is not told to hold it's position and the speed is less than 0.15
+                    //Make the shoulder hold it's current position
+                    if (!hold && Math.abs(SHOULDER_SPEED) < 0.15) {
+                        //Set the pos to the shoulder's current position
+                        pos = totalCounts;
+                        power = 0.75;
+                        setShoulderPosition(power, pos);
+                        hold = true;
+                        //If the shoulder speed is greater than 0.15
+                    } else if (SHOULDER_SPEED > 0.15) {
+                        //Move the shoulder towards the min pos
+                        pos = MIN_POS;
+                        //If the shoulder is up high enough, lower the speed
+                        PF = isUp() ? 0.5 : 0.75;
+                        //Multiplies speed by the power factor
+                        power = SHOULDER_SPEED * PF;
+                        setShoulderPosition(power, pos);
+                        hold = false;
+                        //If the shoulder speed is less than -0.15
+                    } else if (SHOULDER_SPEED < -0.15) {
+                        //Moves the shoulder towards the max pos
+                        pos = MAX_POS;
+                        //If the shoulder is up high enough, lower the speed
+                        PF = isUp() ? 0.5 : 0.75;
+                        //Multiplies speed by the power factor
+                        power = Math.abs(SHOULDER_SPEED) * PF;
+                        setShoulderPosition(power, pos);
+                        hold = false;
+                    }
+                } else {
+                    if (Math.abs(totalCounts - targetPos) < threshold) {
+                        isMoving = false;
+                    }
                 }
                 //Pre set buttons for setting the position
                 if (gamepad.a) {
                     //Driving position
-                    setShoulderPosition(0.75, 0);
+                    targetPos = 0;
+                    setShoulderPosition(0.75, targetPos);
+                    isMoving = true;
                 } else if (gamepad.b) {
                     //Between line 2 and 3 front
-                    setShoulderPosition(0.75, -670); //-739
+                    targetPos = -670;
+                    setShoulderPosition(0.75, targetPos); //-739
+                    isMoving = true;
                 } else if (gamepad.y) {
                     //Between line 1 and 2 front
-                    setShoulderPosition(0.75, -560); //-655
+                    targetPos = -560;
+                    setShoulderPosition(0.75, targetPos); //-655
+                    isMoving = true;
                 } else if (gamepad.x) {
                     //Driving position
+                    targetPos = -50;
                     setShoulderPosition(0.5, -50);
+                    isMoving = true;
                 } else if (gamepad.back) {
                     MIN_POS_ARM_IN += 5;
-                    setShoulderPosition(0.5, MIN_POS_ARM_IN);
+                    targetPos = MIN_POS_ARM_IN;
+                    setShoulderPosition(0.5, targetPos);
+                    isMoving = true;
                 } else if (gamepad.dpad_left) {
                     //Between line 1 and 2 back
-                    setShoulderPosition(0.75, -1800); // -1936
+                    targetPos = -1800;
+                    setShoulderPosition(0.75, targetPos); // -1936
+                    isMoving = true;
                 } else if (gamepad.dpad_right) {
                     //Between line 2 and 3 back
-                    setShoulderPosition(0.75, -740); // -1800
+                    targetPos = -740;
+                    setShoulderPosition(0.75, targetPos); // -1800
+                    isMoving = true;
                 } else if (gamepad.dpad_up) {
                     //Straight up and down
-                    setShoulderPosition(0.75, -1325); // -1325
+                    targetPos = -1325;
+                    setShoulderPosition(0.75, targetPos); // -1325
+                    isMoving = true;
                 }
+
             }
         }
     }

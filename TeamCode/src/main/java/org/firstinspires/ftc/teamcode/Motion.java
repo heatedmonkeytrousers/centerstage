@@ -16,13 +16,15 @@ public class Motion extends Thread {
 
     public static int ROTATE_360 = 3800;
 
-    private static double PF = 1.0;
+    private double PF = 1.0;
 
     private final DcMotor frontLeftDrive;
     private final DcMotor frontRightDrive;
     private final DcMotor rearLeftDrive;
     private final DcMotor rearRightDrive;
     private final Gamepad gamepad;
+    private final Shoulder shoulder;
+    private final Arm arm;
 
     public enum Direction {
         FORWARD,
@@ -31,11 +33,13 @@ public class Motion extends Thread {
         LEFT
     }
 
-    public Motion(DcMotor frontLeftDrive, DcMotor frontRightDrive, DcMotor rearLeftDrive, DcMotor rearRightDrive, Gamepad gamepad) {
+    public Motion(DcMotor frontLeftDrive, DcMotor frontRightDrive, DcMotor rearLeftDrive, DcMotor rearRightDrive, Shoulder shoulder, Arm arm, Gamepad gamepad) {
         this.frontLeftDrive = frontLeftDrive;
         this.frontRightDrive = frontRightDrive;
         this.rearLeftDrive = rearLeftDrive;
         this.rearRightDrive = rearRightDrive;
+        this.shoulder = shoulder;
+        this.arm = arm;
         this.gamepad = gamepad;
     }
 
@@ -43,13 +47,7 @@ public class Motion extends Thread {
     public void run() {
         while (!isInterrupted()) {
             // Debug
-            /*
-            if(gamepad.start){
-                rotation(Motion.Direction.RIGHT, 90, 0.5);
-                continue;
-            }
 
-             */
             // Setup a variable for each drive wheel to save power level for telemetry
             double frontLeftPower;
             double frontRightPower;
@@ -67,41 +65,13 @@ public class Motion extends Thread {
             frontRightPower = Range.clip(drive - turn + strafe, -1.0, 1.0) * PF;
             rearRightPower = Range.clip(drive - turn - strafe, -1.0, 1.0) * PF;
 
-            /*
-            if (gamepad.right_bumper) {
-                frontLeftPower *= 1;
-                rearLeftPower *= 1;
-                frontRightPower *= 1;
-                rearRightPower *= 1;
-
-            } else if (gamepad.a) {
-                rotation(Direction.LEFT, 180,1);
-            } else if (gamepad.y) {
-                rotation(Direction.RIGHT, 180,1);
+            if (gamepad.right_trigger > 0) {
+                PF = 0.25;
+            } else if (gamepad.left_trigger > 0) {
+                PF = 1.5;
+            } else {
+                PF = 1.0;
             }
-            else if (gamepad.b) {
-                translate(Direction.RIGHT, 1.66, 1);
-            } else if (gamepad.x) {
-                translate(Direction.LEFT, 1.66, 1);
-            } else if (gamepad.dpad_up) {
-                translate(Direction.FORWARD, 1, 1);
-
-            } else if (gamepad.dpad_down) {
-                translate(Direction.BACKWARD, 1, 1);
-
-            } else if (gamepad.dpad_left) {
-                translate(Direction.LEFT, 1, 1);
-
-            } else if (gamepad.dpad_right) {
-                translate(Direction.RIGHT, 1, 1);
-            } else if (gamepad.left_trigger > 0.5) {
-                rotation(Direction.LEFT, 90, 1);
-
-            } else if (gamepad.right_trigger > 0.5) {
-                rotation(Direction.RIGHT, 90, 1);
-            }
-
-             */
 
             // Send calculated power to wheels
             frontLeftDrive.setPower(frontLeftPower);

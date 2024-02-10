@@ -82,7 +82,7 @@ public class StandardSetupOpMode extends CameraSetupOpMode {
         shoulderDrive.setTargetPosition(0);
 
         // Build the Motion class and give it a motion object
-        motion = new Motion(frontLeftDrive, frontRightDrive, rearLeftDrive, rearRightDrive, null);
+        motion = new Motion(frontLeftDrive, frontRightDrive, rearLeftDrive, rearRightDrive, null, null, null);
         arm = new Arm(armDrive1, armDrive2, null, null);
         shoulder = new Shoulder(shoulderDrive, arm, gamepad2);
         arm.setShoulder(shoulder);
