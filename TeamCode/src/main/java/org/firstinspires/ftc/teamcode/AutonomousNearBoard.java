@@ -22,6 +22,9 @@ public class AutonomousNearBoard extends AutonomousOpMode {
         double boardDropX = (hamsterPos == HAMSTER_POS.LEFT) ? 26.5-(6 * yScale): (hamsterPos == HAMSTER_POS.RIGHT) ? 26.5+(4 * yScale): 26.5;
         Pose2d boardPose = new Pose2d(boardDropX, 35 * yScale, Math.toRadians((360 + (yScale * 90)) % 360));
         Pose2d parkPose = new Pose2d(4, 33 * yScale, Math.toRadians(-90 * yScale));
+        Pose2d cyclePose = new Pose2d(3, 69 * -yScale, Math.toRadians(-90 * yScale));
+        Pose2d grabPose = new Pose2d(25 - (yScale * 2.5),68 * -yScale, Math.toRadians(-90 * yScale));
+        Pose2d grab2Pose = new Pose2d(33 - (yScale * 2.5),68 * -yScale, Math.toRadians(-90 * yScale));
 
         // Trajectories
         Trajectory start = drive.trajectoryBuilder(startPose)
@@ -68,6 +71,26 @@ public class AutonomousNearBoard extends AutonomousOpMode {
                 .lineToSplineHeading(parkPose)
                 .build();
 
+        Trajectory stack = drive.trajectoryBuilder(parkPose)
+                .lineToLinearHeading(cyclePose)
+                .build();
+
+        Trajectory grab1 = drive.trajectoryBuilder(cyclePose)
+                .lineToLinearHeading(grabPose)
+                .build();
+
+        Trajectory grab2 = drive.trajectoryBuilder(grabPose)
+                .lineToLinearHeading(grab2Pose)
+                .build();
+
+        Trajectory corner = drive.trajectoryBuilder(grab2Pose)
+                .lineToLinearHeading(cyclePose)
+                .build();
+
+        Trajectory back = drive.trajectoryBuilder(cyclePose)
+                .lineToLinearHeading(parkPose)
+                .build();
+
         if (isStopRequested()) return;
 
         // Initial drop, drive to board and drop then park
@@ -76,5 +99,16 @@ public class AutonomousNearBoard extends AutonomousOpMode {
         drive.followTrajectory(board);
         sleep(200);
         drive.followTrajectory(park);
+        sleep(200);
+        drive.followTrajectory(stack);
+        sleep(500);
+        drive.followTrajectory(grab1);
+        sleep(500);
+        drive.followTrajectory(grab2);
+        sleep(500);
+        drive.followTrajectory(corner);
+        sleep(200);
+        drive.followTrajectory(back);
+
     }
 }
