@@ -185,25 +185,6 @@ public class AutonomousOpMode extends StandardSetupOpMode {
         // Drop pose from unique starting positions
         dropPose = new Pose2d(FORWARD, deltaY, Math.toRadians(dropAngle));
 
-        // Trajectories
-        /* Doesn't know hamster position yet
-        Trajectory start = drive.trajectoryBuilder(startPose)
-                .addTemporalMarker(0, () -> {
-                    super.shoulder.setShoulderPosition(0.75, -250);
-                })
-                .lineToLinearHeading(dropPose)
-                .addTemporalMarker(0.5, () -> {
-                    super.arm.setArmPosition(1, INITIAL_ARM_EXTENTION);
-                })
-                .addTemporalMarker(1.5, () -> {
-                    super.claw.leftOpen();
-                })
-                .addTemporalMarker(2.0, () -> {
-                    super.arm.setArmPosition(1, 950);
-                })
-                .build();
-        */
-
         // Class Setup
         super.arm.setShoulder(shoulder);
         super.shoulder.ignoreGamepad();

@@ -127,9 +127,9 @@ public class BasicOpMode_Linear extends LinearOpMode {
         runtime.reset();
 
         //Launch Threads
-        Motion motion = new Motion(frontLeftDrive, frontRightDrive, rearLeftDrive, rearRightDrive, gamepad1);
         Arm arm = new Arm(armDrive1, armDrive2, gamepad2, null);
         Shoulder shoulder = new Shoulder(shoulderDrive, arm, gamepad2);
+        Motion motion = new Motion(frontLeftDrive, frontRightDrive, rearLeftDrive, rearRightDrive, shoulder, arm, gamepad1);
         Wrist wrist = new Wrist(wristServo, wristAnalog, shoulder, gamepad2);
         Claw claw = new Claw(gamepad2, clawServo1, clawServo2, shoulder);
         DroneLauncher droneLauncher = new DroneLauncher(gamepad1, droneLauncherServo);
