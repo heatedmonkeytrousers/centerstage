@@ -33,7 +33,7 @@ public class Wrist extends Thread{
     //A list of all the wrist positions
     private static ArrayList<Double> w = new ArrayList<Double>(List.of(
             0.87, //Wrist on floor front
-            0.95, //Wrist flat 90 degree front
+            0.98, //Wrist flat 90 degree front
             0.8-delta, //Wrist at 60 90 degree front
             0.92-delta, //Wrist at 60 front
             0.465, //Wrist at 60 back
