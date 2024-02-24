@@ -73,7 +73,7 @@ public class DriveConstants {
      * inches.
      */
     public static double MAX_VEL = 50;//55;//61.743434 // maxRPM/60*gearRatio*wheelRadius*2pi
-    public static double MAX_ACCEL = 35;//50;
+    public static double MAX_ACCEL = 50;//50;
     public static double MAX_ANG_VEL = 3;//2.9766585723070116; //Math.toRadians(90);
     public static double MAX_ANG_ACCEL = Math.toRadians(90);
 
