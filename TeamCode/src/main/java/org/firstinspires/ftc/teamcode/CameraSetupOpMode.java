@@ -12,6 +12,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.drive.SampleTankDrive;
 import org.opencv.calib3d.Calib3d;
 import org.opencv.core.Core;
@@ -51,8 +52,8 @@ public class CameraSetupOpMode extends LinearOpMode {
     protected AutonomousOpMode.COLOR color = AutonomousOpMode.COLOR.RED;
     protected AutonomousOpMode.HAMSTER_POS hamsterPos = AutonomousOpMode.HAMSTER_POS.CENTER;
 
-    private double tx = 12;
-    private double tz = 12;
+    private double tx = -3.5;
+    private double tz = 11;
 
     public void set(){
         set = true;
@@ -167,26 +168,42 @@ public class CameraSetupOpMode extends LinearOpMode {
                 final double INCHES_PER_METER = 39.3701;
                 double xPos = detection.pose.x * INCHES_PER_METER;
                 double zPos = detection.pose.z * INCHES_PER_METER;
+                double yPos = detection.pose.y * INCHES_PER_METER;
+                telemetry.addData("X pos", xPos);
+                telemetry.addData("Y pos", yPos);
+                telemetry.addData("Z pos", zPos);
                 Orientation rot = Orientation.getOrientation(detection.pose.R, AxesReference.INTRINSIC, AxesOrder.YXZ, AngleUnit.DEGREES);
-                double yaw = -(rot.firstAngle);
+                telemetry.addData("First", rot.firstAngle);
+                telemetry.addData("Second", rot.secondAngle);
+                telemetry.addData("Third", rot.thirdAngle);
+                telemetry.update();
+                sleep(2000);
+                double yaw = -(Math.toRadians(rot.firstAngle));
                 double buffer = 0.25;
                 double deltaX = idealX - xPos;
-                double deltaZ = idealZ - zPos;
+                double deltaZ = zPos-idealZ;
                 double dist = Math.sqrt(deltaX*deltaX + deltaZ*deltaZ);
-                double degrees = 0.0873; //5 degrees
+                double degrees = Math.toRadians(1); //5 degrees
 
                 if (dist > buffer || Math.abs(yaw) > degrees) {
                     //We are within range
-                    SampleTankDrive STD = new SampleTankDrive(hardwaremap);
+                    SampleMecanumDrive SMD = new SampleMecanumDrive(hardwaremap);
 
-                    Pose2d startPose = new Pose2d();
-                    Pose2d endPose = new Pose2d(deltaX, deltaZ, yaw);
+                    Pose2d startPose = SMD.getPoseEstimate();
+                    Pose2d endPose = new Pose2d(startPose.getX() + deltaZ, startPose.getY() + deltaX, startPose.getHeading() + yaw);
+                    telemetry.addData("Current X", startPose.getX());
+                    telemetry.addData("Delta X", deltaX);
+                    telemetry.addData("Current Y", startPose.getY());
+                    telemetry.addData("Delta Y", deltaZ);
+                    telemetry.addData("Current Heading", startPose.getHeading());
+                    telemetry.addData("Yaw", yaw);
+                    telemetry.update();
 
-                    Trajectory trajectory = STD.trajectoryBuilder(startPose)
+                    Trajectory trajectory = SMD.trajectoryBuilder(startPose)
                             .lineToLinearHeading(endPose)
                             .build();
 
-                    STD.followTrajectory(trajectory);
+                    SMD.followTrajectory(trajectory);
                 }
             }
         }
@@ -195,6 +212,8 @@ public class CameraSetupOpMode extends LinearOpMode {
         @Override
         public Mat processFrame(Mat input) {
             if(pose) {
+                telemetry.addLine("We ran the code!");
+                telemetry.update();
                 Mat grey = new Mat();
                 double tagsize = 0.0508;
                 double fx = 578.272;
@@ -209,7 +228,9 @@ public class CameraSetupOpMode extends LinearOpMode {
                 // For fun, use OpenCV to draw 6DOF markers on the image.
                 for(AprilTagDetection dt : detections)
                 {
-                    if (dt.id == 9) {
+                    if (dt.id == 8) {
+                        telemetry.addLine("April Tag Found!");
+                        telemetry.update();
                         detection = dt;
                         moveRobot(tx, tz, hardwareMap);
                     }
