@@ -103,7 +103,7 @@ public class AutonomousFarFromBoard extends AutonomousOpMode {
         sleep(500);
         drive.followTrajectory(back);
         drive.followTrajectory(grab);
-        arm.setArmPosition(0.5, 600);
+        arm.setArmPosition(0.5, 650);
         sleep(1500);
         claw.leftClose();
         sleep(1200);
