@@ -1,10 +1,19 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.teamcode.drive.SampleTankDrive;
+import org.opencv.calib3d.Calib3d;
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
@@ -14,6 +23,9 @@ import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
+import org.openftc.apriltag.AprilTagDetection;
+import org.openftc.apriltag.AprilTagDetectorJNI;
+import org.openftc.apriltag.AprilTagPose;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
@@ -30,17 +42,22 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class CameraSetupOpMode extends LinearOpMode {
 
     // Camera can do up to 1920x1080
-    static final int IMAGE_WIDTH = 320;
-    static final int IMAGE_HEIGHT = 180;
+    static final int IMAGE_WIDTH = 800;
+    static final int IMAGE_HEIGHT = 448;
 
     protected boolean set = false;
+    protected boolean pose = false;
     protected OpenCvWebcam webcam = null;
     protected AutonomousOpMode.COLOR color = AutonomousOpMode.COLOR.RED;
     protected AutonomousOpMode.HAMSTER_POS hamsterPos = AutonomousOpMode.HAMSTER_POS.CENTER;
 
+    private double tx = 12;
+    private double tz = 12;
+
     public void set(){
         set = true;
     }
+    public void pose() {pose = true;}
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -54,7 +71,6 @@ public class CameraSetupOpMode extends LinearOpMode {
             @Override
             public void onOpened() {
                 //Camera Starts Running
-                //1920, 1080
                 webcam.startStreaming(IMAGE_WIDTH, IMAGE_HEIGHT, OpenCvCameraRotation.UPRIGHT);
             }
 
@@ -80,6 +96,8 @@ public class CameraSetupOpMode extends LinearOpMode {
     static final int BLUE_REGION3_CAL = 0;
 
     public boolean red = false;
+
+    protected AprilTagDetection detection;
 
     public class CameraCalibration extends OpenCvPipeline {
 
@@ -120,9 +138,86 @@ public class CameraSetupOpMode extends LinearOpMode {
             blueCount.set(blueTot);
         }
 
+        AprilTagDetectionPipeline.Pose aprilTagPoseToOpenCvPose(AprilTagPose aprilTagPose)
+        {
+            AprilTagDetectionPipeline.Pose pose = new AprilTagDetectionPipeline.Pose();
+            pose.tvec.put(0,0, aprilTagPose.x);
+            pose.tvec.put(1,0, aprilTagPose.y);
+            pose.tvec.put(2,0, aprilTagPose.z);
+
+            Mat R = new Mat(3, 3, CvType.CV_32F);
+
+            for (int i = 0; i < 3; i++)
+            {
+                for (int j = 0; j < 3; j++)
+                {
+                    R.put(i,j, aprilTagPose.R.get(i,j));
+                }
+            }
+
+            Calib3d.Rodrigues(R, pose.rvec);
+
+            return pose;
+        }
+
+        public void moveRobot(double idealX, double idealZ, HardwareMap hardwaremap) {
+            pose = true;
+            sleep(500);
+            if (detection != null) {
+                final double INCHES_PER_METER = 39.3701;
+                double xPos = detection.pose.x * INCHES_PER_METER;
+                double zPos = detection.pose.z * INCHES_PER_METER;
+                Orientation rot = Orientation.getOrientation(detection.pose.R, AxesReference.INTRINSIC, AxesOrder.YXZ, AngleUnit.DEGREES);
+                double yaw = -(rot.firstAngle);
+                double buffer = 0.25;
+                double deltaX = idealX - xPos;
+                double deltaZ = idealZ - zPos;
+                double dist = Math.sqrt(deltaX*deltaX + deltaZ*deltaZ);
+                double degrees = 0.0873; //5 degrees
+
+                if (dist > buffer || Math.abs(yaw) > degrees) {
+                    //We are within range
+                    SampleTankDrive STD = new SampleTankDrive(hardwaremap);
+
+                    Pose2d startPose = new Pose2d();
+                    Pose2d endPose = new Pose2d(deltaX, deltaZ, yaw);
+
+                    Trajectory trajectory = STD.trajectoryBuilder(startPose)
+                            .lineToLinearHeading(endPose)
+                            .build();
+
+                    STD.followTrajectory(trajectory);
+                }
+            }
+        }
+
 
         @Override
         public Mat processFrame(Mat input) {
+            if(pose) {
+                Mat grey = new Mat();
+                double tagsize = 0.0508;
+                double fx = 578.272;
+                double fy = 578.272;
+                double cx = 402.145;
+                double cy = 221.506;
+                Imgproc.cvtColor(input, grey, Imgproc.COLOR_RGBA2GRAY);
+                long nativeApriltagPtr = AprilTagDetectorJNI.createApriltagDetector(AprilTagDetectorJNI.TagFamily.TAG_36h11.string, 3, 3);
+                // Run AprilTag
+                ArrayList<AprilTagDetection> detections = AprilTagDetectorJNI.runAprilTagDetectorSimple(nativeApriltagPtr, grey, tagsize, fx, fy, cx, cy);
+
+                // For fun, use OpenCV to draw 6DOF markers on the image.
+                for(AprilTagDetection dt : detections)
+                {
+                    if (dt.id == 9) {
+                        detection = dt;
+                        moveRobot(tx, tz, hardwareMap);
+                    }
+                }
+
+                pose = false;
+
+            }
             if(set)return input;
 
             // Dynamic sizing

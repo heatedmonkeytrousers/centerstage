@@ -73,6 +73,10 @@ public class Motion extends Thread {
                 PF = 1.0;
             }
 
+            if (gamepad.x) {
+
+            }
+
             // Send calculated power to wheels
             frontLeftDrive.setPower(frontLeftPower);
             rearLeftDrive.setPower(rearLeftPower);
