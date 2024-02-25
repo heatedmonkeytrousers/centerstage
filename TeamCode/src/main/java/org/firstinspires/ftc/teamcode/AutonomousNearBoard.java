@@ -4,6 +4,8 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
+import java.io.WriteAbortedException;
+
 public class AutonomousNearBoard extends AutonomousOpMode {
     public AutonomousNearBoard() {
     }
@@ -23,8 +25,8 @@ public class AutonomousNearBoard extends AutonomousOpMode {
         Pose2d boardPose = new Pose2d(boardDropX, 35 * yScale, Math.toRadians((360 + (yScale * 90)) % 360));
         Pose2d parkPose = new Pose2d(5, 33 * yScale, Math.toRadians(-90 * yScale));
         Pose2d cyclePose = new Pose2d(5, 69 * -yScale, Math.toRadians(-90 * yScale));
-        Pose2d grabPose = new Pose2d(32.5,68 * -yScale, Math.toRadians(-90 * yScale));
-        Pose2d grab2Pose = new Pose2d(28,68 * -yScale, Math.toRadians(-90 * yScale));
+        Pose2d grabPose = new Pose2d(28,68 * -yScale, Math.toRadians(-90 * yScale)); //32.5
+        //Pose2d grab2Pose = new Pose2d(28,68 * -yScale, Math.toRadians(-90 * yScale));
         Pose2d backwardBoardPose = new Pose2d(boardDropX, 35 * yScale, Math.toRadians(-90 *yScale));
 
         // Trajectories
@@ -76,15 +78,11 @@ public class AutonomousNearBoard extends AutonomousOpMode {
                 .lineToLinearHeading(cyclePose)
                 .build();
 
-        Trajectory grab1 = drive.trajectoryBuilder(cyclePose)
+        Trajectory grab = drive.trajectoryBuilder(cyclePose)
                 .lineToLinearHeading(grabPose)
                 .build();
 
-        Trajectory grab2 = drive.trajectoryBuilder(grabPose)
-                .lineToLinearHeading(grab2Pose)
-                .build();
-
-        Trajectory corner = drive.trajectoryBuilder(grab2Pose)
+        Trajectory corner = drive.trajectoryBuilder(grabPose)
                 .lineToLinearHeading(cyclePose)
                 .build();
 
@@ -112,27 +110,23 @@ public class AutonomousNearBoard extends AutonomousOpMode {
         sleep(500);
         drive.followTrajectory(park);
         drive.followTrajectory(stack);
-        shoulder.setShoulderPosition(0.5,-200);
-        drive.followTrajectory(grab1);
-        arm.setArmPosition(0.5, 490);
-        sleep(200);
-        if (color == COLOR.BLUE)
-            claw.rightClose();
-        else
-            claw.leftClose();
-        sleep(1000);
-        shoulder.setShoulderPosition(0.5,-240);
+        drive.followTrajectory(grab);
+        aprilTagPose((red)? RED_STACK_WALL : BLUE_STACK_WALL, GRAB_DISTANCE, LEFT_DISTANCE);
+        shoulder.setShoulderPosition(0.7,-170);
+        sleep(800);
+        arm.setArmPosition(0.5, 350);
         sleep(400);
-        drive.followTrajectory(grab2);
-        shoulder.setShoulderPosition(0.5,-160);
-        sleep(200);
-       if (color == COLOR.BLUE )
-           claw.leftClose();
-       else
-           claw.rightClose();
-        sleep(1000);
+        claw.leftClose();
+        sleep(1200);
+        shoulder.setShoulderPosition(0.5,-575);
+        aprilTagPose((red)? RED_STACK_WALL : BLUE_STACK_WALL, GRAB_DISTANCE, RIGHT_DISTANCE);
+        sleep(500);
+        shoulder.setShoulderPosition(0.5,-140);
+        sleep(600);
+        claw.rightClose();
+        sleep(1200);
         arm.setArmPosition(1.0,0);
-        sleep(400);
+        sleep(500);
         drive.followTrajectory(corner);
         shoulder.setShoulderPosition(0.5, -40);
         drive.followTrajectory(back);

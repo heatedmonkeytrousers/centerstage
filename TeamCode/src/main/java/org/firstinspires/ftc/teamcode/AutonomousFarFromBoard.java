@@ -9,6 +9,18 @@ public class AutonomousFarFromBoard extends AutonomousOpMode {
     public AutonomousFarFromBoard() {
     }
 
+    private int getBoardAprilTag() {
+        int aprilTag = 0;
+        if (red) {
+            aprilTag = (hamsterPos == HAMSTER_POS.LEFT) ? RED_LEFT_BOARD : (hamsterPos == HAMSTER_POS.CENTER) ?
+                    RED_CENTER_BOARD : RED_RIGHT_BOARD;
+        } else {
+            aprilTag = (hamsterPos == HAMSTER_POS.LEFT) ? BLUE_LEFT_BOARD : (hamsterPos == HAMSTER_POS.CENTER) ?
+                    BLUE_CENTER_BOARD : BLUE_RIGHT_BOARD;
+        }
+        return aprilTag;
+    }
+
     @Override
     public void runOpMode() throws InterruptedException {
         // Setup
@@ -21,7 +33,7 @@ public class AutonomousFarFromBoard extends AutonomousOpMode {
 
         // Robot Poses
         Pose2d avoidPose = new Pose2d(14, yScale * -22, Math.toRadians(-90 * yScale));
-        Pose2d grabPose = new Pose2d(51 - (yScale * 2.5),yScale * -19, Math.toRadians(-90 * yScale)); //48.5, 53.5
+        Pose2d grabPose = new Pose2d(27,yScale * -19, Math.toRadians(-90 * yScale)); //48.5, 53.5, 51.5
         Pose2d alignPose = new Pose2d(52, yScale * -19, Math.toRadians(90 * yScale));
         Pose2d backPose = new Pose2d(52, yScale * 82, Math.toRadians(90 * yScale));
         double boardDropX = (hamsterPos == HAMSTER_POS.LEFT)? 27-(7 * yScale): (hamsterPos == HAMSTER_POS.RIGHT) ? 27+(6 * yScale): 26;
@@ -42,25 +54,25 @@ public class AutonomousFarFromBoard extends AutonomousOpMode {
                 })
                 .build();
 
-        Trajectory back = drive.trajectoryBuilder(dropPose)
+        Trajectory grab = drive.trajectoryBuilder(dropPose)
                 .addTemporalMarker(0, () -> {
                     super.arm.setArmPosition(1.0, 0);
                 })
                 .addTemporalMarker(0.5, () -> {
                     super.shoulder.setShoulderPosition(0.75, -100);
                 })
-                .lineToLinearHeading(avoidPose)
+                .lineToLinearHeading(grabPose)
                 .addTemporalMarker(1, () -> {
                     super.shoulder.setShoulderPosition(0.75, -50);
                 })
                 .build();
 
-        Trajectory grab = drive.trajectoryBuilder(avoidPose)
-                .lineToLinearHeading(grabPose)
-                .addTemporalMarker(0,() -> {
-                    super.shoulder.setShoulderPosition(0.75,-200);
-                })
-                .build();
+        //Trajectory grab = drive.trajectoryBuilder(avoidPose)
+        //        .lineToLinearHeading(grabPose)
+        //        .addTemporalMarker(0,() -> {
+        //            super.shoulder.setShoulderPosition(0.75,-200);
+        //        })
+        //        .build();
 
         Trajectory slide = drive.trajectoryBuilder(grabPose)
                 .lineToLinearHeading(alignPose)
@@ -76,7 +88,7 @@ public class AutonomousFarFromBoard extends AutonomousOpMode {
         Trajectory board = drive.trajectoryBuilder(backPose)
                 .lineToLinearHeading(releasePose)
                 .addTemporalMarker(0, () -> {
-                    super.shoulder.setShoulderPosition(0.5, -600);
+                    super.shoulder.setShoulderPosition(0.5, -575);
                 })
                 .addTemporalMarker(1, () -> {
                     super.arm.setArmPosition(1, 1000);
@@ -101,10 +113,13 @@ public class AutonomousFarFromBoard extends AutonomousOpMode {
         // Initial drop, drive to board and drop then park
         drive.followTrajectory(start);
         sleep(500);
-        drive.followTrajectory(back);
+        //drive.followTrajectory(back);
         drive.followTrajectory(grab);
-        arm.setArmPosition(0.5, 650);
-        sleep(1500);
+        aprilTagPose((red)?RED_STACK_WALL:BLUE_STACK_WALL, GRAB_DISTANCE, LEFT_DISTANCE);
+        shoulder.setShoulderPosition(0.7, -170);
+        sleep(1200);
+        arm.setArmPosition(0.5, 350);
+        sleep(400);
         claw.leftClose();
         sleep(1200);
         arm.setArmPosition(1, 0);
@@ -113,7 +128,8 @@ public class AutonomousFarFromBoard extends AutonomousOpMode {
         drive.followTrajectory(forward);
         sleep((int)(PARTNER_WAIT_SECONDS*1000));
         drive.followTrajectory(board);
-        sleep(500);
+        aprilTagPose(getBoardAprilTag(), DROP_DISTANCE, RIGHT_DISTANCE);
+        sleep(1500);
         claw.rightOpen();
         sleep(500);
         claw.leftOpen();
@@ -121,6 +137,5 @@ public class AutonomousFarFromBoard extends AutonomousOpMode {
         drive.followTrajectory(backUp);
         sleep(500);
         drive.followTrajectory(park);
-
     }
 }

@@ -4,27 +4,14 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.openftc.easyopencv.OpenCvCamera;
-import org.openftc.easyopencv.OpenCvCameraFactory;
-import org.openftc.easyopencv.OpenCvCameraRotation;
-
 @Autonomous(name = "April Tag Movement", group = "Robot")
-public class AprilTagMovement extends CameraSetupOpMode{
-    private DcMotor shoulderDrive = null;
-    private DcMotor armDrive1 = null;
-    private DcMotor armDrive2 = null;
-
-    public AprilTagMovement() {
-
-    }
+public class AprilTagMovement extends CameraSetupOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
-        set = true;
-        pose = true;
-        armDrive1 = hardwareMap.get(DcMotor.class, "armDrive1"); //ch1 expansion hub Motor
-        armDrive2 = hardwareMap.get(DcMotor.class, "armDrive2"); //ch2 expansion hub Motor
-        shoulderDrive = hardwareMap.get(DcMotor.class, "shoulderDrive"); //ch0 Motor
+        set();
+        DcMotor armDrive1 = hardwareMap.get(DcMotor.class, "armDrive1"); //ch1 expansion hub Motor
+        DcMotor armDrive2 = hardwareMap.get(DcMotor.class, "armDrive2"); //ch2 expansion hub Motor
+        DcMotor shoulderDrive = hardwareMap.get(DcMotor.class, "shoulderDrive"); //ch0 Motor
         armDrive1.setDirection(DcMotorSimple.Direction.FORWARD);
         armDrive2.setDirection(DcMotorSimple.Direction.REVERSE);
         shoulderDrive.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -42,6 +29,7 @@ public class AprilTagMovement extends CameraSetupOpMode{
         Shoulder shoulder = new Shoulder(shoulderDrive, arm, gamepad2);
         shoulder.setShoulderPosition(0.7, -50);
         super.runOpMode();
-        sleep(50000);
+        aprilTagPose(BLUE_LEFT_BOARD, DROP_DISTANCE, LEFT_DISTANCE);
+        sleep(30000);
     }
 }

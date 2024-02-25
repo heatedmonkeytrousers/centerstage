@@ -5,7 +5,6 @@ import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -13,16 +12,13 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
-import org.firstinspires.ftc.teamcode.drive.SampleTankDrive;
 import org.opencv.calib3d.Calib3d;
-import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
-import org.opencv.core.MatOfPoint;
+
 import org.opencv.core.Point;
 import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
-import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 import org.openftc.apriltag.AprilTagDetection;
 import org.openftc.apriltag.AprilTagDetectorJNI;
@@ -33,32 +29,92 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvPipeline;
 import org.openftc.easyopencv.OpenCvWebcam;
 
+import org.firstinspires.ftc.teamcode.drive.DriveConstants;
+
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Autonomous(name = "Robot Setup Camera Super Class", group = "Robot")
 @Disabled
 public class CameraSetupOpMode extends LinearOpMode {
 
-    // Camera can do up to 1920x1080
-    static final int IMAGE_WIDTH = 800;
-    static final int IMAGE_HEIGHT = 448;
+    // April Tag Setup (for 1080p camera)
+    static final int IMAGE_WIDTH = 800;     // Camera can do up to 1920x1080
+    static final int IMAGE_HEIGHT = 448;    // Camera can do up to 1920x1080
+    static final double TAG_SIZE = 0.0508;  // 2in tag
+    static final double FX = 578.272;       // Calibration for 800x448
+    static final double FY = 578.272;       // Calibration for 800x448
+    static final double CX = 402.145;       // Calibration for 800x448
+    static final double CY = 221.506;       // Calibration for 800x448
+    static final double INCHES_PER_METER = 39.3701;
 
-    protected boolean set = false;
-    protected boolean pose = false;
+    public static final int BLUE_LEFT_BOARD = 1;
+    public static final int BLUE_CENTER_BOARD = 2;
+    public static final int BLUE_RIGHT_BOARD = 3;
+    public static final int BLUE_STACK_WALL = 9;
+    public static final int BLUE_STACK_WALL_BIG = 10;
+
+    public static final int RED_LEFT_BOARD = 4;
+    public static final int RED_CENTER_BOARD = 5;
+    public static final int RED_RIGHT_BOARD = 6;
+    public static final int RED_STACK_WALL = 8;
+    public static final int RED_STACK_WALL_BIG = 7;
+
+    // Some typical values for April tag offset
+    public static final double GRAB_DISTANCE = 11;
+    public static final double DROP_DISTANCE = 12;
+    public static final double RIGHT_DISTANCE = 0.5;
+    public static final double LEFT_DISTANCE = -3.5;
+
+    private boolean set = false;  // If this is false we continually look for the hamster
+    private boolean pose = false; // If this is true we make one april tag measurement
+
     protected OpenCvWebcam webcam = null;
     protected AutonomousOpMode.COLOR color = AutonomousOpMode.COLOR.RED;
     protected AutonomousOpMode.HAMSTER_POS hamsterPos = AutonomousOpMode.HAMSTER_POS.CENTER;
 
-    private double tx = -3.5;
-    private double tz = 11;
+    private int tag; // April tag to detect and act on
+    private double targetX; // Distance left right from April tag (inches)
+    private double targetZ; // Distance from April tag (inches)
 
+    //Badger Bots ideal values
+    static final Scalar RED = new Scalar(140, 23, 21);
+    static final Scalar BLUE = new Scalar(5, 39, 80);
+    static final Scalar GREY = new Scalar(140,140,140);
+    static final int RED_THRESH = 50;
+    static final int BLUE_THRESH = 50;
+
+    static final int RED_REGION1_CAL = 0;
+    static final int RED_REGION2_CAL = 0;
+    static final int RED_REGION3_CAL = 0;
+    static final int BLUE_REGION1_CAL = 0;
+    static final int BLUE_REGION2_CAL = 0;
+    static final int BLUE_REGION3_CAL = 0;
+
+    public boolean red = false;
+
+    /**
+     * Method to stop the internal openCV loop from continuously detecting the hamster.
+     */
     public void set(){
         set = true;
     }
-    public void pose() {pose = true;}
+
+    /**
+     * Method to center an April tag in front of the robot.  We set the parameters for our final
+     * position and then set a boolean to allow teh loop to run the april tag detection and
+     * centering once.
+     *
+     * @param tag Tag number to look for (found robot will move, otherwise no movement)
+     * @param awayOffset Distance in inches away from tag (11 inches is typical)
+     * @param leftRightOffset Distance in inches left or right from tag (-3.5 lines up left)
+     */
+    public void aprilTagPose(int tag, double awayOffset, double leftRightOffset) {
+        this.tag = tag;
+        this.targetX = leftRightOffset;
+        this.targetZ = awayOffset;
+        pose = true;
+    }
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -82,26 +138,12 @@ public class CameraSetupOpMode extends LinearOpMode {
         });
     }
 
-    //Badger Bots ideal values
-    static final Scalar RED = new Scalar(140, 23, 21);
-    static final Scalar BLUE = new Scalar(5, 39, 80);
-    static final Scalar GREY = new Scalar(140,140,140);
-    static final int RED_THRESH = 50;
-    static final int BLUE_THRESH = 50;
-
-    static final int RED_REGION1_CAL = 0;
-    static final int RED_REGION2_CAL = 0;
-    static final int RED_REGION3_CAL = 0;
-    static final int BLUE_REGION1_CAL = 0;
-    static final int BLUE_REGION2_CAL = 0;
-    static final int BLUE_REGION3_CAL = 0;
-
-    public boolean red = false;
-
-    protected AprilTagDetection detection;
-
+    /**
+     * OpenCvPielne does two things:
+     *  1) Detects the hamster and determines which side it is on
+     *  2) Detects an april tag and positions the robot in front of it
+     */
     public class CameraCalibration extends OpenCvPipeline {
-
         private void colorDetermination(Mat input, AtomicInteger redCount, AtomicInteger blueCount) {
             int redTot = 0;
             int blueTot = 0;
@@ -139,7 +181,7 @@ public class CameraSetupOpMode extends LinearOpMode {
             blueCount.set(blueTot);
         }
 
-        AprilTagDetectionPipeline.Pose aprilTagPoseToOpenCvPose(AprilTagPose aprilTagPose)
+        private AprilTagDetectionPipeline.Pose aprilTagPoseToOpenCvPose(AprilTagPose aprilTagPose)
         {
             AprilTagDetectionPipeline.Pose pose = new AprilTagDetectionPipeline.Pose();
             pose.tvec.put(0,0, aprilTagPose.x);
@@ -161,37 +203,30 @@ public class CameraSetupOpMode extends LinearOpMode {
             return pose;
         }
 
-        public void moveRobot(double idealX, double idealZ, HardwareMap hardwaremap) {
-            pose = true;
-            sleep(500);
+        private void moveRobot(AprilTagDetection detection) {
             if (detection != null) {
-                final double INCHES_PER_METER = 39.3701;
                 double xPos = detection.pose.x * INCHES_PER_METER;
                 double zPos = detection.pose.z * INCHES_PER_METER;
                 double yPos = detection.pose.y * INCHES_PER_METER;
-                telemetry.addData("X pos", xPos);
-                telemetry.addData("Y pos", yPos);
-                telemetry.addData("Z pos", zPos);
                 Orientation rot = Orientation.getOrientation(detection.pose.R, AxesReference.INTRINSIC, AxesOrder.YXZ, AngleUnit.DEGREES);
-                telemetry.addData("First", rot.firstAngle);
-                telemetry.addData("Second", rot.secondAngle);
-                telemetry.addData("Third", rot.thirdAngle);
-                telemetry.update();
-                sleep(2000);
                 double yaw = -(Math.toRadians(rot.firstAngle));
-                double buffer = 0.25;
-                double deltaX = idealX - xPos;
-                double deltaZ = zPos-idealZ;
+                double minDist = 0.0;
+                double deltaX = targetX - xPos;
+                double deltaZ = zPos-targetZ;
                 double dist = Math.sqrt(deltaX*deltaX + deltaZ*deltaZ);
-                double degrees = Math.toRadians(1); //5 degrees
+                double minDegrees = Math.toRadians(0.0);
 
-                if (dist > buffer || Math.abs(yaw) > degrees) {
-                    //We are within range
-                    SampleMecanumDrive SMD = new SampleMecanumDrive(hardwaremap);
-
+                if (dist > minDist || Math.abs(yaw) > minDegrees) {
+                    // We are within range, need to move
+                    SampleMecanumDrive SMD = new SampleMecanumDrive(hardwareMap);
                     Pose2d startPose = SMD.getPoseEstimate();
                     Pose2d endPose = new Pose2d(startPose.getX() + deltaZ, startPose.getY() + deltaX, startPose.getHeading() + yaw);
-                    telemetry.addData("Current X", startPose.getX());
+                    telemetry.addData("X pos", xPos);
+                    telemetry.addData("Y pos", yPos);
+                    telemetry.addData("Z pos", zPos);
+                    telemetry.addData("First", rot.firstAngle);
+                    telemetry.addData("Second", rot.secondAngle);
+                    telemetry.addData("Third", rot.thirdAngle);telemetry.addData("Current X", startPose.getX());
                     telemetry.addData("Delta X", deltaX);
                     telemetry.addData("Current Y", startPose.getY());
                     telemetry.addData("Delta Y", deltaZ);
@@ -200,7 +235,9 @@ public class CameraSetupOpMode extends LinearOpMode {
                     telemetry.update();
 
                     Trajectory trajectory = SMD.trajectoryBuilder(startPose)
-                            .lineToLinearHeading(endPose)
+                            .lineToLinearHeading(endPose,
+                                    SampleMecanumDrive.getVelocityConstraint(DriveConstants.MAX_VEL/3, DriveConstants.MAX_ANG_VEL/3, DriveConstants.TRACK_WIDTH),
+                                    SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL/3))
                             .build();
 
                     SMD.followTrajectory(trajectory);
@@ -208,37 +245,29 @@ public class CameraSetupOpMode extends LinearOpMode {
             }
         }
 
-
         @Override
         public Mat processFrame(Mat input) {
+            // Should we detect an april tag and then pose the robot in front of it?
             if(pose) {
-                telemetry.addLine("We ran the code!");
-                telemetry.update();
+                // Detect AprilTag
                 Mat grey = new Mat();
-                double tagsize = 0.0508;
-                double fx = 578.272;
-                double fy = 578.272;
-                double cx = 402.145;
-                double cy = 221.506;
                 Imgproc.cvtColor(input, grey, Imgproc.COLOR_RGBA2GRAY);
                 long nativeApriltagPtr = AprilTagDetectorJNI.createApriltagDetector(AprilTagDetectorJNI.TagFamily.TAG_36h11.string, 3, 3);
-                // Run AprilTag
-                ArrayList<AprilTagDetection> detections = AprilTagDetectorJNI.runAprilTagDetectorSimple(nativeApriltagPtr, grey, tagsize, fx, fy, cx, cy);
-
-                // For fun, use OpenCV to draw 6DOF markers on the image.
+                ArrayList<AprilTagDetection> detections = AprilTagDetectorJNI.runAprilTagDetectorSimple(nativeApriltagPtr, grey, TAG_SIZE, FX, FY, CX, CY);
                 for(AprilTagDetection dt : detections)
                 {
-                    if (dt.id == 8) {
-                        telemetry.addLine("April Tag Found!");
-                        telemetry.update();
-                        detection = dt;
-                        moveRobot(tx, tz, hardwareMap);
+                    if (dt.id == tag) {
+                        moveRobot(dt);
+                        break;
                     }
                 }
 
+                // Only detect and move the robot once
+                // TODO - could run twice!
                 pose = false;
-
             }
+
+            // Have we already detected the hamster? (yes - then exit, no continue)
             if(set)return input;
 
             // Dynamic sizing
