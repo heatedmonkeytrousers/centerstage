@@ -4,13 +4,13 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 
 public class AutonomousFarFromBoard extends AutonomousOpMode {
-    private double PARTNER_WAIT_SECONDS = 0.0;
+    protected double PARTNER_WAIT_SECONDS = 0.0;
 
     public AutonomousFarFromBoard() {
     }
 
     private int getBoardAprilTag() {
-        int aprilTag = 0;
+        int aprilTag;
         if (red) {
             aprilTag = (hamsterPos == HAMSTER_POS.LEFT) ? RED_LEFT_BOARD : (hamsterPos == HAMSTER_POS.CENTER) ?
                     RED_CENTER_BOARD : RED_RIGHT_BOARD;
@@ -54,25 +54,25 @@ public class AutonomousFarFromBoard extends AutonomousOpMode {
                 })
                 .build();
 
-        Trajectory grab = drive.trajectoryBuilder(dropPose)
+        Trajectory avoid = drive.trajectoryBuilder(dropPose)
                 .addTemporalMarker(0, () -> {
                     super.arm.setArmPosition(1.0, 0);
                 })
                 .addTemporalMarker(0.5, () -> {
                     super.shoulder.setShoulderPosition(0.75, -100);
                 })
-                .lineToLinearHeading(grabPose)
+                .lineToLinearHeading(avoidPose)
                 .addTemporalMarker(1, () -> {
-                    super.shoulder.setShoulderPosition(0.75, -50);
+                    super.shoulder.setShoulderPosition(0.75, -75);
                 })
                 .build();
 
-        //Trajectory grab = drive.trajectoryBuilder(avoidPose)
-        //        .lineToLinearHeading(grabPose)
-        //        .addTemporalMarker(0,() -> {
-        //            super.shoulder.setShoulderPosition(0.75,-200);
-        //        })
-        //        .build();
+        Trajectory grab = drive.trajectoryBuilder(avoidPose)
+                .lineToLinearHeading(grabPose)
+                //.addTemporalMarker(0,() -> {
+                //    super.shoulder.setShoulderPosition(0.5,-75);
+                //})
+                .build();
 
         Trajectory slide = drive.trajectoryBuilder(grabPose)
                 .lineToLinearHeading(alignPose)
@@ -113,7 +113,7 @@ public class AutonomousFarFromBoard extends AutonomousOpMode {
         // Initial drop, drive to board and drop then park
         drive.followTrajectory(start);
         sleep(500);
-        //drive.followTrajectory(back);
+        drive.followTrajectory(avoid);
         drive.followTrajectory(grab);
         aprilTagPose((red)?RED_STACK_WALL:BLUE_STACK_WALL, GRAB_DISTANCE, LEFT_DISTANCE);
         shoulder.setShoulderPosition(0.7, -170);

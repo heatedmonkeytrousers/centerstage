@@ -27,6 +27,9 @@ public class AutonomousOpMode extends StandardSetupOpMode {
         NEAR
     }
 
+    private static final double MAX_POS_ERROR = 12.0; // Maximum position error (inches)
+    private static final double MAX_HEADING_ERROR = Math.toRadians(20); // Max heading error (radians)
+
     private static final double FORWARD = 16.5;
     private static final double WIGGLE = 2.5;
     private static final double SMALL_TURN = 27;
@@ -193,5 +196,17 @@ public class AutonomousOpMode extends StandardSetupOpMode {
         super.shoulder.start();
         super.claw.rightClose();
         super.claw.leftClose();
+    }
+
+
+    /**
+     * Checks the error of the last pose.  If it's really bad we probably hit something and we
+     * should limp back home or just stay put.
+     *
+     * @return true if something is really off, false if we're ok
+     */
+    protected boolean checkError(Pose2d errorPose)
+    {
+        return errorPose.getX() > MAX_POS_ERROR || errorPose.getY() > MAX_POS_ERROR || errorPose.getHeading() > MAX_HEADING_ERROR;
     }
 }
