@@ -13,6 +13,8 @@ public class AutonomousNearBoard extends AutonomousOpMode {
     public AutonomousNearBoard() {
     }
 
+    protected boolean cycle = true;
+
     /**
      * Detect if we hit the truss and recover if possible
      * @param parkPose pose we should park at
@@ -61,6 +63,7 @@ public class AutonomousNearBoard extends AutonomousOpMode {
         double boardDropX = (hamsterPos == HAMSTER_POS.LEFT) ? 26.5-(6 * yScale): (hamsterPos == HAMSTER_POS.RIGHT) ? 26.5+(4 * yScale): 26.5;
         Pose2d boardPose = new Pose2d(boardDropX, 35 * yScale, Math.toRadians((360 + (yScale * 90)) % 360));
         Pose2d parkPose = new Pose2d(5, 33 * yScale, Math.toRadians(-90 * yScale));
+        Pose2d deepParkPose = new Pose2d(5, 39 * yScale, Math.toRadians(-90 * yScale));
         Pose2d cyclePose = new Pose2d(5, 69 * -yScale, Math.toRadians(-90 * yScale));
         Pose2d grabPose = new Pose2d(28,68 * -yScale, Math.toRadians(-90 * yScale)); //32.5
         //Pose2d grab2Pose = new Pose2d(28,68 * -yScale, Math.toRadians(-90 * yScale));
@@ -111,6 +114,10 @@ public class AutonomousNearBoard extends AutonomousOpMode {
                 .lineToLinearHeading(parkPose)
                 .build();
 
+        Trajectory deepPark = drive.trajectoryBuilder(parkPose)
+                .lineToLinearHeading(deepParkPose)
+                .build();
+
         Trajectory stack = drive.trajectoryBuilder(parkPose)
                 .lineToLinearHeading(cyclePose)
                 .build();
@@ -146,41 +153,47 @@ public class AutonomousNearBoard extends AutonomousOpMode {
         drive.followTrajectory(board);
         sleep(500);
         drive.followTrajectory(park);
-        drive.followTrajectory(stack);
-        // Did we make it through the truss!
-        if(didWeHitTheTruss(parkPose)) return;
-        drive.followTrajectory(grab);
-        aprilTagPose((red)? RED_STACK_WALL : BLUE_STACK_WALL, GRAB_DISTANCE, LEFT_DISTANCE);
-        shoulder.setShoulderPosition(0.7,-170);
-        sleep(800);
-        arm.setArmPosition(0.5, 350);
-        sleep(400);
-        // Maybe we'll get lucky and grab two with one grab!
-        shoulder.setShoulderPosition(0.7,-160);
-        claw.leftClose();
-        sleep(1200);
-        // 2nd grab is taking too long and is not working
-        //shoulder.setShoulderPosition(0.5,-575);
-        //aprilTagPose((red)? RED_STACK_WALL : BLUE_STACK_WALL, GRAB_DISTANCE, RIGHT_DISTANCE);
-        //sleep(500);
-        //shoulder.setShoulderPosition(0.5,-140);
-        //sleep(600);
-        //claw.rightClose();
-        //sleep(1200);
-        arm.setArmPosition(1.0,0);
-        sleep(500);
-        drive.followTrajectory(corner);
-        shoulder.setShoulderPosition(0.5, -40);
-        drive.followTrajectory(back);
-        // Did we make it through the truss!
-        if(didWeHitTheTruss(parkPose)) return;
-        drive.followTrajectory(board2);
-        arm.setArmPosition(1.0, -800);
-        shoulder.setShoulderPosition(0.4, -2100);
-        sleep(700);
-        claw.leftOpen();
-        //claw.rightOpen();
-        sleep(600);
+        if(cycle) {
+            drive.followTrajectory(stack);
+            // Did we make it through the truss!
+            if (didWeHitTheTruss(parkPose)) return;
+            drive.followTrajectory(grab);
+            aprilTagPose((red) ? RED_STACK_WALL : BLUE_STACK_WALL, GRAB_DISTANCE, LEFT_DISTANCE);
+            shoulder.setShoulderPosition(0.7, -170);
+            sleep(800);
+            arm.setArmPosition(0.5, 350);
+            sleep(400);
+            // Maybe we'll get lucky and grab two with one grab!
+            shoulder.setShoulderPosition(0.7, -160);
+            claw.leftClose();
+            sleep(1200);
+            // 2nd grab is taking too long and is not working
+            //shoulder.setShoulderPosition(0.5,-575);
+            //aprilTagPose((red)? RED_STACK_WALL : BLUE_STACK_WALL, GRAB_DISTANCE, RIGHT_DISTANCE);
+            //sleep(500);
+            //shoulder.setShoulderPosition(0.5,-140);
+            //sleep(600);
+            //claw.rightClose();
+            //sleep(1200);
+            arm.setArmPosition(1.0, 0);
+            sleep(500);
+            drive.followTrajectory(corner);
+            shoulder.setShoulderPosition(0.5, -40);
+            drive.followTrajectory(back);
+            // Did we make it through the truss!
+            if (didWeHitTheTruss(parkPose)) return;
+            drive.followTrajectory(board2);
+            arm.setArmPosition(1.0, -800);
+            shoulder.setShoulderPosition(0.4, -2100);
+            sleep(700);
+            claw.leftOpen();
+            //claw.rightOpen();
+            sleep(600);
+        }
+        else
+        {
+            drive.followTrajectory(deepPark);
+        }
         arm.setArmPosition(1.0, 0);
         shoulder.setShoulderPosition(0.8,0);
         sleep(2000);

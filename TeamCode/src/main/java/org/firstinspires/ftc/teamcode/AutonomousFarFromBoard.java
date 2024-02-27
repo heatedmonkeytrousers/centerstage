@@ -4,7 +4,7 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 
 public class AutonomousFarFromBoard extends AutonomousOpMode {
-    protected double PARTNER_WAIT_SECONDS = 0.0;
+    protected double partnerWaitSeconds = 0.0;
 
     public AutonomousFarFromBoard() {
     }
@@ -126,7 +126,7 @@ public class AutonomousFarFromBoard extends AutonomousOpMode {
         sleep(500);
         drive.followTrajectory(slide);
         drive.followTrajectory(forward);
-        sleep((int)(PARTNER_WAIT_SECONDS*1000));
+        sleep((int)(partnerWaitSeconds*1000));
         drive.followTrajectory(board);
         aprilTagPose(getBoardAprilTag(), DROP_DISTANCE, RIGHT_DISTANCE);
         sleep(1500);

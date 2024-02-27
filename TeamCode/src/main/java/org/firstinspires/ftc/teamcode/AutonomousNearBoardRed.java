@@ -6,9 +6,6 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 @Autonomous(name = "Autonomous: Near Board Red", group = "Robot")
 public class AutonomousNearBoardRed extends AutonomousNearBoard {
-    public AutonomousNearBoardRed() {
-    }
-
     @Override
     public void runOpMode() throws InterruptedException {
         super.red = true;
