@@ -63,10 +63,9 @@ public class AutonomousNearBoard extends AutonomousOpMode {
         double boardDropX = (hamsterPos == HAMSTER_POS.LEFT) ? 26.5-(6 * yScale): (hamsterPos == HAMSTER_POS.RIGHT) ? 26.5+(4 * yScale): 26.5;
         Pose2d boardPose = new Pose2d(boardDropX, 35 * yScale, Math.toRadians((360 + (yScale * 90)) % 360));
         Pose2d parkPose = new Pose2d(5, 33 * yScale, Math.toRadians(-90 * yScale));
-        Pose2d deepParkPose = new Pose2d(5, 39 * yScale, Math.toRadians(-90 * yScale));
+        Pose2d deepParkPose = new Pose2d(3, 42 * yScale, Math.toRadians(-90 * yScale));
         Pose2d cyclePose = new Pose2d(5, 69 * -yScale, Math.toRadians(-90 * yScale));
         Pose2d grabPose = new Pose2d(28,68 * -yScale, Math.toRadians(-90 * yScale)); //32.5
-        //Pose2d grab2Pose = new Pose2d(28,68 * -yScale, Math.toRadians(-90 * yScale));
         Pose2d backwardBoardPose = new Pose2d(boardDropX, 35 * yScale, Math.toRadians(-90 *yScale));
 
         // Trajectories
@@ -74,7 +73,9 @@ public class AutonomousNearBoard extends AutonomousOpMode {
                 .addTemporalMarker(0, () -> {
                     super.shoulder.setShoulderPosition(0.5, INITIAL_SHOULDER_RAISE);
                 })
-                .lineToLinearHeading(dropPose)
+                .lineToLinearHeading(dropPose,
+                        SampleMecanumDrive.getVelocityConstraint(DriveConstants.MAX_VEL, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .addTemporalMarker(0.5, () -> {
                     super.arm.setArmPosition(0.75, INITIAL_ARM_EXTENTION);
                 })
@@ -164,9 +165,9 @@ public class AutonomousNearBoard extends AutonomousOpMode {
             arm.setArmPosition(0.5, 350);
             sleep(400);
             // Maybe we'll get lucky and grab two with one grab!
-            shoulder.setShoulderPosition(0.7, -160);
+            //shoulder.setShoulderPosition(0.7, -160);
             claw.leftClose();
-            sleep(1200);
+            sleep(1500);
             // 2nd grab is taking too long and is not working
             //shoulder.setShoulderPosition(0.5,-575);
             //aprilTagPose((red)? RED_STACK_WALL : BLUE_STACK_WALL, GRAB_DISTANCE, RIGHT_DISTANCE);
@@ -183,7 +184,7 @@ public class AutonomousNearBoard extends AutonomousOpMode {
             // Did we make it through the truss!
             if (didWeHitTheTruss(parkPose)) return;
             drive.followTrajectory(board2);
-            arm.setArmPosition(1.0, -800);
+            arm.setArmPosition(1.0, -850);
             shoulder.setShoulderPosition(0.4, -2100);
             sleep(700);
             claw.leftOpen();

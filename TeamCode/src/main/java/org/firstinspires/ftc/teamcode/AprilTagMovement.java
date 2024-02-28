@@ -29,7 +29,7 @@ public class AprilTagMovement extends CameraSetupOpMode {
         Shoulder shoulder = new Shoulder(shoulderDrive, arm, gamepad2);
         shoulder.setShoulderPosition(0.7, -50);
         super.runOpMode();
-        aprilTagPose(BLUE_LEFT_BOARD, DROP_DISTANCE, LEFT_DISTANCE);
+        aprilTagPose(BLUE_STACK_WALL, DROP_DISTANCE, LEFT_DISTANCE);
         sleep(30000);
     }
 }

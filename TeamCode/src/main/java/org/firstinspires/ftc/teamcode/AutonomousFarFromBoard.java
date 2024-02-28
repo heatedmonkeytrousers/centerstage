@@ -3,6 +3,9 @@ package org.firstinspires.ftc.teamcode;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 
+import org.firstinspires.ftc.teamcode.drive.DriveConstants;
+import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+
 public class AutonomousFarFromBoard extends AutonomousOpMode {
     protected double partnerWaitSeconds = 0.0;
 
@@ -45,7 +48,9 @@ public class AutonomousFarFromBoard extends AutonomousOpMode {
                 .addTemporalMarker(0, () -> {
                     super.shoulder.setShoulderPosition(0.5, INITIAL_SHOULDER_RAISE);
                 })
-                .lineToLinearHeading(dropPose)
+                .lineToLinearHeading(dropPose,
+                        SampleMecanumDrive.getVelocityConstraint(DriveConstants.MAX_VEL, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .addTemporalMarker(0.5, () -> {
                     super.arm.setArmPosition(0.75, INITIAL_ARM_EXTENTION);
                 })
@@ -121,7 +126,7 @@ public class AutonomousFarFromBoard extends AutonomousOpMode {
         arm.setArmPosition(0.5, 350);
         sleep(400);
         claw.leftClose();
-        sleep(1200);
+        sleep(1500);
         arm.setArmPosition(1, 0);
         sleep(500);
         drive.followTrajectory(slide);

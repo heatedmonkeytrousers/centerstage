@@ -211,16 +211,35 @@ public class CameraSetupOpMode extends LinearOpMode {
                 Orientation rot = Orientation.getOrientation(detection.pose.R, AxesReference.INTRINSIC, AxesOrder.YXZ, AngleUnit.DEGREES);
                 double yaw = -(Math.toRadians(rot.firstAngle));
                 double minDist = 0.0;
+
                 double deltaX = targetX - xPos;
-                double deltaZ = zPos-targetZ;
+                double deltaZ = targetZ - zPos;
+
+                //AffineTransform tx = AffineTransform.getTranslateInstance(-targetX ,-targetZ);
+                //tx.rotate(-yaw);
+                //double deltaX = tx.getNewX(xPos, zPos);
+                //double deltaZ = tx.getNewY(xPos, zPos);
+
+                //AffineTransform tx = AffineTransform.getTranslateInstance(-xPos ,-zPos);
+                //tx.rotate(-yaw);
+                //double deltaX = tx.getNewX(targetX, targetZ);
+                //double deltaZ = tx.getNewY(targetX, targetZ);
+
+                //double h = Math.sqrt(targetX * targetX + targetZ * targetZ);
+                //double a = Math.atan(targetZ/targetX);
+                //double u = Math.toRadians(90)-Math.abs(yaw)-Math.abs(a);
+                //double deltaX = Math.sin(u)*h;
+                //double deltaZ = Math.cos(u)*h;
+                //double fx = xPos+deltaX;
+                //double fz = zPos - deltaZ;
                 double dist = Math.sqrt(deltaX*deltaX + deltaZ*deltaZ);
                 double minDegrees = Math.toRadians(0.0);
 
-                if (dist > minDist || Math.abs(yaw) > minDegrees) {
+                if (true){//dist > minDist || Math.abs(yaw) > minDegrees) {
                     // We are within range, need to move
                     SampleMecanumDrive SMD = new SampleMecanumDrive(hardwareMap);
                     Pose2d startPose = SMD.getPoseEstimate();
-                    Pose2d endPose = new Pose2d(startPose.getX() + deltaZ, startPose.getY() + deltaX, startPose.getHeading() + yaw);
+                    Pose2d endPose = new Pose2d(startPose.getX()-deltaZ, startPose.getY()+deltaX, startPose.getHeading());
                     telemetry.addData("X pos", xPos);
                     telemetry.addData("Y pos", yPos);
                     telemetry.addData("Z pos", zPos);
@@ -228,7 +247,6 @@ public class CameraSetupOpMode extends LinearOpMode {
                     telemetry.addData("Second", rot.secondAngle);
                     telemetry.addData("Third", rot.thirdAngle);telemetry.addData("Current X", startPose.getX());
                     telemetry.addData("Delta X", deltaX);
-                    telemetry.addData("Current Y", startPose.getY());
                     telemetry.addData("Delta Y", deltaZ);
                     telemetry.addData("Current Heading", startPose.getHeading());
                     telemetry.addData("Yaw", yaw);
