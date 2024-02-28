@@ -2,11 +2,12 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-@Autonomous(name = "Autonomous: Far From Board Red 5s Pause", group = "Robot")
-public class AutonomousFarFromBoardRed5sPause extends AutonomousFarFromBoard {
+@Autonomous(name = "Auto: Near Board Red No Cycle Deep Park", group = "Robot")
+public class AutonomousNearBoardRedNoCycleDeepPark extends AutonomousNearBoard {
     @Override
     public void runOpMode() throws InterruptedException {
-        super.partnerWaitSeconds = 5.0;
+        super.cycle = false;
+        super.deepPark = true;
         super.red = true;
         super.runOpMode();
     }

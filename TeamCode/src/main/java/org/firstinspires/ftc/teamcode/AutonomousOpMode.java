@@ -42,7 +42,7 @@ public class AutonomousOpMode extends StandardSetupOpMode {
     protected SampleMecanumDrive drive;
 
     //poses
-    protected Pose2d startPose = new Pose2d();
+    protected Pose2d startPose = new Pose2d(0,0,0);
     protected Pose2d dropPose;
     protected START_POS startPos;
 

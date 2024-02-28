@@ -14,6 +14,7 @@ public class AutonomousNearBoard extends AutonomousOpMode {
     }
 
     protected boolean cycle = true;
+    protected boolean deepPark = false;
 
     /**
      * Detect if we hit the truss and recover if possible
@@ -63,7 +64,7 @@ public class AutonomousNearBoard extends AutonomousOpMode {
         double boardDropX = (hamsterPos == HAMSTER_POS.LEFT) ? 26.5-(6 * yScale): (hamsterPos == HAMSTER_POS.RIGHT) ? 26.5+(4 * yScale): 26.5;
         Pose2d boardPose = new Pose2d(boardDropX, 35 * yScale, Math.toRadians((360 + (yScale * 90)) % 360));
         Pose2d parkPose = new Pose2d(5, 33 * yScale, Math.toRadians(-90 * yScale));
-        Pose2d deepParkPose = new Pose2d(3, 42 * yScale, Math.toRadians(-90 * yScale));
+        Pose2d deeperParkPose = new Pose2d(3, 42 * yScale, Math.toRadians(-90 * yScale));
         Pose2d cyclePose = new Pose2d(5, 69 * -yScale, Math.toRadians(-90 * yScale));
         Pose2d grabPose = new Pose2d(28,68 * -yScale, Math.toRadians(-90 * yScale)); //32.5
         Pose2d backwardBoardPose = new Pose2d(boardDropX, 35 * yScale, Math.toRadians(-90 *yScale));
@@ -115,8 +116,8 @@ public class AutonomousNearBoard extends AutonomousOpMode {
                 .lineToLinearHeading(parkPose)
                 .build();
 
-        Trajectory deepPark = drive.trajectoryBuilder(parkPose)
-                .lineToLinearHeading(deepParkPose)
+        Trajectory deeperPark = drive.trajectoryBuilder(parkPose)
+                .lineToLinearHeading(deeperParkPose)
                 .build();
 
         Trajectory stack = drive.trajectoryBuilder(parkPose)
@@ -191,9 +192,9 @@ public class AutonomousNearBoard extends AutonomousOpMode {
             //claw.rightOpen();
             sleep(600);
         }
-        else
+        else if(deepPark)
         {
-            drive.followTrajectory(deepPark);
+            drive.followTrajectory(deeperPark);
         }
         arm.setArmPosition(1.0, 0);
         shoulder.setShoulderPosition(0.8,0);
