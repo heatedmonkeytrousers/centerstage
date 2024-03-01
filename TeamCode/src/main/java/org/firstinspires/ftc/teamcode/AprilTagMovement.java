@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
-@Autonomous(name = "April Tag Movement", group = "Robot")
+@Autonomous(name = "Test: April Tag Movement", group = "Robot")
 public class AprilTagMovement extends CameraSetupOpMode {
     @Override
     public void runOpMode() throws InterruptedException {

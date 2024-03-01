@@ -8,7 +8,7 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
 
-@TeleOp(name = "Camera Calibration", group = "Linear Opmode")
+@TeleOp(name = "Test: Camera Calibration", group = "Linear Opmode")
 public class CameraCalibrationOpMode_Linear extends CameraSetupOpMode {
     OpenCvWebcam webcam;
 

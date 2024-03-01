@@ -8,7 +8,6 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 @TeleOp(name="Speedy Hamster", group="Linear Opmode")
-
 public class HamsterOpMode_Linear extends LinearOpMode {
 
     // Declare OpMode Members (Members of the house)
