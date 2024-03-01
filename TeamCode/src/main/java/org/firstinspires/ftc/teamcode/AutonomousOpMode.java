@@ -142,7 +142,7 @@ public class AutonomousOpMode extends StandardSetupOpMode {
                     dropAngle = SMALL_TURN;
                     deltaY = WIGGLE;
                     INITIAL_SHOULDER_RAISE = -100;
-                    INITIAL_ARM_EXTENTION = 820;
+                    INITIAL_ARM_EXTENTION = 580;
                 }
                 // FAR/RED/CENTER
                 else if(hamsterPos == HAMSTER_POS.CENTER){
@@ -179,7 +179,7 @@ public class AutonomousOpMode extends StandardSetupOpMode {
                     dropAngle = -36;
                     deltaY = -WIGGLE;
                     INITIAL_SHOULDER_RAISE = -100;
-                    INITIAL_ARM_EXTENTION = 820;
+                    INITIAL_ARM_EXTENTION = 730;
                 }
             }
         }

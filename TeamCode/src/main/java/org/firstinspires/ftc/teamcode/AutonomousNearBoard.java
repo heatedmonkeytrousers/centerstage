@@ -165,18 +165,9 @@ public class AutonomousNearBoard extends AutonomousOpMode {
             sleep(800);
             arm.setArmPosition(0.5, 350);
             sleep(400);
-            // Maybe we'll get lucky and grab two with one grab!
-            //shoulder.setShoulderPosition(0.7, -160);
             claw.leftClose();
-            sleep(1500);
-            // 2nd grab is taking too long and is not working
-            //shoulder.setShoulderPosition(0.5,-575);
-            //aprilTagPose((red)? RED_STACK_WALL : BLUE_STACK_WALL, GRAB_DISTANCE, RIGHT_DISTANCE);
-            //sleep(500);
-            //shoulder.setShoulderPosition(0.5,-140);
-            //sleep(600);
-            //claw.rightClose();
-            //sleep(1200);
+            sleep(1400);
+            shoulder.setShoulderPosition(0.7, -200);
             arm.setArmPosition(1.0, 0);
             sleep(500);
             drive.followTrajectory(corner);
@@ -185,11 +176,11 @@ public class AutonomousNearBoard extends AutonomousOpMode {
             // Did we make it through the truss!
             if (didWeHitTheTruss(parkPose)) return;
             drive.followTrajectory(board2);
-            arm.setArmPosition(1.0, -850);
-            shoulder.setShoulderPosition(0.4, -2100);
+            shoulder.setShoulderPosition(0.4, -2050);
+            sleep(500);
+            arm.setArmPosition(0.8, -850);
             sleep(700);
             claw.leftOpen();
-            //claw.rightOpen();
             sleep(600);
         }
         else if(deepPark)
